@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar — Briiff</title>
+  <meta name="theme-color" content="#FBFAF7">
+  <script src="assets/js/tema.js"></script>
+  <script src="assets/js/som.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+  <main class="auth" id="auth">
+    <div class="auth-card">
+      <a class="wordmark lg" href="index.html" aria-label="Briiff, página inicial"><span class="root" aria-hidden="true">√</span><span class="name">Briiff</span></a>
+      <p class="tagline">Matemática, um exercício por dia, muda rotinas</p>
+
+      <div id="demo-box" class="demo-box" hidden></div>
+      <div id="tabs" class="auth-tabs" role="tablist" hidden>
+        <button type="button" role="tab" id="tab-in" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="tab-up" aria-selected="false">Criar conta</button>
+      </div>
+      <div id="err" class="error-box" role="alert" hidden></div>
+
+      <form id="form" novalidate>
+        <div class="field" id="f-nome"><label for="nome">Seu nome</label><input id="nome" type="text" autocomplete="name" placeholder="Como você quer ser chamado"></div>
+        <div class="field" id="f-email"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com"></div>
+        <div class="field" id="f-senha"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" placeholder="Mínimo de 6 caracteres"></div>
+        <button class="btn btn-indigo" id="submit" type="submit">Entrar</button>
+      </form>
+
+      <div class="divider">ou</div>
+      <button class="btn btn-google" id="google" type="button"></button>
+      <button class="btn btn-ink" id="guest" type="button"></button>
+      <p class="terms">Ao continuar, você aceita os termos de uso</p>
+    </div>
+  </main>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

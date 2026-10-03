@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Dados privados: cada pessoa lê e grava somente o próprio documento
+    match /usuarios/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Ranking: só dados PÚBLICOS (nome abreviado, avatar, XP, acertos, ofensiva).
+    // Qualquer pessoa logada (inclusive convidado) lê; cada pessoa grava só o próprio.
+    match /ranking/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 40
+        && request.resource.data.xpTotal is number && request.resource.data.xpTotal >= 0 && request.resource.data.xpTotal <= 1000000
+        && request.resource.data.nivel is number && request.resource.data.nivel >= 1 && request.resource.data.nivel <= 1000
+        && request.resource.data.acertos is number && request.resource.data.total is number
+        && request.resource.data.acertos >= 0 && request.resource.data.acertos <= request.resource.data.total
+        && request.resource.data.recorde is number && request.resource.data.recorde >= 0 && request.resource.data.recorde <= 100000
+        && request.resource.data.streak is number && request.resource.data.streak >= 0;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

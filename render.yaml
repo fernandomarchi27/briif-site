@@ -1,0 +1,14 @@
+# Blueprint opcional do Render. Se preferir, crie o Static Site pelo painel
+# (veja o README) e ignore este arquivo.
+services:
+  - type: web
+    name: briif
+    runtime: static
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=3600
