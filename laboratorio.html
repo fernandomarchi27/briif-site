@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratório — Briiff</title>
+  <meta name="description" content="Calculadoras do Briiff que mostram a conta passo a passo: equação do 1º grau, Bhaskara, Pitágoras e estatística.">
+  <meta name="theme-color" content="#FBFAF7">
+  <script src="assets/js/tema.js"></script>
+  <script src="assets/js/som.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/suave.css">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+  <main>
+    <div class="wrap">
+      <div class="page-top" style="padding-top:48px">
+        <div class="section-head" style="margin-bottom:28px">
+          <h1 style="font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-0.04em;margin-bottom:12px">Laboratório</h1>
+          <p style="font-size:1.15rem;color:var(--muted)">Digite os números e veja a conta feita passo a passo. Serve para conferir o seu exercício e entender onde cada resultado vem.</p>
+        </div>
+      </div>
+
+      <div class="lab-grid">
+        <!-- 1º grau -->
+        <section class="tool" id="t1" aria-labelledby="t1h">
+          <h2 id="t1h">Equação do 1º grau</h2>
+          <p>Resolve ax + b = cx + d.</p>
+          <div class="formula-line">
+            <input id="e-a" type="text" inputmode="decimal" value="5" aria-label="a"> x +
+            <input id="e-b" type="text" inputmode="decimal" value="2" aria-label="b"> =
+            <input id="e-c" type="text" inputmode="decimal" value="2" aria-label="c"> x +
+            <input id="e-d" type="text" inputmode="decimal" value="14" aria-label="d">
+          </div>
+          <p class="hint">Para uma equação sem x do lado direito, deixe c = 0.</p>
+          <button class="btn btn-coral btn-sm go" id="e-go" type="button">Resolver</button>
+          <div class="solution" id="e-out" aria-live="polite"></div>
+        </section>
+
+        <!-- Bhaskara -->
+        <section class="tool" id="t2" aria-labelledby="t2h">
+          <h2 id="t2h">Equação do 2º grau (Bhaskara)</h2>
+          <p>Resolve ax² + bx + c = 0 e acha o vértice.</p>
+          <div class="formula-line">
+            <input id="b-a" type="text" inputmode="decimal" value="1" aria-label="a"> x² +
+            <input id="b-b" type="text" inputmode="decimal" value="-7" aria-label="b"> x +
+            <input id="b-c" type="text" inputmode="decimal" value="10" aria-label="c"> = 0
+          </div>
+          <button class="btn btn-coral btn-sm go" id="b-go" type="button">Resolver</button>
+          <div class="solution" id="b-out" aria-live="polite"></div>
+        </section>
+
+        <!-- Pitágoras -->
+        <section class="tool" id="t3" aria-labelledby="t3h">
+          <h2 id="t3h">Teorema de Pitágoras</h2>
+          <p>Em um triângulo retângulo: a² = b² + c², com a = hipotenusa.</p>
+          <div class="formula-line">
+            <label for="p-modo" class="sr-only">O que você quer achar</label>
+            <select id="p-modo">
+              <option value="hip">Achar a hipotenusa</option>
+              <option value="cat">Achar um cateto</option>
+            </select>
+          </div>
+          <div class="formula-line">
+            <span id="p-l1">Cateto b</span> <input id="p-x" type="text" inputmode="decimal" value="6" aria-label="primeiro valor">
+            <span id="p-l2">Cateto c</span> <input id="p-y" type="text" inputmode="decimal" value="8" aria-label="segundo valor">
+          </div>
+          <button class="btn btn-coral btn-sm go" id="p-go" type="button">Calcular</button>
+          <div class="solution" id="p-out" aria-live="polite"></div>
+        </section>
+
+        <!-- Estatística -->
+        <section class="tool" id="t4" aria-labelledby="t4h">
+          <h2 id="t4h">Estatística</h2>
+          <p>Média, moda, mediana e desvio padrão de uma lista de valores.</p>
+          <div style="margin:14px 0 4px">
+            <label for="s-lista" class="sr-only">Valores</label>
+            <input id="s-lista" class="wide" type="text" value="2 4 4 4 5 5 7 9" placeholder="Ex.: 6 7 7 8 10">
+          </div>
+          <p class="hint">Separe os valores por espaço ou ponto e vírgula. Use vírgula nos decimais (7,5).</p>
+          <button class="btn btn-coral btn-sm go" id="s-go" type="button">Calcular</button>
+          <div class="solution" id="s-out" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/lab.js"></script>
+</body>
+</html>

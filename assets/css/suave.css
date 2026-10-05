@@ -1,0 +1,145 @@
+/* ==========================================================================
+   Briiff — visual "suave" (camada por cima do style.css)
+   Um site de tecnologia moderno, mas mais acolhedor: tons quentes, cantos mais
+   redondos, sombras suaves, títulos em Fraunces e texto em Nunito.
+   Não vale para o modo pixel art.
+
+   Para VOLTAR ao visual anterior: apague a linha
+     <link rel="stylesheet" href="assets/css/suave.css">
+   dos arquivos .html (o pacote anterior é o briiff-site-v20.zip).
+   ========================================================================== */
+
+@font-face { font-family: "Fraunces"; src: url("../fonts/fraunces.woff") format("woff"); font-weight: 400 800; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("../fonts/nunito.woff") format("woff"); font-weight: 200 1000; font-display: swap; }
+
+:root:not([data-pixel]) {
+  --paper: #FAF6EF;
+  --white: #FFFFFF;
+  --ink: #221D31;
+  --muted: #655F73;
+  --faint: #978FA6;
+  --indigo: #5644D3;
+  --green: #17876A;
+  --gold: #B27C00;
+  --line: #EDE6DA;
+  --line-strong: #DAD1C3;
+  --grid: transparent;
+  --header-bg: rgba(250, 246, 239, .86);
+  --tab-bg: #F2ECE2;
+  --locked-bg: #E6DFD3; --locked-fg: #A39A8A; --locked-shadow: #CFC6B7;
+  --cta-bg: #2A2340; --cta-fg: #FAF6EF;
+
+  --sans: "Nunito", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans-normal: "Nunito", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+  --r-sm: 12px; --r-md: 16px; --r-lg: 22px;
+  --soft: 0 1px 2px rgba(34, 29, 49, .05), 0 12px 28px -14px rgba(34, 29, 49, .16);
+}
+:root:not([data-pixel])[data-tema="noturno"] {
+  --paper: #15131C;
+  --white: #1F1C29;
+  --ink: #F3EFE8;
+  --muted: #B9B2C7;
+  --faint: #857E96;
+  --indigo: #9C8DFF;
+  --on-indigo: #14121B;
+  --line: #2B2837;
+  --line-strong: #3D3950;
+  --header-bg: rgba(21, 19, 28, .88);
+  --tab-bg: #24212F;
+  --locked-bg: #2C2938; --locked-fg: #6F6A80; --locked-shadow: #1B1925;
+  --cta-bg: #231F33; --cta-fg: #F3EFE8;
+  --soft: 0 1px 2px rgba(0, 0, 0, .3), 0 14px 30px -14px rgba(0, 0, 0, .55);
+}
+
+/* ---------- Fundo: sem papel quadriculado, só luzes suaves ---------- */
+:root:not([data-pixel]) body {
+  font-size: 17px; line-height: 1.6; font-weight: 500;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(800px 460px at 6% -8%, color-mix(in srgb, var(--indigo) 6%, transparent), transparent 70%),
+    radial-gradient(700px 440px at 98% 0%, rgba(255, 190, 80, .10), transparent 70%);
+  background-attachment: fixed;
+}
+:root:not([data-pixel])[data-tema="noturno"] body {
+  background-image:
+    radial-gradient(900px 520px at 8% -6%, color-mix(in srgb, var(--indigo) 14%, transparent), transparent 70%),
+    radial-gradient(760px 480px at 96% 2%, rgba(255, 190, 80, .05), transparent 70%);
+}
+
+/* ---------- Tipografia ---------- */
+:root:not([data-pixel]) h1, :root:not([data-pixel]) h2, :root:not([data-pixel]) h3, :root:not([data-pixel]) h4 { font-family: var(--serif); font-weight: 650; letter-spacing: -0.015em; line-height: 1.15; }
+:root:not([data-pixel]) .hero h1 { letter-spacing: -0.025em; font-weight: 650; line-height: 1.06; }
+:root:not([data-pixel]) .hero h1 em { font-style: italic; background: linear-gradient(transparent 66%, rgba(255, 196, 80, .45) 66%); }
+:root:not([data-pixel]) .section-head h2, :root:not([data-pixel]) .about h2, :root:not([data-pixel]) .cta h2, :root:not([data-pixel]) .lesson h1, :root:not([data-pixel]) .result h1 { letter-spacing: -0.02em; }
+:root:not([data-pixel]) .pstat b, :root:not([data-pixel]) .reward b, :root:not([data-pixel]) .wallet-item b, :root:not([data-pixel]) .rk-meu b, :root:not([data-pixel]) .rk-val, :root:not([data-pixel]) .rk-pv, :root:not([data-pixel]) .shop-preco b, :root:not([data-pixel]) .result .badge-big { font-weight: 650; }
+
+/* ---------- Logo nova: selo com π + nome em minúsculas ---------- */
+:root:not([data-pixel]) .wordmark { align-items: center; gap: 0; }
+:root:not([data-pixel]) .wordmark .root { display: block; width: 1.5em; height: 1.5em; margin: 0 .42em 0 0; font-size: 1em; line-height: 0; flex: none; filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--indigo) 35%, transparent)); }
+:root:not([data-pixel]) .wordmark .root svg { display: block; width: 100%; height: 100%; }
+:root:not([data-pixel]) .wordmark .name { font-family: var(--serif); font-weight: 700; font-size: 1.12em; letter-spacing: -0.03em; text-transform: lowercase; border-bottom: 0; padding-bottom: 0; }
+:root:not([data-pixel]) .wordmark.lg { font-size: 40px; }
+
+/* ---------- Cabeçalho ---------- */
+:root:not([data-pixel]) .site-header { border-bottom: 1px solid var(--line); box-shadow: 0 8px 24px -20px rgba(34, 29, 49, .35); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
+:root:not([data-pixel]) .nav a { font-weight: 700; font-size: 15px; border-radius: 999px; padding: 8px 15px; }
+:root:not([data-pixel]) .nav a[aria-current="page"] { background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); }
+:root:not([data-pixel]) .chip { font-weight: 800; }
+:root:not([data-pixel]) .theme-btn { border-color: var(--line-strong); box-shadow: 0 1px 2px rgba(34, 29, 49, .06); }
+:root:not([data-pixel]) .user-btn { box-shadow: 0 1px 2px rgba(34, 29, 49, .06); font-weight: 700; }
+:root:not([data-pixel]) .avatar { font-weight: 800; }
+
+/* ---------- Botões: macios, com brilho leve ---------- */
+:root:not([data-pixel]) .btn { font-weight: 800; border-radius: var(--r-md); letter-spacing: .005em; }
+:root:not([data-pixel]) .btn-sm { border-radius: 14px; }
+:root:not([data-pixel]) .btn-coral, :root:not([data-pixel]) .btn-indigo {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--coral) 88%, #fff), var(--coral));
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--coral) 75%, transparent), inset 0 1px 0 rgba(255, 255, 255, .28);
+}
+:root:not([data-pixel]) .btn-coral:hover, :root:not([data-pixel]) .btn-indigo:hover { background: linear-gradient(180deg, color-mix(in srgb, var(--coral) 80%, #fff), var(--coral-hover)); transform: translateY(-1px); }
+:root:not([data-pixel]) .btn-coral:active, :root:not([data-pixel]) .btn-indigo:active { transform: translateY(1px); box-shadow: 0 3px 8px -4px color-mix(in srgb, var(--coral) 75%, transparent); }
+:root:not([data-pixel]) .btn-ink { border-color: var(--line-strong); border-width: 1.5px; background: var(--white); box-shadow: 0 1px 2px rgba(34, 29, 49, .06); }
+:root:not([data-pixel]) .btn-ink:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* ---------- Cartões: bordas leves e sombra suave ---------- */
+:root:not([data-pixel]) :is(.block, .rasc, .tool, .panel, .q-card, .eq-card, .member, .example, .reward, .tip, .wallet-item, .shop-destaque, .shop-card, .rk-row, .rk-meu, .track-card, .shop-hero, .loja-config-painel) {
+  border-color: var(--line); border-radius: var(--r-lg); box-shadow: var(--soft);
+}
+:root:not([data-pixel]) .track-card { border-top-width: 1px; position: relative; overflow: hidden; }
+:root:not([data-pixel]) .track-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--c); }
+:root:not([data-pixel]) .track-card:hover { box-shadow: 0 22px 36px -20px color-mix(in srgb, var(--c) 65%, transparent); }
+:root:not([data-pixel]) .q-card, :root:not([data-pixel]) .eq-card { border-radius: 26px; }
+:root:not([data-pixel]) .block.idea { border-left-width: 6px; }
+:root:not([data-pixel]) .cta { border-radius: 30px; background: linear-gradient(135deg, color-mix(in srgb, var(--cta-bg) 80%, var(--indigo)), var(--cta-bg)); }
+:root:not([data-pixel]) .user-pop, :root:not([data-pixel]) .cores-pop { border-radius: var(--r-lg); }
+
+/* ---------- Respostas, abas, etiquetas ---------- */
+:root:not([data-pixel]) .opt { border-width: 1.5px; border-radius: var(--r-md); font-weight: 700; box-shadow: 0 1px 2px rgba(34, 29, 49, .04); }
+:root:not([data-pixel]) .opt:hover:not([disabled]) { transform: translateY(-1px); box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--indigo) 60%, transparent); }
+:root:not([data-pixel]) .steps-nav button, :root:not([data-pixel]) .pill { border-radius: 999px; font-weight: 800; }
+:root:not([data-pixel]) .badge, :root:not([data-pixel]) .mat-tag, :root:not([data-pixel]) .tag { border-radius: 999px; font-weight: 800; }
+:root:not([data-pixel]) .feedback { border-radius: var(--r-md); }
+
+/* ---------- Barras de progresso ---------- */
+:root:not([data-pixel]) .bar { height: 12px; border-radius: 999px; background: var(--tab-bg); }
+:root:not([data-pixel]) .bar > i { border-radius: 999px; background-image: linear-gradient(180deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, 0) 60%); }
+:root:not([data-pixel]) .quiz-top .bar { height: 14px; }
+
+/* ---------- Detalhes ---------- */
+:root:not([data-pixel]) .section-head h2::after, :root:not([data-pixel]) .shop-hero h1::after, :root:not([data-pixel]) .rk-top h1::after {
+  content: ""; display: block; width: 56px; height: 5px; margin-top: 14px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--indigo), #FFC857);
+}
+:root:not([data-pixel]) .shop-selo { border-radius: 999px; }
+:root:not([data-pixel]) .about .big strong { box-shadow: inset 0 -0.4em 0 rgba(255, 196, 80, .38); }
+:root:not([data-pixel]) .tool input, :root:not([data-pixel]) .tool select, :root:not([data-pixel]) .field input, :root:not([data-pixel]) .loja-codigo-linha input { border-radius: var(--r-sm); background: var(--white); }
+:root:not([data-pixel]) ::selection { background: color-mix(in srgb, var(--indigo) 28%, transparent); }
+:root:not([data-pixel]) .result .badge-big { box-shadow: 0 10px 0 color-mix(in srgb, var(--c, var(--indigo)) 55%, #000), 0 22px 30px -16px color-mix(in srgb, var(--c, var(--indigo)) 70%, transparent); }
+:root:not([data-pixel]) .site-footer { background: var(--white); border-top-color: var(--line); }
+:root:not([data-pixel]) .hero h1 { font-size: clamp(2.2rem, 4.8vw, 3.8rem); }
+
+/* botão "ink" dentro da faixa escura (CTA): fundo transparente, senão o texto claro some no branco */
+:root:not([data-pixel]) .cta .btn-ink { background: transparent; box-shadow: none; color: var(--cta-fg); border-color: color-mix(in srgb, var(--cta-fg) 70%, transparent); }
+:root:not([data-pixel]) .cta .btn-ink:hover { background: var(--cta-fg); color: var(--cta-bg); border-color: var(--cta-fg); }

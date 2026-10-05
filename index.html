@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Briiff — Matemática, um exercício por dia, muda rotinas</title>
+  <meta name="description" content="Briiff é um aplicativo de matemática para o ensino médio e o ENEM: álgebra, geometria, funções e estatística com passo a passo, exercícios e explicação de cada erro.">
+  <meta name="theme-color" content="#FBFAF7">
+  <script src="assets/js/tema.js"></script>
+  <script src="assets/js/som.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/suave.css">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="wrap">
+        <div>
+          <a class="wordmark lg" href="index.html" aria-label="Briiff"><span class="root" aria-hidden="true"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bm2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7A68F0"/><stop offset="1" stop-color="#4635BC"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#bm2)"/><path d="M10 14.500h20M16 15v11.500c0 2.800-.9 4.300-2.900 5.200M25 15v11c0 3 1.300 4.700 3.800 4.700" fill="none" stroke="#fff" stroke-width="3.600" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="8.500" r="3" fill="#FFC857"/></svg></span><span class="name">Briiff</span></a>
+          <h1>Matemática, um exercício por dia, muda rotinas.</h1>
+          <p class="lead">O aplicativo de matemática feito por estudantes, para quem está no ensino médio e vai encarar o ENEM. Explicação simples, passo a passo e exercícios que mostram onde você errou.</p>
+          <div class="hero-actions">
+            <a class="btn btn-coral" href="trilhas.html">Começar a estudar</a>
+            <a class="btn btn-ink" href="#sobre">O que é o Briiff</a>
+          </div>
+          <small>Bora resolver essa equação? Tente a do lado.</small>
+        </div>
+
+        <!-- Exercício interativo: a essência do app, direto na home -->
+        <div class="eq-card" id="eq-card" aria-live="polite">
+          <span class="tag">Exercício rápido · Álgebra</span>
+          <p class="prompt">Resolva para x:</p>
+          <div class="eq-history" id="eq-history"></div>
+          <div class="eq-display" id="eq-display">2x + 6 = 14</div>
+          <div id="eq-step"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="section tint" id="sobre">
+      <div class="wrap about">
+        <div class="sticky">
+          <h2>O que é o Briiff</h2>
+        </div>
+        <div>
+          <div class="big">
+            <p>Somos <strong>quatro estudantes</strong> desenvolvendo um aplicativo de matemática para que o <strong>ensino médio</strong> e o <strong>ENEM</strong> fiquem mais fáceis de encarar.</p>
+            <p>O Briiff nasceu de uma sensação que a gente conhece bem: abrir o caderno, olhar para uma equação e não saber por onde começar. A matemática raramente é difícil por acaso. Ela costuma ser explicada rápido demais, sem passo a passo, e cobrada sem que ninguém mostre onde você errou.</p>
+            <div class="pull">Um exercício por dia muda a rotina. E a rotina muda a nota.</div>
+            <p>Por isso, no Briiff cada assunto começa com uma explicação em linguagem simples, segue com exemplos resolvidos linha por linha e só então chega nos exercícios. Se você errar, a explicação da resposta aparece na hora, com o caminho certo até o resultado.</p>
+            <p>Organizamos o conteúdo em trilhas, como um mapa: você avança de fase em fase, ganha XP, junta moedas e mantém uma ofensiva de dias seguidos estudando. Sem pressão e sem punição: se um dia passar em branco, é só recomeçar.</p>
+          </div>
+          <p class="small">O Briiff é um projeto de TCC e ainda está em construção. Este site é a versão web do aplicativo, com as mesmas trilhas e o mesmo jeito de estudar, para você aprender também pelo computador.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRILHAS -->
+    <section class="section" id="trilhas-home">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Cinco trilhas, do básico ao que cai na prova</h2>
+          <p>Cada trilha é uma matéria dividida em fases. Comece pela que você mais precisa.</p>
+        </div>
+        <div class="tracks" id="tracks"></div>
+        <div class="stats" id="stats" style="margin-top:44px"></div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="section tint" id="como">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Como cada fase ensina</h2>
+          <p>Todas as fases seguem o mesmo caminho, para você saber sempre o que vem a seguir.</p>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="node">1</div>
+            <h3>Aprenda</h3>
+            <p>Uma explicação curta, o método em passos e exemplos resolvidos que você abre um passo de cada vez.</p>
+          </div>
+          <div class="flow-step">
+            <div class="node">2</div>
+            <h3>Pratique</h3>
+            <p>Três exercícios de múltipla escolha, no estilo do ENEM, sobre o que você acabou de ver.</p>
+          </div>
+          <div class="flow-step">
+            <div class="node">3</div>
+            <h3>Entenda o erro</h3>
+            <p>Errou? A resolução aparece na hora, com a conta feita. Acertou? Ela aparece também, para você conferir o seu caminho.</p>
+          </div>
+          <div class="flow-step">
+            <div class="node">4</div>
+            <h3>Avance</h3>
+            <p>Concluir a fase rende XP e moedas, aumenta sua ofensiva e libera a próxima fase da trilha.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EQUIPE -->
+    <section class="section" id="equipe">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Quem faz o Briiff</h2>
+          <p>Quatro estudantes, um objetivo: fazer matemática parecer possível.</p>
+        </div>
+        <div class="team">
+          <div class="member"><div class="avatar" aria-hidden="true">A</div><h3>Nome do integrante 1</h3><p>Função no projeto</p></div>
+          <div class="member"><div class="avatar" aria-hidden="true">B</div><h3>Nome do integrante 2</h3><p>Função no projeto</p></div>
+          <div class="member"><div class="avatar" aria-hidden="true">C</div><h3>Nome do integrante 3</h3><p>Função no projeto</p></div>
+          <div class="member"><div class="avatar" aria-hidden="true">D</div><h3>Nome do integrante 4</h3><p>Função no projeto</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="wrap" style="margin-top:8px">
+      <div class="cta" id="cta">
+        <h2>Bora resolver essa equação?</h2>
+        <p>Crie sua conta para guardar seu progresso ou entre como convidado e comece agora mesmo. Leva menos de um minuto.</p>
+        <div class="hero-actions">
+          <a class="btn btn-coral" href="login.html">Entrar ou criar conta</a>
+          <a class="btn btn-ink" href="laboratorio.html">Testar o laboratório</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>
