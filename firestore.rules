@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() { return request.auth != null; }
+    function dono(uid) { return logado() && request.auth.uid == uid; }
+
+    // Dados privados: cada pessoa lê e grava somente o próprio documento.
+    // (v25) limites de tamanho/forma para evitar lixo ou abuso de armazenamento.
+    match /usuarios/{uid} {
+      allow read, delete: if dono(uid);
+      allow create, update: if dono(uid)
+        && request.resource.data.get('nome', '') is string
+        && request.resource.data.get('nome', '').size() <= 120
+        && request.resource.data.get('progresso', {}) is map;
+    }
+
+    // Ranking: só dados PÚBLICOS (nome abreviado, avatar, XP, acertos, ofensiva).
+    // Qualquer pessoa logada lê; cada pessoa grava só o próprio documento.
+    match /ranking/{uid} {
+      allow read: if logado();
+      allow create, update: if dono(uid)
+        && request.resource.data.keys().hasOnly(['nome', 'avatarId', 'nivel', 'xpTotal', 'acertos', 'total', 'recorde', 'streak', 'atualizadoEm'])
+        && request.resource.data.nome is string && request.resource.data.nome.size() >= 1 && request.resource.data.nome.size() <= 40
+        && (request.resource.data.avatarId == null || (request.resource.data.avatarId is string && request.resource.data.avatarId.size() <= 40))
+        && request.resource.data.xpTotal is number && request.resource.data.xpTotal >= 0 && request.resource.data.xpTotal <= 1000000
+        && request.resource.data.nivel is number && request.resource.data.nivel >= 1 && request.resource.data.nivel <= 1000
+        && request.resource.data.acertos is number && request.resource.data.total is number
+        && request.resource.data.acertos >= 0 && request.resource.data.acertos <= request.resource.data.total
+        && request.resource.data.recorde is number && request.resource.data.recorde >= 0 && request.resource.data.recorde <= 100000
+        && request.resource.data.streak is number && request.resource.data.streak >= 0 && request.resource.data.streak <= 100000
+        && request.resource.data.atualizadoEm == request.time;
+      allow delete: if dono(uid);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
