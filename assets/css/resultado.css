@@ -1,0 +1,61 @@
+/* Tela de fim de fase: Mago Roxo feliz + XP, combo e tempo */
+.rs { position: relative; text-align: center; padding: 8px 0 16px; overflow: hidden; }
+.rs h1 { color: var(--c, var(--indigo)); margin-bottom: 8px; }
+.rs .sub { color: var(--ink); font-weight: 600; margin-bottom: 4px; }
+
+.rs-mago { position: relative; width: min(250px, 66vw); margin: 0 auto 10px; }
+.rs-mago::before {
+  content: ""; position: absolute; inset: -14%; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c, var(--indigo)) 42%, transparent), transparent);
+  animation: rs-brilho 2.4s ease-in-out infinite;
+}
+.rs-mago img { position: relative; display: block; width: 100%; height: auto; animation: rs-flutua 2.4s ease-in-out infinite; filter: drop-shadow(0 14px 16px rgba(30, 20, 80, .25)); }
+
+.rs-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 540px; margin: 26px auto 18px; }
+.rs-card { background: var(--k); border-radius: 20px; box-shadow: 0 4px 0 color-mix(in srgb, var(--k) 68%, #000); overflow: hidden; }
+.rs-card small { display: block; padding: 8px 4px 6px; color: var(--kt); font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.rs-card .rs-v {
+  margin: 0 3px 3px; border-radius: 17px; background: var(--white); color: var(--kv);
+  display: flex; align-items: center; justify-content: center; gap: 6px; padding: 18px 4px;
+  font-size: clamp(1.2rem, 5vw, 1.75rem); font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.rs-card .rs-v svg { width: 1.15em; height: 1.15em; flex: none; }
+:root[data-tema="noturno"] .rs-card .rs-v { color: var(--k); }
+:root[data-tema="noturno"] .rs .sub { color: var(--ink); }
+
+.rs-extras { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 auto 22px; max-width: 560px; }
+.rs-pilula { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 99px; background: var(--white); border: 1.5px solid var(--line); font-weight: 800; }
+.rs-pilula img { width: 20px; height: 20px; }
+.rs-pilula.nivel { color: var(--coral); }
+.rs-nota { width: 100%; color: var(--muted); font-size: 14px; font-weight: 600; }
+.rs .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+/* confete */
+.rs-confete { position: absolute; left: 50%; top: 170px; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.rs-confete i { position: absolute; left: 0; top: 0; width: var(--w); height: calc(var(--w) * .55); background: var(--cc); border-radius: var(--rd, 2px); opacity: 0; animation: rs-voa 2.3s cubic-bezier(.12, .7, .3, 1) forwards; animation-delay: var(--d); }
+
+/* entrada em etapas (só depois que a comemoração da ofensiva fecha) */
+.rs-pre .rs-mago, .rs-pre h1, .rs-pre .sub, .rs-pre .rs-card, .rs-pre .rs-extras, .rs-pre .actions { opacity: 0; }
+.rs:not(.rs-pre) .rs-mago { animation: rs-mago-in .8s cubic-bezier(.2, 1.5, .4, 1) both; }
+.rs:not(.rs-pre) h1 { animation: rs-sobe .5s .25s both; }
+.rs:not(.rs-pre) .sub { animation: rs-sobe .5s .4s both; }
+.rs:not(.rs-pre) .rs-card { animation: rs-pop .65s cubic-bezier(.2, 1.6, .4, 1) both; animation-delay: calc(.55s + var(--i) * .16s); }
+.rs:not(.rs-pre) .rs-extras { animation: rs-sobe .5s 1.5s both; }
+.rs:not(.rs-pre) .actions { animation: rs-sobe .5s 1.7s both; }
+
+@keyframes rs-flutua { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes rs-brilho { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.08); opacity: 1; } }
+@keyframes rs-mago-in { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: scale(1); } }
+@keyframes rs-sobe { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes rs-pop { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+@keyframes rs-voa {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--rot)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs *, .rs *::before { animation: none !important; }
+  .rs-pre .rs-mago, .rs-pre h1, .rs-pre .sub, .rs-pre .rs-card, .rs-pre .rs-extras, .rs-pre .actions { opacity: 1; }
+  .rs-confete { display: none; }
+}

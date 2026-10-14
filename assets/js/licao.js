@@ -33,6 +33,9 @@
 
   let view = 'aprender';     // aprender | praticar | resultado
   let q = 0, acertos = 0, respondida = null, resumo = null, finalizada = false;
+  // combo = maior sequência de acertos seguidos; tempo = do início da prática até o fim
+  let combo = 0, melhorCombo = 0, inicioMs = Date.now(), duracaoMs = 0, animarPendente = false;
+  function reiniciarPratica() { q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); }
 
   const DIFF = { facil: 'Fácil', media: 'Média', dificil: 'Difícil' };
 
@@ -51,7 +54,7 @@
   function ligarNav() {
     $$('.steps-nav button').forEach((b) => b.addEventListener('click', () => {
       if (b.disabled) return;
-      if (b.dataset.v === 'praticar' && view !== 'praticar') { q = 0; acertos = 0; respondida = null; finalizada = false; }
+      if (b.dataset.v === 'praticar' && view !== 'praticar') { reiniciarPratica(); }
       view = b.dataset.v; render();
     }));
   }
@@ -114,7 +117,7 @@
       btn.addEventListener('click', mostrar);
       all.addEventListener('click', () => { while (btn.isConnected) mostrar(); });
     });
-    $('#go-praticar').addEventListener('click', () => { view = 'praticar'; q = 0; acertos = 0; respondida = null; finalizada = false; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    $('#go-praticar').addEventListener('click', () => { view = 'praticar'; reiniciarPratica(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   }
 
   /* ---------- 2. Praticar ---------- */
@@ -159,7 +162,7 @@
     const responder = (k) => {
       if (respondida !== null) return;
       respondida = k;
-      if (respondida === ex.correta) acertos++;
+      if (respondida === ex.correta) { acertos++; combo++; if (combo > melhorCombo) melhorCombo = combo; } else { combo = 0; }
       som(respondida === ex.correta ? 'acerto' : 'erro');
       render();
       const f = $('.feedback'); if (f) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -187,6 +190,8 @@
       resumo = B.progresso.completarFase(fase.id, trilha.id, fase.xp, acertos, fase.exercicios.length);
       resumo.acertos = acertos;
       finalizada = true;
+      duracaoMs = Date.now() - inicioMs;
+      animarPendente = true;
       B.atualizarHeader();
       // primeira fase do dia: a ofensiva ganha uma tela cheia de comemoração antes do resultado
       if (resumo.streakAumentou && window.BriifCelebracao) {
@@ -206,44 +211,106 @@
   /** Sons da tela de resultado: fanfarra da fase (maior se gabaritou), moedas e nível. */
   function sonsDoResultado() {
     if (!resumo) return;
+    animarResultado();
     som(resumo.acertos === fase.exercicios.length ? 'perfeito' : 'concluir');
     if (resumo.moedas) setTimeout(() => som('moeda'), 900);
     if (resumo.subiu) setTimeout(() => som('nivel'), 1500);
   }
 
   /* ---------- 3. Resultado ---------- */
+  const SVG_RAIO = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2 4.5 13.5H11L9.8 22l9.7-12H13z"/></svg>';
+  const SVG_ALVO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>';
+  const SVG_TEMPO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4.2l2.6 1.6M9.5 2.5h5"/></svg>';
+
+  function fmtStat(tipo, n) {
+    n = Math.round(n);
+    if (tipo === 'x') return 'x' + n;
+    if (tipo === 'tempo') return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
+    return String(n);
+  }
+
   function resultado() {
     const total = fase.exercicios.length;
     const perfeito = resumo.acertos === total;
     const prox = B.proximaFase(ti, fi);
+    const titulo = perfeito ? 'Perfeito!' : (melhorCombo >= 5 ? 'Olha só esse combo!' : 'Fase concluída!');
+    const seg = Math.round(duracaoMs / 1000);
+    const pre = animarPendente;
+    const stats = [
+      { rot: 'Total de XP', ico: SVG_RAIO, n: resumo.xp, tipo: 'int', k: '#FFC800', kt: '#4A3600', kv: '#9A6B00' },
+      { rot: 'Combo', ico: SVG_ALVO, n: melhorCombo, tipo: 'x', k: '#1CB0F6', kt: '#FFFFFF', kv: '#0A7FB8' },
+      { rot: 'Tempo', ico: SVG_TEMPO, n: seg, tipo: 'tempo', k: '#14B8A6', kt: '#FFFFFF', kv: '#0F766E' }
+    ];
     return `
-      ${topo()}
-      <div class="result">
-        <div class="badge-big">${resumo.acertos}/${total}</div>
-        <h1>${perfeito ? 'Perfeito!' : 'Fase concluída!'}</h1>
-        <p class="sub">Você acertou ${resumo.acertos} de ${total} em “${esc(fase.titulo)}”.${resumo.primeiraVez ? '' : ' Como você já tinha concluído essa fase, foi uma revisão sem XP extra.'}</p>
-        ${resumo.subiu ? `<div class="levelup">Você subiu para o nível ${resumo.nivelAntes + 1}! +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios de ofensiva' : 'bloqueio de ofensiva'}</div>` : ''}
-        <div class="rewards">
-          <div class="reward"><b>+${resumo.xp}</b><span>XP</span></div>
-          <div class="reward"><b>+${resumo.moedas}</b><span>MathCoins</span></div>
-          <div class="reward ${resumo.streakAumentou ? 'fogo' : ''}"><b>${resumo.streak}</b><span>${resumo.streak === 1 ? 'dia de ofensiva' : 'dias de ofensiva'}</span></div>
+      <div class="rs ${pre ? 'rs-pre' : ''}">
+        <div class="rs-confete" aria-hidden="true"></div>
+        <div class="rs-mago"><img src="assets/img/mago-feliz.svg" alt="Mago Roxo comemorando" width="250" height="292"></div>
+        <h1>${titulo}</h1>
+        <p class="sub">${perfeito ? `Você gabaritou “${esc(fase.titulo)}”: ${resumo.acertos} de ${total}!` : `Você acertou ${resumo.acertos} de ${total} em “${esc(fase.titulo)}”.`}</p>
+        <div class="rs-cards">
+          ${stats.map((s, i) => `
+            <div class="rs-card" style="--i:${i};--k:${s.k};--kt:${s.kt};--kv:${s.kv}">
+              <small>${s.rot}</small>
+              <div class="rs-v">${s.ico}<b data-count="${s.n}" data-fmt="${s.tipo}">${fmtStat(s.tipo, pre ? 0 : s.n)}</b></div>
+            </div>`).join('')}
+        </div>
+        <div class="rs-extras">
+          ${resumo.primeiraVez && resumo.moedas ? `<span class="rs-pilula"><img src="assets/img/moeda.svg" alt="">+${resumo.moedas}</span>` : ''}
+          ${resumo.streakAumentou ? `<span class="rs-pilula"><img src="assets/img/fogo.svg" alt="">Ofensiva de ${resumo.streak} ${resumo.streak === 1 ? 'dia' : 'dias'}</span>` : ''}
+          ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}! +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios' : 'bloqueio'}</span>` : ''}
+          ${resumo.primeiraVez ? '' : '<span class="rs-nota">Fase já concluída antes: XP e MathCoins só valem na primeira vez.</span>'}
         </div>
         <div class="actions">
           ${prox ? `<a class="btn btn-coral" href="licao.html?f=${encodeURIComponent(prox.fase.id)}">Próxima fase: ${esc(prox.fase.titulo)}</a>` : ''}
           <a class="btn btn-ink" href="trilhas.html?t=${encodeURIComponent(trilha.id)}">Voltar à trilha</a>
-          <button class="btn btn-ink" id="refazer" type="button">Refazer exercícios</button>
+          <button class="btn btn-ink" id="refazer" type="button">Praticar de novo</button>
         </div>
       </div>`;
   }
   function ligarResultado() {
-    $('#refazer').addEventListener('click', () => { view = 'praticar'; q = 0; acertos = 0; respondida = null; finalizada = false; render(); window.scrollTo({ top: 0 }); });
+    $('#refazer').addEventListener('click', () => { reiniciarPratica(); view = 'praticar'; render(); window.scrollTo({ top: 0 }); });
+  }
+
+  /** Dispara as animações da tela de resultado: números subindo e confete. */
+  function animarResultado() {
+    if (!animarPendente) return;
+    animarPendente = false;
+    const el = $('.rs');
+    if (!el) return;
+    el.classList.remove('rs-pre');
+    const reduzido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $$('[data-count]', el).forEach((b, i) => {
+      const alvo = Number(b.dataset.count), tipo = b.dataset.fmt;
+      if (reduzido) { b.textContent = fmtStat(tipo, alvo); return; }
+      const ini = performance.now() + 650 + i * 160, dur = 1000;
+      const passo = (agora) => {
+        const t = Math.min(1, Math.max(0, (agora - ini) / dur));
+        b.textContent = fmtStat(tipo, alvo * (1 - Math.pow(1 - t, 3)));
+        if (t < 1) requestAnimationFrame(passo);
+      };
+      requestAnimationFrame(passo);
+    });
+    if (!reduzido) confete($('.rs-confete', el), resumo.acertos === fase.exercicios.length ? 80 : 52);
+  }
+
+  function confete(host, n) {
+    if (!host) return;
+    const cores = [trilha.cor, '#FFD66B', '#FFFFFF', '#B9A8FF', '#FF9600'];
+    let html = '';
+    for (let i = 0; i < n; i++) {
+      const ang = -Math.PI * (0.05 + Math.random() * 0.9);
+      const dist = 180 + Math.random() * 330;
+      const x = Math.cos(ang) * dist, y = Math.sin(ang) * dist + 260;
+      html += `<i style="--w:${6 + Math.random() * 7}px;--cc:${cores[i % cores.length]};--x:${x.toFixed(0)}px;--y:${y.toFixed(0)}px;--rot:${Math.round((Math.random() - .5) * 1400)}deg;--d:${(Math.random() * .35).toFixed(2)}s;${Math.random() < .25 ? '--rd:50%;' : ''}"></i>`;
+    }
+    host.innerHTML = html;
   }
 
   /* ---------- render ---------- */
   function render() {
     if (view === 'aprender') { root.innerHTML = aprender(); ligarNav(); ligarAprender(); }
     else if (view === 'praticar') { root.innerHTML = praticar(); ligarNav(); ligarPraticar(); }
-    else { root.innerHTML = resultado(); ligarNav(); ligarResultado(); }
+    else { root.innerHTML = resultado(); ligarResultado(); }
   }
   render();
 })();
