@@ -35,7 +35,11 @@
   let q = 0, acertos = 0, respondida = null, resumo = null, finalizada = false;
   // combo = maior sequência de acertos seguidos; tempo = do início da prática até o fim
   let combo = 0, melhorCombo = 0, inicioMs = Date.now(), duracaoMs = 0, animarPendente = false;
-  function reiniciarPratica() { q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); }
+  // regra de aprovação: pelo menos 3 acertos (ou todos, se a fase tiver menos de 3 perguntas)
+  const MIN_ACERTOS = Math.min(3, fase.exercicios.length);
+  // erros da rodada (índices dos exercícios) e estado da revisão opcional
+  let quieto = false, erros = [], reprovado = false, rev = { i: 0, resp: null, certas: 0 }, revNota = null;
+  function reiniciarPratica() { q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); erros = []; reprovado = false; revNota = null; quieto = false; }
 
   const DIFF = { facil: 'Fácil', media: 'Média', dificil: 'Difícil' };
 
@@ -48,7 +52,7 @@
       <div class="steps-nav" role="tablist">
         <button role="tab" data-v="aprender" aria-selected="${view === 'aprender'}">1. Aprender</button>
         <button role="tab" data-v="praticar" aria-selected="${view === 'praticar'}">2. Praticar</button>
-        <button role="tab" data-v="resultado" aria-selected="${view === 'resultado'}" ${resumo ? '' : 'disabled'}>3. Resultado</button>
+        <button role="tab" data-v="resultado" aria-selected="${view === 'resultado'}" ${(finalizada || reprovado) ? '' : 'disabled'}>3. Resultado</button>
       </div>`;
   }
   function ligarNav() {
@@ -162,7 +166,7 @@
     const responder = (k) => {
       if (respondida !== null) return;
       respondida = k;
-      if (respondida === ex.correta) { acertos++; combo++; if (combo > melhorCombo) melhorCombo = combo; } else { combo = 0; }
+      if (respondida === ex.correta) { acertos++; combo++; if (combo > melhorCombo) melhorCombo = combo; } else { combo = 0; erros.push(q); }
       som(respondida === ex.correta ? 'acerto' : 'erro');
       render();
       const f = $('.feedback'); if (f) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -186,6 +190,17 @@
   }
 
   function finalizar() {
+    // menos de 3 acertos: a fase NÃO é concluída, não dá XP e não conta a ofensiva do dia
+    if (acertos < MIN_ACERTOS) {
+      reprovado = true;
+      finalizada = false;
+      duracaoMs = Date.now() - inicioMs;
+      animarPendente = true;
+      view = 'resultado'; render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      animarResultado();
+      som('derrota');
+      return;
+    }
     if (!finalizada) {
       resumo = B.progresso.completarFase(fase.id, trilha.id, fase.xp, acertos, fase.exercicios.length);
       resumo.acertos = acertos;
@@ -225,6 +240,7 @@
   function fmtStat(tipo, n) {
     n = Math.round(n);
     if (tipo === 'x') return 'x' + n;
+    if (tipo === 'acertos') return n + '/' + fase.exercicios.length;
     if (tipo === 'tempo') return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
     return String(n);
   }
@@ -242,7 +258,7 @@
       { rot: 'Tempo', ico: SVG_TEMPO, n: seg, tipo: 'tempo', k: '#14B8A6', kt: '#FFFFFF', kv: '#0F766E' }
     ];
     return `
-      <div class="rs ${pre ? 'rs-pre' : ''}">
+      <div class="rs ${pre ? 'rs-pre' : ''} ${quieto ? 'rs-quieto' : ''}">
         <div class="rs-confete" aria-hidden="true"></div>
         <div class="rs-mago"><img src="assets/img/mago-feliz.svg" alt="Mago Roxo comemorando" width="250" height="292"></div>
         <h1>${titulo}</h1>
@@ -259,16 +275,143 @@
           ${resumo.streakAumentou ? `<span class="rs-pilula"><img src="assets/img/fogo.svg" alt="">Ofensiva de ${resumo.streak} ${resumo.streak === 1 ? 'dia' : 'dias'}</span>` : ''}
           ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}! +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios' : 'bloqueio'}</span>` : ''}
           ${resumo.primeiraVez ? '' : '<span class="rs-nota">Fase já concluída antes: XP e MathCoins só valem na primeira vez.</span>'}
+          ${notaRevisao()}
         </div>
         <div class="actions">
           ${prox ? `<a class="btn btn-coral" href="licao.html?f=${encodeURIComponent(prox.fase.id)}">Próxima fase: ${esc(prox.fase.titulo)}</a>` : ''}
           <a class="btn btn-ink" href="trilhas.html?t=${encodeURIComponent(trilha.id)}">Voltar à trilha</a>
           <button class="btn btn-ink" id="refazer" type="button">Praticar de novo</button>
         </div>
+        ${botaoRevisao()}
       </div>`;
   }
   function ligarResultado() {
     $('#refazer').addEventListener('click', () => { reiniciarPratica(); view = 'praticar'; render(); window.scrollTo({ top: 0 }); });
+    ligarRevisaoBtn();
+    const rever = $('#rever');
+    if (rever) rever.addEventListener('click', () => { view = 'aprender'; render(); window.scrollTo({ top: 0 }); });
+  }
+
+  /* ---------- 3b. Não passou (menos de 3 acertos) ---------- */
+  function reprovadoTela() {
+    const total = fase.exercicios.length;
+    const seg = Math.round(duracaoMs / 1000);
+    const pre = animarPendente;
+    const falta = MIN_ACERTOS - acertos;
+    const titulo = falta === 1 ? 'Quase lá!' : 'Vamos tentar de novo!';
+    const stats = [
+      { rot: 'Acertos', ico: SVG_ALVO, n: acertos, tipo: 'acertos', k: '#FF4B4B', kt: '#FFFFFF', kv: '#C23030' },
+      { rot: 'Combo', ico: SVG_ALVO, n: melhorCombo, tipo: 'x', k: '#1CB0F6', kt: '#FFFFFF', kv: '#0A7FB8' },
+      { rot: 'Tempo', ico: SVG_TEMPO, n: seg, tipo: 'tempo', k: '#14B8A6', kt: '#FFFFFF', kv: '#0F766E' }
+    ];
+    return `
+      <div class="rs rs-falha ${pre ? 'rs-pre' : ''} ${quieto ? 'rs-quieto' : ''}">
+        <div class="rs-mago triste"><img src="assets/img/mago-triste.svg" alt="Mago Roxo desanimado" width="250" height="292"></div>
+        <h1>${titulo}</h1>
+        <p class="sub">Você acertou ${acertos} de ${total} em “${esc(fase.titulo)}”.</p>
+        <p class="rs-regra">Para concluir a fase e contar a ofensiva de hoje, é preciso acertar <b>pelo menos ${MIN_ACERTOS}</b>. ${falta === 1 ? 'Faltou só 1 acerto!' : `Faltaram ${falta} acertos.`}</p>
+        <div class="rs-cards">
+          ${stats.map((s, i) => `
+            <div class="rs-card" style="--i:${i};--k:${s.k};--kt:${s.kt};--kv:${s.kv}">
+              <small>${s.rot}</small>
+              <div class="rs-v">${s.ico}<b data-count="${s.n}" data-fmt="${s.tipo}">${fmtStat(s.tipo, pre ? 0 : s.n)}</b></div>
+            </div>`).join('')}
+        </div>
+        <div class="rs-extras">
+          <span class="rs-aviso"><img src="assets/img/fogo.svg" alt="" style="filter:grayscale(1)">A ofensiva de hoje só conta quando você passa na fase.</span>
+          ${notaRevisao()}
+        </div>
+        <div class="actions">
+          <button class="btn btn-coral" id="refazer" type="button">Tentar de novo</button>
+          <button class="btn btn-ink" id="rever" type="button">Rever a explicação</button>
+          <a class="btn btn-ink" href="trilhas.html?t=${encodeURIComponent(trilha.id)}">Voltar à trilha</a>
+        </div>
+        ${botaoRevisao()}
+      </div>`;
+  }
+
+  /* ---------- 4. Revisão dos erros (opcional) ---------- */
+  function botaoRevisao() {
+    if (!erros.length) return '';
+    const n = erros.length;
+    return `<div class="rv-oferta">
+      <button class="rv-btn" id="revisar" type="button">
+        <b>Revisar ${n === 1 ? 'o exercício que errei' : 'os ' + n + ' exercícios que errei'}</b>
+        <span>Opcional · refaça com uma explicação mais detalhada</span>
+      </button>
+    </div>`;
+  }
+  function notaRevisao() {
+    return revNota ? `<span class="rs-nota">Revisão feita: você acertou ${revNota.certas} de ${revNota.total} dos exercícios que tinha errado.</span>` : '';
+  }
+  function ligarRevisaoBtn() {
+    const b = $('#revisar');
+    if (b) b.addEventListener('click', () => { rev = { i: 0, resp: null, certas: 0 }; view = 'revisao'; render(); window.scrollTo({ top: 0 }); });
+  }
+  /** Texto com quebras de linha vira parágrafos; a linha "Cuidado:" ganha destaque. */
+  function detalheHtml(txt) {
+    return String(txt || '').split('\n').filter(Boolean).map((l) => /^Cuidado:/.test(l)
+      ? `<p class="rv-cuidado"><b>Cuidado</b>${esc(l.replace(/^Cuidado:\s*/, ''))}</p>`
+      : `<p>${esc(l)}</p>`).join('');
+  }
+  function revisao() {
+    const total = erros.length;
+    const ex = fase.exercicios[erros[rev.i]];
+    const letras = ['A', 'B', 'C', 'D', 'E'];
+    const pct = Math.round((rev.i / total) * 100);
+    let fb = '';
+    if (rev.resp !== null) {
+      const ok = rev.resp === ex.correta;
+      fb = `<div class="feedback ${ok ? 'ok' : 'no'}" role="status">
+          <b>${ok ? 'Agora sim!' : 'Ainda não. A resposta certa é ' + esc(ex.opcoes[ex.correta]) + '.'}</b>
+          <div class="rv-detalhe"><small>Explicação detalhada</small>${detalheHtml(ex.detalhe || ex.explicacao)}</div>
+          <details class="rv-metodo"><summary>Rever o método desta fase</summary>
+            <ol>${aula.passos.map((p) => `<li>${esc(p)}</li>`).join('')}</ol>
+            <p class="rv-cuidado"><b>Erro comum</b>${esc(aula.erro)}</p>
+          </details>
+        </div>
+        <div class="q-actions"><button class="btn btn-coral btn-sm" id="rv-prox" type="button">${rev.i + 1 < total ? 'Próximo erro' : 'Concluir revisão'} ${ICONS.arrow}</button></div>`;
+    }
+    return `
+      <div class="crumbs"><a href="trilhas.html?t=${encodeURIComponent(trilha.id)}">${esc(trilha.nome)}</a> / Fase ${fase.numero}</div>
+      <span class="badge" style="--c:${trilha.cor}">Revisão dos erros</span>
+      <h1>${esc(fase.titulo)}</h1>
+      <p class="rv-intro">Sem pressa e sem valer nada: esta revisão não muda seu XP nem sua ofensiva. É só para entender cada erro.</p>
+      <div class="quiz-top">
+        <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+        <span class="count">Erro ${rev.i + 1} de ${total}</span>
+      </div>
+      <div class="q-card">
+        <div class="diff">Dificuldade: ${DIFF[ex.dificuldade] || 'Média'}</div>
+        <h2>${esc(ex.pergunta)}</h2>
+        <div class="q-options">
+          ${ex.opcoes.map((o, k) => {
+            let cls = '';
+            if (rev.resp !== null) { if (k === ex.correta) cls = 'right'; else if (k === rev.resp) cls = 'wrong'; }
+            return `<button class="opt ${cls}" data-k="${k}" type="button" ${rev.resp !== null ? 'disabled' : ''}><b style="color:var(--faint);margin-right:10px">${letras[k]}</b>${esc(o)}</button>`;
+          }).join('')}
+        </div>
+        ${fb}
+      </div>
+      <div class="actions" style="margin-top:18px"><button class="linkbtn" id="rv-sair" type="button">Sair da revisão</button></div>`;
+  }
+  function ligarRevisao() {
+    const ex = fase.exercicios[erros[rev.i]];
+    $$('.q-options .opt').forEach((b) => b.addEventListener('click', () => {
+      if (rev.resp !== null) return;
+      rev.resp = Number(b.dataset.k);
+      if (rev.resp === ex.correta) rev.certas++;
+      som(rev.resp === ex.correta ? 'acerto' : 'erro');
+      render();
+      const f = $('.feedback'); if (f) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }));
+    const voltar = () => { view = 'resultado'; animarPendente = false; quieto = true; render(); window.scrollTo({ top: 0 }); };
+    const prox = $('#rv-prox');
+    if (prox) prox.addEventListener('click', () => {
+      if (rev.i + 1 < erros.length) { som('avancar'); rev.i++; rev.resp = null; render(); window.scrollTo({ top: 0 }); }
+      else { revNota = { certas: rev.certas, total: erros.length }; som('concluir'); voltar(); }
+    });
+    $('#rv-sair').addEventListener('click', voltar);
   }
 
   /** Dispara as animações da tela de resultado: números subindo e confete. */
@@ -290,7 +433,7 @@
       };
       requestAnimationFrame(passo);
     });
-    if (!reduzido) confete($('.rs-confete', el), resumo.acertos === fase.exercicios.length ? 80 : 52);
+    if (!reduzido && !reprovado) confete($('.rs-confete', el), resumo.acertos === fase.exercicios.length ? 80 : 52);
   }
 
   function confete(host, n) {
@@ -310,7 +453,8 @@
   function render() {
     if (view === 'aprender') { root.innerHTML = aprender(); ligarNav(); ligarAprender(); }
     else if (view === 'praticar') { root.innerHTML = praticar(); ligarNav(); ligarPraticar(); }
-    else { root.innerHTML = resultado(); ligarResultado(); }
+    else if (view === 'revisao') { root.innerHTML = revisao(); ligarRevisao(); }
+    else { root.innerHTML = reprovado ? reprovadoTela() : resultado(); ligarResultado(); }
   }
   render();
 })();

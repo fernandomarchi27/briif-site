@@ -59,3 +59,42 @@
   .rs-pre .rs-mago, .rs-pre h1, .rs-pre .sub, .rs-pre .rs-card, .rs-pre .rs-extras, .rs-pre .actions { opacity: 1; }
   .rs-confete { display: none; }
 }
+
+/* ---------- não passou (menos de 3 acertos) ---------- */
+.rs-falha h1 { color: var(--danger, #D93A3A); }
+.rs-mago.triste::before { background: radial-gradient(closest-side, rgba(120, 130, 170, .35), transparent); animation: none; }
+.rs-mago.triste img { animation: rs-balanca 3.2s ease-in-out infinite; filter: grayscale(.25) drop-shadow(0 14px 16px rgba(30, 20, 80, .22)); }
+@keyframes rs-balanca { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg) translateY(2px); } }
+.rs-regra { max-width: 480px; margin: 6px auto 0; color: var(--muted); font-weight: 600; }
+.rs-regra b { color: var(--ink); }
+.rs-aviso { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 14px; background: var(--white); border: 1.5px dashed var(--line); font-weight: 700; font-size: 14.5px; color: var(--muted); text-align: left; }
+.rs-aviso img { width: 20px; height: 20px; flex: none; }
+.rs-pre .rs-regra { opacity: 0; }
+.rs:not(.rs-pre) .rs-regra { animation: rs-sobe .5s .5s both; }
+
+/* ---------- oferta e tela de revisão dos erros ---------- */
+.rv-oferta { margin: 20px auto 4px; max-width: 460px; }
+.rv-btn {
+  width: 100%; display: flex; flex-direction: column; gap: 3px; align-items: center; text-align: center; cursor: pointer;
+  padding: 14px 18px; border-radius: 18px; background: transparent; color: var(--ink);
+  border: 2px dashed color-mix(in srgb, var(--c, var(--indigo)) 55%, var(--line)); font: inherit;
+  transition: background .18s, transform .18s;
+}
+.rv-btn b { font-size: 1.02rem; color: var(--c, var(--indigo)); }
+.rv-btn span { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+.rv-btn:hover { background: color-mix(in srgb, var(--c, var(--indigo)) 8%, transparent); transform: translateY(-1px); }
+.rv-intro { color: var(--muted); font-weight: 600; margin: -4px 0 18px; }
+.rv-detalhe { margin-top: 12px; }
+.rv-detalhe small { display: block; margin-bottom: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-size: 11.5px; }
+.rv-detalhe p { margin: 0 0 8px; font-size: 15px; line-height: 1.55; color: var(--ink); }
+.rv-cuidado { margin: 10px 0 0; padding: 10px 14px; border-radius: 12px; background: rgba(255, 150, 0, .12); border: 1px solid rgba(255, 150, 0, .4); font-size: 14.5px; line-height: 1.5; }
+.rv-cuidado b { display: inline; margin: 0 6px 0 0; color: #B45F00; }
+:root[data-tema="noturno"] .rv-cuidado b { color: #FFB45A; }
+.rv-metodo { margin-top: 12px; font-size: 14.5px; }
+.rv-metodo summary { cursor: pointer; font-weight: 800; color: var(--c, var(--indigo)); }
+.rv-metodo ol { margin: 10px 0 0; padding-left: 20px; }
+.rv-metodo li { margin-bottom: 4px; }
+.feedback .rv-cuidado b, .feedback.no .rv-cuidado b, .feedback.ok .rv-cuidado b { display: inline; margin: 0 6px 0 0; color: #B45F00; }
+:root[data-tema="noturno"] .feedback .rv-cuidado b { color: #FFB45A; }
+/* ao voltar da revisão, a tela de resultado aparece pronta (sem repetir a entrada) */
+.rs-quieto :is(.rs-mago, h1, .sub, .rs-regra, .rs-card, .rs-extras, .actions) { animation: none !important; opacity: 1 !important; }

@@ -397,7 +397,7 @@
     try { localStorage.setItem(chavePersonalizada(), JSON.stringify({ materias })); } catch (e) { /* ignora */ }
   }
 
-  /** Junta as questões das matérias escolhidas, intercaladas, e corta em 5 fases de 3. */
+  /** Junta as questões das matérias escolhidas, intercaladas, e corta em fases de 5 questões. */
   function construirFasesPersonalizadas(materias) {
     const pools = materias.map((id) => {
       const t = TRILHAS.find((x) => x.id === id);
@@ -405,7 +405,7 @@
       if (t) t.fases.forEach((f) => f.exercicios.forEach((e) => lista.push(Object.assign({}, e, { materia: t.nome, materiaCor: t.cor }))));
       return lista;
     });
-    const TOTAL = 30; // até 10 fases × 3 questões, misturando as matérias escolhidas
+    const TOTAL = 50; // até 10 fases × 5 questões, misturando as matérias escolhidas
     const misturado = [];
     let avancou = true;
     while (misturado.length < TOTAL && avancou) {
@@ -417,7 +417,7 @@
     }
     const fases = [];
     for (let k = 0; k < 10 && misturado.length; k++) {
-      const trio = misturado.splice(0, 3);
+      const trio = misturado.splice(0, 5);
       if (!trio.length) break;
       const nomes = Array.from(new Set(trio.map((e) => e.materia)));
       fases.push({

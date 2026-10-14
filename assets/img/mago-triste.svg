@@ -1,0 +1,71 @@
+<svg aria-hidden="true" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bsHat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B73F5"/><stop offset=".5" stop-color="#4E3BBC"/><stop offset="1" stop-color="#2A1E70"/></linearGradient>
+<linearGradient id="bsRobe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E49D6"/><stop offset=".6" stop-color="#3A2A94"/><stop offset="1" stop-color="#1D1456"/></linearGradient>
+<linearGradient id="bsCape" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1F78"/><stop offset="1" stop-color="#0F0A33"/></linearGradient>
+<linearGradient id="bsBeard" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B5ACEA"/></linearGradient>
+<linearGradient id="bsFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C5648"/><stop offset=".55" stop-color="#D9A488"/><stop offset="1" stop-color="#C98D70"/></linearGradient>
+<radialGradient id="bsEye"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#FFEE88"/><stop offset="1" stop-color="#FFC21A" stop-opacity="0"/></radialGradient>
+<radialGradient id="bsOrb" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#D6CCFF"/><stop offset=".7" stop-color="#8C77FF"/><stop offset="1" stop-color="#4B38C8"/></radialGradient>
+<radialGradient id="bsGlow"><stop offset="0" stop-color="#B9A8FF" stop-opacity=".85"/><stop offset="1" stop-color="#B9A8FF" stop-opacity="0"/></radialGradient>
+<linearGradient id="bsStaff" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#A06B3C"/><stop offset="1" stop-color="#5E3B1F"/></linearGradient>
+</defs>
+<ellipse cx="120" cy="266" rx="62" ry="8" fill="#000" opacity=".28"/>
+<g>
+<!-- capa -->
+<path d="M52 118c-18 40-26 90-30 142 30 8 66 12 98 12s68-4 98-12c-4-52-12-102-30-142l-68 10z" fill="url(#bsCape)"/>
+<path d="M60 128c-10 36-16 76-18 118M180 128c10 36 16 76 18 118" stroke="#6A55E8" stroke-width="1.600" fill="none" opacity=".45" stroke-linecap="round"/>
+<!-- manto -->
+<path d="M70 120c-10 30-16 66-20 128 22 7 48 10 70 10s48-3 70-10c-4-62-10-98-20-128-14-8-34-12-50-12s-36 4-50 12z" fill="url(#bsRobe)"/>
+<path d="M120 128v128" stroke="#1D1456" stroke-width="2" opacity=".5"/>
+<path d="M92 124l28 36 28-36" fill="none" stroke="#FFD66B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M52 246c22 8 46 11 68 11s46-3 68-11" fill="none" stroke="#FFD66B" stroke-width="3.500" stroke-linecap="round"/>
+<g fill="#FFE27A"><path d="M120 190l3 6.500 7 .9-5.200 4.800 1.400 7-6.200-3.500-6.200 3.500 1.400-7-5.200-4.800 7-.9z"/><circle cx="90" cy="222" r="2.500"/><circle cx="152" cy="214" r="2.500"/><circle cx="104" cy="168" r="1.800"/><circle cx="138" cy="170" r="1.800"/></g>
+<!-- cinto -->
+<path d="M74 176c30 8 62 8 92 0l1.500 9c-31 9-63 9-95 0z" fill="#2A1E70"/><rect x="112" y="177" width="16" height="12" rx="3" fill="#FFD66B"/><rect x="116" y="180" width="8" height="6" rx="1.500" fill="#B57F12"/>
+<!-- braço direito (cajado) -->
+<path d="M168 130c12 8 22 22 26 40l-14 4c-3-12-9-22-18-28z" fill="url(#bsRobe)"/>
+<rect x="190" y="70" width="6.500" height="196" rx="3.200" fill="url(#bsStaff)"/>
+<path d="M183 76c0-12 8-18 10.500-18s10.500 6 10.500 18c-4-3-6.500-3.500-10.500-3.500S187 73 183 76z" fill="#6A4524"/>
+<circle cx="193.500" cy="52" r="34" fill="url(#bsGlow)"/>
+<circle cx="193.500" cy="52" r="15" fill="url(#bsOrb)"/>
+<circle cx="188" cy="46" r="4.200" fill="#fff" opacity=".9"/>
+<path d="M175 50a18.500 18.500 0 0 1 36 0" stroke="#fff" stroke-opacity=".45" stroke-width="1.200" fill="none"/>
+<path d="M164 168c8 2 12 8 12 14-8 0-14-6-12-14z" fill="#D49C7E"/><circle cx="168" cy="172" r="5.500" fill="#D49C7E"/>
+<!-- braço esquerdo (conjurando) -->
+<path d="M72 130c-14 10-24 24-28 44l16 4c4-14 10-24 18-30z" fill="url(#bsRobe)"/>
+<path d="M44 174c-8 2-12 8-10 14 8 1 14-5 10-14z" fill="#D49C7E"/><circle cx="40" cy="178" r="6" fill="#D49C7E"/>
+<circle cx="34" cy="170" r="13" fill="url(#bsGlow)"/><circle cx="34" cy="170" r="6" fill="url(#bsOrb)"/>
+<!-- barba -->
+<path d="M84 92c-8 26-4 56 14 80 6 8 14 14 22 18 8-4 16-10 22-18 18-24 22-54 14-80-12 14-26 20-36 20s-24-6-36-20z" fill="url(#bsBeard)"/>
+<path d="M104 112c-2 18 0 38 8 58M120 116v68M136 112c2 18 0 38-8 58M92 100c-3 14-2 28 4 42M148 100c3 14 2 28-4 42" stroke="#948AD4" stroke-width="1.600" fill="none" stroke-linecap="round" opacity=".7"/>
+<!-- rosto -->
+<path d="M88 94c0-22 14-34 32-34s32 12 32 34c0 14-10 24-32 24s-32-10-32-24z" fill="url(#bsFace)"/>
+<path d="M116 100c1 8 7 8 8 0l-4-10z" fill="#BF8467"/>
+<path d="M90 110c10 2 20-1 30 5-6 5-18 6-28 2zM150 110c-10 2-20-1-30 5 6 5 18 6 28 2z" fill="#fff"/>
+<path d="M96 108c8 4 16 4 24 0 8 4 16 4 24 0" stroke="#E6E1FF" stroke-width="1" fill="none" opacity=".5"/>
+<!-- rosto triste: olhos baixos, lágrima, sobrancelhas inclinadas e boca para baixo -->
+<ellipse cx="103" cy="93" rx="7.500" ry="6.500" fill="#fff"/><ellipse cx="137" cy="93" rx="7.500" ry="6.500" fill="#fff"/>
+<circle cx="103" cy="95.500" r="3.400" fill="#2A1E70"/><circle cx="137" cy="95.500" r="3.400" fill="#2A1E70"/>
+<circle cx="104" cy="94.200" r="1.100" fill="#fff"/><circle cx="138" cy="94.200" r="1.100" fill="#fff"/>
+<path d="M97 101c-4 6-3 10 1 10s5-4-1-10z" fill="#7CC4FF" opacity=".9"/>
+<path d="M92 82l20-8M148 82l-20-8" stroke="#F3F1FF" stroke-width="3.400" fill="none" stroke-linecap="round"/>
+<path d="M107 133c4-8 22-8 26 0" stroke="#7A2E3A" stroke-width="3.400" fill="none" stroke-linecap="round"/>
+<!-- chapéu -->
+<ellipse cx="120" cy="70" rx="72" ry="14" fill="#241A66"/>
+<path d="M50 66c14-6 40-9 70-9s56 3 70 9c-14 11-40 16-70 16S64 77 50 66z" fill="url(#bsHat)"/>
+<path d="M54 66c14-4 36-6 66-6" stroke="#B3A5FF" stroke-width="2" fill="none" opacity=".6"/>
+<path d="M126 4c10 24 20 40 36 56 6 6 10 10 14 14-18 6-38 8-56 8s-38-2-56-8c4-4 8-8 14-14C94 44 108 28 120 4c1-2 5-3 6 0z" fill="url(#bsHat)"/>
+<path d="M120 4c-8 24-22 40-34 56-6 6-12 11-16 16 8 3 16 4 24 5 6-26 14-50 26-77z" fill="#fff" opacity=".13"/>
+<path d="M72 60c34 8 62 8 96 0l-4 12c-28 6-60 6-88 0z" fill="#FFD66B"/>
+<path d="M72 60c34 8 62 8 96 0" stroke="#FFF1B8" stroke-width="1.400" fill="none"/>
+<path d="M120 22l5 10.500 11.500 1.600-8.400 8 2 11.400L120 48l-10.100 5.500 2-11.400-8.400-8 11.500-1.600z" fill="#FFE27A" stroke="#E7B93A" stroke-width="1.200"/>
+<path d="M136 54l2 4 4.500.6-3.300 3.100.8 4.500-4-2.200-4 2.200.8-4.500-3.300-3.100 4.500-.6z" fill="#fff" opacity=".0"/>
+<g fill="#FFE27A">
+<path d="M30 70l3 7 7.500 1-5.500 5 1.600 7.500L30 87l-6.600 3.500L25 83l-5.500-5 7.500-1z"/>
+<path d="M214 130l2.400 5.500 6 .8-4.400 4 1.300 6-5.300-3-5.300 3 1.300-6-4.400-4 6-.8z"/>
+<path d="M22 214l2 4.500 5 .7-3.600 3.400 1 5-4.400-2.500-4.400 2.500 1-5-3.600-3.400 5-.7z"/>
+<circle cx="214" cy="40" r="3"/><circle cx="60" cy="30" r="2.500"/><circle cx="226" cy="196" r="2.500"/>
+</g>
+</g>
+</svg>

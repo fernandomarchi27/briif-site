@@ -27,7 +27,7 @@ HTML (casca: <header id="site-header">, <main>, <footer id="site-footer">)
 |---|---|
 | Utilidades | `esc` (escapa HTML), `rich` (texto das lições → HTML seguro), `fmt`, datas |
 | Sessão/Auth | Google, e-mail/senha, convidado (anônimo) e modo demonstração (sem Firebase). Carrega o SDK do Firebase sob demanda |
-| Trilha personalizada | o aluno escolhe ≥ 2 matérias e o site monta 5 fases misturando as questões |
+| Trilha personalizada | o aluno escolhe ≥ 2 matérias e o site monta até 10 fases de 5 questões misturando as questões |
 | Progresso | XP, nível (xpProx × 1,25), MathCoins, bloqueios, ofensiva, fases e bosses concluídos |
 | Ofensiva | conta 1 dia ao concluir fase/boss; se faltar dias, usa **bloqueios** automaticamente (1 por dia). Quando um bloqueio é usado, guarda um aviso para a animação |
 | Loja | bloqueio (100 MathCoins), 4 avatares (100 cada), código promocional |

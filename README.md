@@ -83,7 +83,7 @@ Funciona junto com o tema noturno e com as cores personalizadas.
 - Rascunho: no modo pixel, o pincel e a borracha desenham em blocos alinhados a uma grade, em vez de traço livre (`assets/js/rascunho.js`).
 
 ## Trilha Personalizada
-Na tela de Trilhas, o aluno escolhe pelo menos 2 matérias (entre Álgebra, Geometria, Funções, Estatística e ENEM) e o site monta 5 fases misturando as questões dessas matérias entre si (cada fase mistura, não separa por matéria). É possível trocar as matérias depois, em "Editar matérias" — isso reinicia só o progresso dessa trilha.
+Na tela de Trilhas, o aluno escolhe pelo menos 2 matérias (entre Álgebra, Geometria, Funções, Estatística e ENEM) e o site monta até 10 fases de 5 questões misturando as questões dessas matérias entre si (cada fase mistura, não separa por matéria). É possível trocar as matérias depois, em "Editar matérias" — isso reinicia só o progresso dessa trilha.
 Cada questão mostra uma etiqueta com a matéria de origem. Como a fase mistura assuntos, a aba "Aprender" não traz uma aula nova, só uma orientação.
 Lógica em `assets/js/app.js` (busque por `Trilha Personalizada`); interface em `assets/js/trilhas.js`.
 
@@ -135,3 +135,9 @@ Depois da última fase de cada trilha (incluindo ENEM e Personalizada) aparece a
 ## Regras do Firestore (v26)
 O `firestore.rules` foi endurecido (campos permitidos no ranking, `atualizadoEm == request.time`, limites em `usuarios`).
 Depois de publicar, teste: entrar, concluir uma fase e abrir o Ranking. Se algo falhar, o site continua funcionando (o erro só aparece no console) e dá para voltar às regras anteriores no console do Firebase.
+
+## Regras das fases
+
+- Cada fase tem **5 exercícios** do mesmo tema (ENEM também, com 8 fases como as outras trilhas).
+- Para concluir a fase é preciso **acertar pelo menos 3**. Com 0 a 2 acertos a fase não é concluída, não dá XP nem MathCoins e **não conta a ofensiva do dia**: o aluno tenta de novo.
+- No fim da fase (passando ou não) há uma **revisão opcional** dos exercícios errados, com explicação detalhada (campo `detalhe` de cada exercício em `assets/js/data.js`). A revisão não altera XP nem ofensiva.
