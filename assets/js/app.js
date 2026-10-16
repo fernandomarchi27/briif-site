@@ -509,7 +509,7 @@
   }
 
   function progressoVazio() {
-    return { xp: 0, nivel: 1, xpProx: REWARD.xpBaseNivel1, moedas: 0, bloqueios: 0, fases: [], bosses: [], streak: 0, recorde: 0, ultimoDia: null, dias: [], protegidos: [], porTrilha: {}, ultimo: null, boasVindasDadas: false, avatares: [], avatarAtivo: null, avatarAtivoTs: 0 };
+    return { xp: 0, nivel: 1, xpProx: REWARD.xpBaseNivel1, moedas: 0, bloqueios: 0, fases: [], bosses: [], streak: 0, recorde: 0, ultimoDia: null, dias: [], protegidos: [], porTrilha: {}, ultimo: null, boasVindasDadas: false, avatares: [], avatarAtivo: null, avatarAtivoTs: 0, avatarPecas: [], avatarCfg: null, avatarCfgTs: 0 };
   }
 
   /** Moedas e bloqueios têm contadores que só crescem (ganhos e gastos); o saldo é a diferença.
@@ -587,10 +587,29 @@
     return { ok: true, progresso: p };
   }
 
+  /** Salva o avatar montado no editor. Peças pagas que ainda não são suas são compradas juntas, na mesma operação. */
+  function salvarAvatarPersonalizado(cfg) {
+    const A = window.BriifAvatar;
+    const p = lerProgresso();
+    cfg = A.limpar(cfg);
+    const f = A.faltando(cfg, p.avatarPecas);
+    if (f.total > p.moedas) return { ok: false, motivo: 'moedas', falta: f.total - p.moedas, progresso: p };
+    p.moedas -= f.total;
+    p.avatarPecas = Array.from(new Set((p.avatarPecas || []).concat(f.lista.map((x) => x.cat + ':' + x.id))));
+    p.avatarCfg = cfg;
+    p.avatarCfgTs = Date.now();
+    p.avatarAtivo = 'custom';
+    p.avatarAtivoTs = p.avatarCfgTs;
+    salvarProgresso(p);
+    agendarEnvio();
+    return { ok: true, gasto: f.total, progresso: p };
+  }
+
   /** Define o avatar ativo (precisa já ter comprado) ou null pra voltar à foto/inicial padrão. */
   function selecionarAvatar(id) {
     const p = lerProgresso();
-    if (id !== null && (p.avatares || []).indexOf(id) === -1) return { ok: false, motivo: 'nao_possui', progresso: p };
+    const ehCustom = id === 'custom' && !!p.avatarCfg;
+    if (id !== null && !ehCustom && (p.avatares || []).indexOf(id) === -1) return { ok: false, motivo: 'nao_possui', progresso: p };
     p.avatarAtivo = id;
     p.avatarAtivoTs = Date.now();
     salvarProgresso(p);
@@ -788,6 +807,9 @@
     normalizarEconomia(m);
     m.boasVindasDadas = !!(l.boasVindasDadas || r.boasVindasDadas);
     m.avatares = Array.from(new Set([].concat(l.avatares || [], r.avatares || [])));
+    m.avatarPecas = Array.from(new Set([].concat(l.avatarPecas || [], r.avatarPecas || [])));
+    m.avatarCfgTs = Math.max(l.avatarCfgTs || 0, r.avatarCfgTs || 0);
+    m.avatarCfg = (l.avatarCfgTs || 0) >= (r.avatarCfgTs || 0) ? (l.avatarCfg || r.avatarCfg || null) : (r.avatarCfg || l.avatarCfg || null);
     m.avatarAtivoTs = Math.max(l.avatarAtivoTs || 0, r.avatarAtivoTs || 0);
     m.avatarAtivo = (l.avatarAtivoTs || 0) >= (r.avatarAtivoTs || 0) ? (l.avatarAtivo || null) : (r.avatarAtivo || null);
 
@@ -873,7 +895,8 @@
     if (rankingOculto(s.uid)) { await ref.delete(); return; }
     let acertos = 0, total = 0;
     Object.keys(m.porTrilha || {}).forEach((k) => { acertos += m.porTrilha[k].acertos || 0; total += m.porTrilha[k].total || 0; });
-    await ref.set({
+    const custom = m.avatarAtivo === 'custom' && m.avatarCfg && window.BriifAvatar ? window.BriifAvatar.limpar(m.avatarCfg) : null;
+    const pub = {
       nome: nomePublico(s.nome, false),
       avatarId: m.avatarAtivo || null,
       nivel: m.nivel,
@@ -881,8 +904,26 @@
       acertos: Math.min(acertos, total), total,
       recorde: m.recorde || 0,
       streak: m.streak || 0,
+      avatarCfg: custom,
       atualizadoEm: fb.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    try {
+      await ref.set(pub);
+    } catch (e) {
+      // regras antigas do Firestore (sem o campo avatarCfg): publica sem o personagem em vez de derrubar o ranking
+      if (!(e && e.code === 'permission-denied')) throw e;
+      delete pub.avatarCfg;
+      if (pub.avatarId === 'custom') pub.avatarId = null;
+      await ref.set(pub);
+    }
+  }
+  /** Perfil público de outra pessoa (só o que está no ranking). Devolve null se ela não está no ranking. */
+  async function buscarPerfilPublico(uid) {
+    const fb = await carregarFirebase();
+    const user = await new Promise((res) => { const off = fb.auth().onAuthStateChanged((u) => { off(); res(u); }); });
+    if (!user) throw new Error('sem-login');
+    const snap = await fb.firestore().collection('ranking').doc(String(uid)).get();
+    return snap.exists ? Object.assign({ uid: snap.id }, snap.data()) : null;
   }
   /** Busca o ranking inteiro (até 500 contas); a ordenação por categoria é feita na tela. */
   async function buscarRanking() {
@@ -895,6 +936,7 @@
   }
   /** Bolinha de outra pessoa: avatar comprado ou inicial (sem foto, por privacidade). */
   function avatarRanking(d, extra = '') {
+    if (d.avatarId === 'custom' && d.avatarCfg && window.BriifAvatar) return `<span class="avatar avatar-custom ${extra}">${window.BriifAvatar.svg(d.avatarCfg)}</span>`;
     const av = d.avatarId && AVATARES_POR_ID[d.avatarId];
     if (av) return `<span class="avatar avatar-custom ${extra}" title="${esc(av.nome)}">${av.svg}</span>`;
     return `<span class="avatar ${extra}">${esc((d.nome || '?').trim().charAt(0).toUpperCase() || '?')}</span>`;
@@ -1112,6 +1154,7 @@
     const inicial = esc(nome.trim().charAt(0).toUpperCase() || '?');
     // avatar comprado na loja tem prioridade sobre a foto do Google e a inicial
     const p = lerProgresso();
+    if (p && p.avatarAtivo === 'custom' && p.avatarCfg && window.BriifAvatar) return `<span class="avatar avatar-custom ${extra}" title="Seu avatar">${window.BriifAvatar.svg(p.avatarCfg)}</span>`;
     const av = p && p.avatarAtivo && AVATARES_POR_ID[p.avatarAtivo];
     if (av) return `<span class="avatar avatar-custom ${extra}" title="${esc(av.nome)}">${av.svg}</span>`;
     // a inicial fica por baixo da foto; se a foto falhar, ela aparece
@@ -1366,8 +1409,8 @@
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
     progresso: { mesclar, ler: lerProgresso, completarFase, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
     loja: { custoBloqueio: LOJA.custoBloqueio, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
-    avatares: { lista: AVATARES, comprar: comprarAvatar, selecionar: selecionarAvatar },
-    ranking: { buscar: buscarRanking, avatar: avatarRanking, oculto: rankingOculto, alterarOculto: alterarRankingOculto },
+    avatares: { lista: AVATARES, comprar: comprarAvatar, selecionar: selecionarAvatar, salvarPersonalizado: salvarAvatarPersonalizado },
+    ranking: { buscar: buscarRanking, perfil: buscarPerfilPublico, avatar: avatarRanking, oculto: rankingOculto, alterarOculto: alterarRankingOculto },
     acharFase, proximaFase,
     personalizada: { opcoes: MATERIAS_PERSONALIZAVEIS, minimo: MIN_MATERIAS, materiasAtuais: () => personalizadaEntry.materias || [], salvar: salvarNovaSelecaoPersonalizada }
   };

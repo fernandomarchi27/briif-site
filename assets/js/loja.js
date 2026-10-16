@@ -86,6 +86,11 @@
         <h2>Avatares</h2>
         <p>Troque sua foto de perfil por um destes personagens.</p>
       </div>
+      <div class="block" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:22px">
+        <span class="avatar avatar-custom" style="width:64px;height:64px">${window.BriifAvatar.svg(p.avatarCfg || undefined)}</span>
+        <div style="flex:1;min-width:200px"><b style="font-size:1.05rem">Monte o seu personagem</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Pele, cabelo, roupa, óculos, chapéus e fundos. Tem peças grátis e peças com MathCoins.</p></div>
+        <a class="btn btn-coral btn-sm" href="avatar.html">Editar avatar</a>
+      </div>
       ${avatarMsg ? `<div class="shop-aviso ${avatarMsg.ok ? 'ok' : 'no'}" role="status">${esc(avatarMsg.texto)}</div>` : ''}
       <div class="shop-grid">
         ${B.avatares.lista.map((av) => {

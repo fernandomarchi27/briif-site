@@ -20,9 +20,10 @@ service cloud.firestore {
     match /ranking/{uid} {
       allow read: if logado();
       allow create, update: if dono(uid)
-        && request.resource.data.keys().hasOnly(['nome', 'avatarId', 'nivel', 'xpTotal', 'acertos', 'total', 'recorde', 'streak', 'atualizadoEm'])
+        && request.resource.data.keys().hasOnly(['nome', 'avatarId', 'nivel', 'xpTotal', 'acertos', 'total', 'recorde', 'streak', 'avatarCfg', 'atualizadoEm'])
         && request.resource.data.nome is string && request.resource.data.nome.size() >= 1 && request.resource.data.nome.size() <= 40
         && (request.resource.data.avatarId == null || (request.resource.data.avatarId is string && request.resource.data.avatarId.size() <= 40))
+        && (request.resource.data.get('avatarCfg', null) == null || (request.resource.data.avatarCfg is map && request.resource.data.avatarCfg.size() <= 20))
         && request.resource.data.xpTotal is number && request.resource.data.xpTotal >= 0 && request.resource.data.xpTotal <= 1000000
         && request.resource.data.nivel is number && request.resource.data.nivel >= 1 && request.resource.data.nivel <= 1000
         && request.resource.data.acertos is number && request.resource.data.total is number

@@ -141,3 +141,11 @@ Depois de publicar, teste: entrar, concluir uma fase e abrir o Ranking. Se algo 
 - Cada fase tem **5 exercícios** do mesmo tema (ENEM também, com 8 fases como as outras trilhas).
 - Para concluir a fase é preciso **acertar pelo menos 3**. Com 0 a 2 acertos a fase não é concluída, não dá XP nem MathCoins e **não conta a ofensiva do dia**: o aluno tenta de novo.
 - No fim da fase (passando ou não) há uma **revisão opcional** dos exercícios errados, com explicação detalhada (campo `detalhe` de cada exercício em `assets/js/data.js`). A revisão não altera XP nem ofensiva.
+
+## Avatar personalizável e perfil público
+
+- `avatar.html` é o editor: pele, cabelo (estilo e cor), olhos, sobrancelhas, boca, detalhes, barba, roupa, óculos, chapéus e fundo. Peças com preço `> 0` custam MathCoins e são compradas ao salvar; as que a pessoa já comprou ficam dela.
+- O catálogo é gerado por `build/avatar_gen.py` (fora deste repositório) e vive em `assets/js/avatar.js`; o app Flutter usa o mesmo catálogo em `assets/data/avatar_pecas.json`.
+- No Firestore, `usuarios/{uid}.progresso` guarda `avatarCfg`, `avatarCfgTs` e `avatarPecas`. O personagem ativo também vai em `ranking/{uid}.avatarCfg` para os outros o verem.
+- **Importante:** republique o `firestore.rules` no console do Firebase (campo novo `avatarCfg` no ranking). Sem isso o ranking continua funcionando, mas sem mostrar o personagem montado.
+- Clicar numa linha do ranking abre `perfil.html?u=<uid>` com os dados públicos daquela pessoa.

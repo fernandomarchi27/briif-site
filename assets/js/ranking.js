@@ -60,6 +60,7 @@
     const streak = d.streak || 0;
     return `
       <li class="rk-row ${eu ? 'eu' : ''}">
+        <a class="rk-link" href="perfil.html${eu ? '' : '?u=' + encodeURIComponent(d.uid)}" aria-label="Ver o perfil de ${esc(d.nome)}"></a>
         <span class="rk-pos ${pos <= 3 ? 'top' + pos : ''}">${pos}</span>
         ${B.ranking.avatar(d)}
         <div class="rk-nome"><b>${esc(d.nome)}${eu ? ' <em>você</em>' : ''}</b><span>Nível ${d.nivel || 1}</span></div>

@@ -6,6 +6,9 @@
 
   const host = $('#perfil');
   const sessao = B.auth.sessao();
+  const uidPublico = new URLSearchParams(location.search).get('u');
+  const meuUid = sessao && sessao.modo === 'firebase' ? sessao.uid : null;
+  const modoPublico = !!uidPublico && uidPublico !== meuUid;
 
   const pad = (n) => String(n).padStart(2, '0');
   const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
@@ -41,6 +44,7 @@
         ${B.avatarHtml(sessao || { nome })}
         <div class="info">
           <h1>${esc(nome)}</h1>
+          <a class="btn btn-ink btn-sm" href="avatar.html" style="margin-top:10px">Editar meu avatar</a>
           <p>${esc(sessao ? (sessao.email || (sessao.tipo === 'anonimo' ? 'Conta de convidado' : '')) : 'Progresso salvo apenas neste navegador')}</p>
         </div>
         ${sessao ? `<button class="btn btn-ink btn-sm" id="logout-btn" type="button">Sair</button>` : ''}
@@ -107,6 +111,43 @@
     prox.addEventListener('click', () => { if (naoPodeAvancar) return; mes += 1; if (mes > 11) { mes = 0; ano += 1; } desenharCalendario(diasSet); });
   }
 
-  render();
-  B.aguardarSync().then((mudou) => { if (mudou) render(); });
+  /* ---------- perfil de outra pessoa (vem do ranking: só dados públicos) ---------- */
+  const num = (n) => (n || 0).toLocaleString('pt-BR');
+  const dias = (n) => `${n || 0} ${(n || 0) === 1 ? 'dia' : 'dias'}`;
+  function renderPublico(d) {
+    const total = d.total || 0;
+    const pct = total ? Math.round(((d.acertos || 0) / total) * 100) : null;
+    host.innerHTML = `
+      <a class="pub-voltar" href="ranking.html">← Voltar ao ranking</a>
+      <div class="pub-head">
+        ${B.ranking.avatar(d)}
+        <div><h1>${esc(d.nome)}</h1><p>Nível ${d.nivel || 1} · aluno do Briiff</p></div>
+      </div>
+      <div class="pub-grid">
+        <div class="pub-card"><span>Nível</span><b>${d.nivel || 1}</b></div>
+        <div class="pub-card"><span>XP total</span><b>${num(d.xpTotal)}</b></div>
+        <div class="pub-card"><span>Acertos</span><b>${pct === null ? '—' : pct + '%'}</b><small>${total ? `${num(d.acertos)} de ${num(total)} questões` : 'ainda sem questões'}</small></div>
+        <div class="pub-card ${d.streak ? 'quente' : ''}"><span>Ofensiva atual</span><b>${dias(d.streak)}</b></div>
+        <div class="pub-card"><span>Recorde de ofensiva</span><b>${dias(d.recorde)}</b></div>
+      </div>
+      <p style="color:var(--muted);font-size:13.5px">Só aparecem informações públicas do ranking. E-mail, foto e progresso detalhado não são compartilhados.</p>`;
+  }
+  async function carregarPublico() {
+    host.innerHTML = '<div class="block rk-msg" style="margin-top:40px"><p>Carregando o perfil…</p></div>';
+    try {
+      await B.aguardarSync();
+      const d = await B.ranking.perfil(uidPublico);
+      if (!d) { host.innerHTML = '<a class="pub-voltar" href="ranking.html">← Voltar ao ranking</a><div class="block rk-msg" style="margin-top:20px"><h2>Perfil indisponível</h2><p>Essa pessoa não está no ranking (ou saiu dele), então não há perfil público para mostrar.</p></div>'; return; }
+      renderPublico(d);
+    } catch (e) {
+      const semLogin = e && e.message === 'sem-login';
+      host.innerHTML = `<a class="pub-voltar" href="ranking.html">← Voltar ao ranking</a><div class="block rk-msg" style="margin-top:20px"><h2>${semLogin ? 'Entre para ver perfis' : 'Não deu para carregar o perfil'}</h2><p>${semLogin ? 'Faça login para ver o perfil de outros alunos.' : 'Verifique sua conexão e tente de novo.'}</p>${semLogin ? '<a class="btn btn-coral btn-sm" href="login.html">Entrar</a>' : ''}</div>`;
+    }
+  }
+
+  if (modoPublico) carregarPublico();
+  else {
+    render();
+    B.aguardarSync().then((mudou) => { if (mudou) render(); });
+  }
 })();
