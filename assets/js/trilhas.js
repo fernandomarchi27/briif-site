@@ -5,9 +5,16 @@
   B.iniciar('trilhas');
 
   const params = new URLSearchParams(location.search);
-  let atual = Math.max(0, B.TRILHAS.findIndex((t) => t.id === params.get('t')));
-
   let p = B.progresso.ler();
+
+  /* Ao entrar, abre a trilha da última atividade (igual ao app). ?t=... na URL manda mais. */
+  let escolheuManual = params.has('t');
+  function trilhaInicial() {
+    const ativ = B.progresso.proximaAtividade(p);
+    const alvo = ativ ? ativ.trilha.id : null;
+    return Math.max(0, B.TRILHAS.findIndex((t) => t.id === alvo));
+  }
+  let atual = escolheuManual ? Math.max(0, B.TRILHAS.findIndex((t) => t.id === params.get('t'))) : trilhaInicial();
   const sessao = B.auth.sessao();
 
   /* ---------- painel lateral ---------- */
@@ -60,6 +67,7 @@
       </button>`).join('');
     $$('#pills .pill').forEach((b) => b.addEventListener('click', () => {
       atual = Number(b.dataset.i);
+      escolheuManual = true;
       editandoPersonalizada = false;
       const url = new URL(location.href); url.searchParams.set('t', B.TRILHAS[atual].id);
       history.replaceState(null, '', url);
@@ -214,5 +222,9 @@
   document.addEventListener('click', (e) => {
     if (e.target.closest && e.target.closest('.node-wrap[aria-disabled="true"]') && window.BriifSom) window.BriifSom.tocar('negado');
   });
-  window.addEventListener('briif:progresso', () => { p = B.progresso.ler(); painel(); trilha(); });
+  window.addEventListener('briif:progresso', () => {
+    p = B.progresso.ler();
+    if (!escolheuManual) atual = trilhaInicial();   // a nuvem pode ter trazido uma atividade mais recente
+    painel(); pills(); trilha();
+  });
 })();

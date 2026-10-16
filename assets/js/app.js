@@ -387,14 +387,21 @@
     const s = lerSessao();
     return 'briif:personalizada:' + (s ? s.uid : 'visitante');
   }
-  function lerSelecaoPersonalizada() {
+  /** Deixa as matérias válidas e na ordem fixa das trilhas, para a mistura sair igual em qualquer aparelho e no app. */
+  function normalizarMaterias(lista) {
+    const ids = Array.isArray(lista) ? lista : [];
+    return MATERIAS_PERSONALIZAVEIS.map((m) => m.id).filter((id) => ids.indexOf(id) !== -1);
+  }
+  /** Seleção guardada neste navegador: { materias, ts } (ts = quando foi escolhida; -1 = nunca escolhida). */
+  function lerSelecaoCompleta() {
     let v;
     try { v = JSON.parse(localStorage.getItem(chavePersonalizada())); } catch (e) { v = null; }
-    const materias = v && Array.isArray(v.materias) ? v.materias : [];
-    return materias.filter((id) => MATERIAS_PERSONALIZAVEIS.some((m) => m.id === id));
+    if (!v || !Array.isArray(v.materias)) return { materias: [], ts: -1 };
+    return { materias: normalizarMaterias(v.materias), ts: Number(v.ts) || 0 };
   }
-  function salvarSelecaoPersonalizada(materias) {
-    try { localStorage.setItem(chavePersonalizada(), JSON.stringify({ materias })); } catch (e) { /* ignora */ }
+  function lerSelecaoPersonalizada() { return lerSelecaoCompleta().materias; }
+  function gravarSelecaoPersonalizada(materias, ts) {
+    try { localStorage.setItem(chavePersonalizada(), JSON.stringify({ materias, ts })); } catch (e) { /* ignora */ }
   }
 
   /** Junta as questões das matérias escolhidas, intercaladas, e corta em fases de 5 questões. */
@@ -456,13 +463,16 @@
   /** Chamado pela tela de Trilhas quando a pessoa salva as matérias escolhidas.
    *  Devolve true se a seleção mudou (e por isso o progresso da trilha foi zerado). */
   function salvarNovaSelecaoPersonalizada(materias) {
-    materias = (materias || []).filter((id) => MATERIAS_PERSONALIZAVEIS.some((m) => m.id === id));
+    materias = normalizarMaterias(materias);
     const antiga = personalizadaEntry.materias || [];
     const mudou = antiga.length !== materias.length || materias.some((id) => antiga.indexOf(id) === -1);
     if (mudou) resetarProgressoPersonalizada();
     personalizadaEntry.fases = montarFasesEAulas(materias);
     personalizadaEntry.materias = materias;
-    salvarSelecaoPersonalizada(materias);
+    const atualSel = lerSelecaoCompleta();
+    // só "carimba" de novo se a escolha mudou: o carimbo mais novo é o que vale em todos os aparelhos
+    gravarSelecaoPersonalizada(materias, mudou || atualSel.ts < 0 ? Date.now() : atualSel.ts);
+    if (mudou) agendarEnvio();
     return mudou;
   }
 
@@ -800,6 +810,28 @@
     return m;
   }
 
+  /** Tira de um progresso tudo o que pertence à trilha Personalizada (ela vale só para uma seleção de matérias). */
+  function semPersonalizada(prog) {
+    const p = Object.assign(progressoVazio(), prog || {});
+    p.fases = (p.fases || []).filter((id) => id.indexOf('personalizada_') !== 0);
+    p.bosses = (p.bosses || []).filter((id) => id !== 'personalizada');
+    p.porTrilha = Object.assign({}, p.porTrilha || {});
+    delete p.porTrilha.personalizada;
+    if (p.ultimo && p.ultimo.faseId && p.ultimo.faseId.indexOf('personalizada_') === 0) p.ultimo = null;
+    return p;
+  }
+  const mesmaSelecao = (a, b) => normalizarMaterias(a).join(',') === normalizarMaterias(b).join(',');
+  function lerSelecaoRemota(dados) {
+    const r = dados && dados.personalizada;
+    if (!r || !Array.isArray(r.materias)) return null;
+    return { materias: normalizarMaterias(r.materias), ts: Number(r.ts) || 0 };
+  }
+  /** Reconstrói a trilha Personalizada na tela com as matérias dadas. */
+  function aplicarSelecaoPersonalizada(materias) {
+    personalizadaEntry.fases = montarFasesEAulas(materias);
+    personalizadaEntry.materias = materias;
+  }
+
   let fila = Promise.resolve();
   let temporizadorEnvio = null;
 
@@ -891,15 +923,34 @@
       const dados = snap.exists ? snap.data() : {};
       // a escolha de sair do ranking vale em todos os aparelhos (a nuvem manda)
       if (typeof dados.rankingOculto === 'boolean') definirRankingOculto(s.uid, dados.rankingOculto);
-      const local = lerProgresso();
-      const m = mesclar(local, dados.progresso);
-      const mudou = m.fases.length !== local.fases.length || m.moedas !== local.moedas || m.streak !== local.streak || m.bloqueios !== local.bloqueios;
+      // trilha Personalizada: vale a escolha mais recente (a da nuvem ou a deste navegador)
+      const selLocal = lerSelecaoCompleta();
+      const selRemota = lerSelecaoRemota(dados);
+      const remotaVence = !!selRemota && selRemota.ts > selLocal.ts;
+      const vencedora = remotaVence ? selRemota : (selLocal.ts >= 0 ? selLocal : null);
+      let selMudou = false;
+      let local = lerProgresso();
+      let remotoProg = dados.progresso;
+      if (vencedora) {
+        if (!mesmaSelecao(vencedora.materias, selLocal.materias) || selLocal.ts !== vencedora.ts) {
+          if (!mesmaSelecao(vencedora.materias, selLocal.materias)) {
+            local = semPersonalizada(local);     // o progresso antigo era de outras matérias
+            selMudou = true;
+          }
+          gravarSelecaoPersonalizada(vencedora.materias, vencedora.ts);
+          aplicarSelecaoPersonalizada(vencedora.materias);
+        }
+        if (selRemota && !mesmaSelecao(vencedora.materias, selRemota.materias)) remotoProg = semPersonalizada(remotoProg);
+      }
+      const m = mesclar(local, remotoProg);
+      const mudou = selMudou || m.fases.length !== local.fases.length || m.moedas !== local.moedas || m.streak !== local.streak || m.bloqueios !== local.bloqueios;
       gravarLocal(m);
+      const selNuvemOk = !vencedora || (!!selRemota && selRemota.ts === vencedora.ts && mesmaSelecao(selRemota.materias, vencedora.materias));
 
       if (leve && snap.exists) {
         let ultima = 0;
         try { ultima = Number(localStorage.getItem(chaveUltimaGravacao(s.uid))) || 0; } catch (e) { /* ignora */ }
-        const igual = canon(m) === canon(Object.assign(progressoVazio(), dados.progresso || {}));
+        const igual = selNuvemOk && canon(m) === canon(Object.assign(progressoVazio(), dados.progresso || {}));
         if (igual && Date.now() - ultima < INTERVALO_GRAVACAO) return mudou;   // nada novo: não grava
       }
       const doc = {
@@ -911,6 +962,7 @@
         ultimoAcesso: fb.firestore.FieldValue.serverTimestamp(),
         progresso: JSON.parse(JSON.stringify(m))
       };
+      if (vencedora) doc.personalizada = { materias: vencedora.materias, ts: vencedora.ts };
       if (!snap.exists) doc.criadoEm = fb.firestore.FieldValue.serverTimestamp();
       await ref.set(doc, { merge: true });
       try { localStorage.setItem(chaveUltimaGravacao(s.uid), String(Date.now())); } catch (e) { /* ignora */ }
