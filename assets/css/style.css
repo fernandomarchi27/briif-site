@@ -1894,12 +1894,18 @@ main:focus { outline: none; }
 .dica-box p { margin: 0 0 10px; }
 
 /* aviso na trilha Personalizada */
-.pers-recomenda { margin: 16px 0 0; padding: 12px 16px; border-radius: var(--r-md); border: 1.5px solid #C9A227; background: rgba(245, 183, 0, .12); }
-.pers-recomenda b:first-child { display: block; margin-bottom: 2px; }
-.pers-recomenda p { margin: 0; font-size: 14.5px; }
+.pers-recomenda { margin: 16px 0 26px; padding: 14px 18px; border-radius: var(--r-md); border: 1.5px solid #C9A227; background: rgba(245, 183, 0, .12); }
+.pers-recomenda strong.t { display: block; margin-bottom: 4px; font-weight: 800; }
+.pers-recomenda p { margin: 0; font-size: 14.5px; line-height: 1.5; font-weight: 400; }
+.pers-recomenda p strong { display: inline; font-weight: 800; }
 /* extras difíceis depois do boss */
 .extras-sec { margin: 34px auto 0; max-width: 340px; text-align: center; }
 .extras-sec h3 { margin: 0 0 4px; font-size: 1.05rem; }
 .extras-sec > p { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; }
 .extras-sec .node-wrap { margin: 0 auto 14px; }
 .node-btn.extra { font-size: 20px; }
+
+/* espaçamentos corrigidos */
+.cta-sec { margin-top: 72px; }
+.site-footer nav { flex-wrap: wrap; row-gap: 8px; }
+@media (max-width: 760px) { .cta-sec { margin-top: 48px; } .site-footer { margin-top: 64px; } }

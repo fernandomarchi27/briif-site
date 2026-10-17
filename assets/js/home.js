@@ -91,22 +91,4 @@
     });
   }
   desenhar();
-
-  // ----- instalar o app: ainda em desenvolvimento -----
-  const modal = $('#app-modal');
-  let ultimo = null;
-  function abrirModal(plataforma, origem) {
-    ultimo = origem;
-    $('#app-modal-p').textContent = 'Estamos construindo o aplicativo do Briiff para ' + plataforma + ' e ele ainda não foi publicado. Por enquanto, use a versão web: ela tem as mesmas trilhas e o mesmo jeito de estudar.';
-    modal.hidden = false;
-    $('#app-modal-x').focus();
-  }
-  function fecharModal() { modal.hidden = true; if (ultimo) ultimo.focus(); }
-  document.querySelectorAll('[data-instalar]').forEach((a) => a.addEventListener('click', (e) => {
-    e.preventDefault();
-    abrirModal(a.dataset.instalar, a);
-  }));
-  $('#app-modal-x').addEventListener('click', fecharModal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) fecharModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) fecharModal(); });
 })();

@@ -69,7 +69,7 @@
     if (view === 'resultado' || view === 'revisao') return '';
     const n = fase.materiasNomes;
     const lista = n.length > 1 ? n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1] : n[0];
-    return `<div class="pers-recomenda" role="note"><b>Antes de começar</b><p>É recomendado que você já tenha feito as fases de <b>${esc(lista)}</b>, os conteúdos que esta fase mistura. Se ainda não fez, sem problema: você pode tentar, mas pode ser que algumas questões sejam novas para você.</p></div>`;
+    return `<div class="pers-recomenda" role="note"><strong class="t">Antes de começar</strong><p>É recomendado que você já tenha feito as fases de <strong>${esc(lista)}</strong>, os conteúdos que esta fase mistura. Se ainda não fez, sem problema: você pode tentar, mas pode ser que algumas questões sejam novas para você.</p></div>`;
   }
   function ligarNav() {
     $$('.steps-nav button').forEach((b) => b.addEventListener('click', () => {
