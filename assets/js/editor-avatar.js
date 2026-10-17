@@ -16,27 +16,28 @@
   const igual = (a, b) => A.DATA.cats.every((c) => a[c.id] === b[c.id]);
   const moeda = (n) => `<span class="av-moeda">${ICONS.coin}${n}</span>`;
 
+  let sub = null;       // categoria aberta dentro da aba (ex.: Estilo / Cor do cabelo)
+  let zoom = 'corpo';   // corpo | rosto
+  const ROTULO = { pele: 'PELE', cabelo: 'CABELO', rosto: 'ROSTO', barba: 'BARBA', roupa: 'ROUPA', calca: 'CALÇA', sapato: 'SAPATOS', extras: 'EXTRAS', fundo: 'CENÁRIO' };
+
+  function arte(cat, it) {
+    if (cat.tipo === 'cor') return `<span class="px-cor" style="background:${it.cor}"></span>`;
+    const prev = Object.assign({}, cfg); prev[cat.id] = it.id;
+    return `<span class="px-mini">${A.svg(prev, { crop: cat.crop, semFundo: cat.id !== 'fundo' })}</span>`;
+  }
+
   function opcao(cat, it) {
     const sel = cfg[cat.id] === it.id;
     const dono = tem(cat.id, it);
-    const preco = it.preco > 0 && !dono ? moeda(it.preco) : '';
-    const meu = it.preco > 0 && dono ? '<span class="av-meu" title="Você já tem">✓</span>' : '';
-    let arte;
-    if (cat.tipo === 'cor') arte = `<span class="av-cor" style="background:${it.cor}"></span>`;
-    else {
-      const prev = Object.assign({}, cfg); prev[cat.id] = it.id;
-      arte = `<span class="av-mini">${A.svg(prev, { vb: cat.vb })}</span>`;
-    }
-    return `<button type="button" class="av-op ${sel ? 'sel' : ''} ${it.preco > 0 && !dono ? 'pago' : ''}" data-cat="${cat.id}" data-id="${it.id}" aria-pressed="${sel}" aria-label="${esc(it.nome)}${it.preco > 0 && !dono ? ', ' + it.preco + ' MathCoins' : ''}" title="${esc(it.nome)}">${arte}${preco}${meu}</button>`;
+    const paga = it.preco > 0 && !dono;
+    const tag = paga ? `<span class="px-preco">${ICONS.coin}${it.preco}</span>` : (it.preco > 0 ? '<span class="px-meu">SEU</span>' : '<span class="px-free">GRÁTIS</span>');
+    return `<button type="button" class="px-op ${cat.tipo === 'cor' ? 'cor' : ''} ${sel ? 'sel' : ''} ${paga ? 'pago' : ''}" data-cat="${cat.id}" data-id="${it.id}" aria-pressed="${sel}" aria-label="${esc(it.nome)}${paga ? ', ' + it.preco + ' MathCoins' : ''}" title="${esc(it.nome)}">${arte(cat, it)}<span class="px-nome">${esc(it.nome)}</span>${cat.tipo === 'cor' ? '' : tag}${sel ? '<i class="px-ok">✓</i>' : ''}</button>`;
   }
 
-  function secao(cat) {
-    const atual = A.item(cat.id, cfg[cat.id]);
-    return `
-      <section class="av-sec">
-        <h3>${esc(cat.nome)} <small>${esc(atual ? atual.nome : '')}</small></h3>
-        <div class="av-grade ${cat.tipo === 'cor' ? 'cores' : ''}" role="group" aria-label="${esc(cat.nome)}">${cat.itens.map((it) => opcao(cat, it)).join('')}</div>
-      </section>`;
+  function thumbAba(a) {
+    const c = A.cat(a.cats[0]);
+    if (c.tipo === 'cor') return `<span class="px-aba-ic"><i style="background:${A.item(c.id, cfg[c.id]).cor}"></i></span>`;
+    return `<span class="px-aba-ic">${A.svg(cfg, { crop: c.crop, semFundo: true })}</span>`;
   }
 
   function render() {
@@ -44,40 +45,56 @@
     const mudou = !igual(cfg, salvo);
     const semSaldo = f.total > p.moedas;
     const abaAtual = A.DATA.abas.find((a) => a.id === aba);
-    const rotuloSalvar = f.total > 0 ? `Comprar ${f.lista.length} ${f.lista.length === 1 ? 'peça' : 'peças'} e salvar` : 'Salvar avatar';
+    if (!sub || abaAtual.cats.indexOf(sub) === -1) sub = abaAtual.cats[0];
+    const cat = A.cat(sub);
+    const rotuloSalvar = f.total > 0 ? `COMPRAR E SALVAR · ${f.total}` : 'SALVAR AVATAR';
+    const resumo = A.DATA.cats.filter((c) => c.tipo === 'forma' || c.id === 'pele').map((c) => {
+      const it = A.item(c.id, cfg[c.id]);
+      const paga = it.preco > 0 && !tem(c.id, it);
+      return `<li><span>${esc(c.nome)}</span><b>${esc(it.nome)}</b>${paga ? `<em>${ICONS.coin}${it.preco}</em>` : ''}</li>`;
+    }).join('');
+    const crop = zoom === 'rosto' ? [4, 2, 28, 26] : [0, 0, A.DATA.w, A.DATA.h];
 
     host.innerHTML = `
-      <div class="page-top"><h1>Meu avatar</h1>
-        <p class="rk-intro">Monte o seu personagem. As peças com moeda são pagas com MathCoins; o resto é de graça.</p></div>
-      <div class="av-ed">
-        <aside class="av-lado">
-          <div class="av-palco"><span class="av-grande">${A.svg(cfg)}</span></div>
-          <div class="av-saldo">Você tem <b>${moeda(p.moedas)}</b></div>
-          ${f.lista.length ? `<ul class="av-conta" aria-label="Peças a comprar">${f.lista.map((x) => `<li><span>${esc(x.nome)}</span>${moeda(x.preco)}</li>`).join('')}<li class="tot"><span>Total</span>${moeda(f.total)}</li></ul>` : ''}
-          ${semSaldo ? `<p class="av-aviso" role="alert">Faltam ${f.total - p.moedas} MathCoins. Conclua fases para ganhar mais, ou troque as peças pagas por outras.</p>` : ''}
-          ${msg ? `<p class="av-aviso ${msg.ok ? 'ok' : ''}" role="status">${esc(msg.texto)}</p>` : ''}
-          <div class="av-acoes">
-            <button class="btn btn-coral" id="av-salvar" type="button" ${(!mudou && p.avatarAtivo === 'custom') || semSaldo ? 'disabled' : ''}>${esc(rotuloSalvar)}</button>
-            <button class="btn btn-ink btn-sm" id="av-sortear" type="button">Aleatório</button>
-            <button class="btn btn-ink btn-sm" id="av-desfazer" type="button" ${mudou ? '' : 'disabled'}>Desfazer</button>
-          </div>
-        </aside>
-        <div class="av-painel">
-          <div class="pills av-abas" role="tablist" aria-label="Partes do avatar">
-            ${A.DATA.abas.map((a) => `<button type="button" class="pill" role="tab" data-aba="${a.id}" aria-selected="${a.id === aba}">${esc(a.nome)}</button>`).join('')}
-          </div>
-          ${abaAtual.cats.map((id) => secao(A.cat(id))).join('')}
+      <div class="pxe">
+        <div class="pxe-topo"><h1>MEU AVATAR</h1><div class="pxe-saldo" title="Seus MathCoins">${ICONS.coin}<b>${p.moedas}</b></div></div>
+        <div class="pxe-corpo">
+          <nav class="pxe-nav" role="tablist" aria-label="Partes do avatar">
+            ${A.DATA.abas.map((a) => `<button type="button" role="tab" class="pxe-aba" data-aba="${a.id}" aria-selected="${a.id === aba}">${thumbAba(a)}<span>${ROTULO[a.id] || esc(a.nome)}</span></button>`).join('')}
+          </nav>
+          <section class="pxe-palco" aria-label="Pré-visualização">
+            <div class="pxe-tela ${zoom}">${A.svg(cfg, { crop, corpo: true })}</div>
+            <div class="pxe-ctrl">
+              <button type="button" class="pxe-bt" id="av-zoom">${zoom === 'corpo' ? 'VER ROSTO' : 'VER CORPO'}</button>
+              <button type="button" class="pxe-bt" id="av-sortear">ALEATÓRIO</button>
+              <button type="button" class="pxe-bt" id="av-desfazer" ${mudou ? '' : 'disabled'}>DESFAZER</button>
+            </div>
+          </section>
+          <section class="pxe-opcoes">
+            <div class="pxe-sub" role="tablist">${abaAtual.cats.length > 1 ? abaAtual.cats.map((id) => `<button type="button" class="pxe-subb" data-sub="${id}" aria-selected="${id === sub}">${esc(A.cat(id).nome.toUpperCase())}</button>`).join('') : `<span class="pxe-titulo">${esc(cat.nome.toUpperCase())}</span>`}</div>
+            <div class="pxe-grade ${cat.tipo === 'cor' ? 'cores' : ''}" role="group" aria-label="${esc(cat.nome)}">${cat.itens.map((it) => opcao(cat, it)).join('')}</div>
+          </section>
+          <aside class="pxe-resumo">
+            <h2>RESUMO</h2>
+            <ul class="pxe-lista">${resumo}</ul>
+            <div class="pxe-total"><span>Total a pagar</span><b>${ICONS.coin}${f.total}</b></div>
+            ${semSaldo ? `<p class="pxe-aviso" role="alert">Faltam ${f.total - p.moedas} MathCoins. Conclua fases para ganhar mais, ou troque as peças pagas.</p>` : ''}
+            ${msg ? `<p class="pxe-aviso ${msg.ok ? 'ok' : ''}" role="status">${esc(msg.texto)}</p>` : ''}
+            <button class="pxe-salvar" id="av-salvar" type="button" ${(!mudou && p.avatarAtivo === 'custom') || semSaldo ? 'disabled' : ''}>${esc(rotuloSalvar)}</button>
+          </aside>
         </div>
       </div>`;
     ligar();
   }
 
   function ligar() {
-    $$('[data-aba]', host).forEach((b) => b.addEventListener('click', () => { aba = b.dataset.aba; msg = null; render(); }));
-    $$('.av-op', host).forEach((b) => b.addEventListener('click', () => {
+    $$('[data-aba]', host).forEach((b) => b.addEventListener('click', () => { aba = b.dataset.aba; sub = null; msg = null; render(); }));
+    $$('[data-sub]', host).forEach((b) => b.addEventListener('click', () => { sub = b.dataset.sub; render(); }));
+    $('#av-zoom').addEventListener('click', () => { zoom = zoom === 'corpo' ? 'rosto' : 'corpo'; render(); });
+    $$('.px-op', host).forEach((b) => b.addEventListener('click', () => {
       cfg[b.dataset.cat] = b.dataset.id; msg = null;
       if (window.BriifSom) window.BriifSom.tocar('toque');
-      const y = window.scrollY; render(); window.scrollTo(0, y);
+      const y = window.scrollY; const g = $('.pxe-grade'); const gy = g ? g.scrollTop : 0; render(); window.scrollTo(0, y); const g2 = $('.pxe-grade'); if (g2) g2.scrollTop = gy;
     }));
     $('#av-desfazer').addEventListener('click', () => { cfg = Object.assign({}, salvo); msg = null; render(); });
     $('#av-sortear').addEventListener('click', () => {
