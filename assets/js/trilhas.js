@@ -133,6 +133,22 @@
           </${tagB}>
         </div>`;
     }
+    // extras difíceis: uma fase por conteúdo, só liberam depois do boss (não entram na Personalizada)
+    if (t.extras && t.extras.length) {
+      const liberadas = B.boss.derrotado(p, t.id);
+      html += `<div class="extras-sec"><h3>Extras difíceis</h3><p>${liberadas ? 'Só dois exercícios por fase, bem puxados. Cada um tem uma dica de uso único.' : 'Vença a Batalha final para liberar.'}</p>`;
+      t.extras.forEach((x) => {
+        const feita = B.progresso.faseCompleta(p, x.id);
+        const tag = liberadas ? 'a' : 'div';
+        const href = liberadas ? `href="licao.html?f=${encodeURIComponent(x.id)}"` : '';
+        html += `
+          <${tag} class="node-wrap" ${href} ${liberadas ? '' : 'aria-disabled="true"'} aria-label="${esc(x.titulo)} (${feita ? 'concluída' : liberadas ? 'disponível' : 'bloqueada'})">
+            <span class="node-btn extra ${feita ? 'completa' : liberadas ? 'available' : 'locked'}" style="--c:${t.cor};--on-c:${t.on}">${feita ? ICONS.check : liberadas ? '★' : ICONS.lock}</span>
+            <span class="node-label">${esc(x.titulo)}<small>${feita ? 'Revisar' : liberadas ? '2 exercícios difíceis' : 'Bloqueada'}</small></span>
+          </${tag}>`;
+      });
+      html += '</div>';
+    }
     return html;
   }
 

@@ -15,11 +15,18 @@
   }
 
   const { trilha, fase, ti, fi } = achou;
-  const aula = B.AULAS[fase.id];
+  const ehExtra = !!achou.extra;
+  const aula = B.AULAS[ehExtra ? achou.origem : fase.id];
   document.title = `${fase.titulo} — Briiff`;
 
   let prog = B.progresso.ler();
-  if (!B.progresso.faseDisponivel(prog, trilha, fi) && !B.progresso.faseCompleta(prog, fase.id)) {
+  if (ehExtra && !B.progresso.faseDisponivel(prog, trilha, fi) && !B.progresso.faseCompleta(prog, fase.id)) {
+    root.innerHTML = `<div class="block"><h2>Fase extra bloqueada</h2><p>As fases extras difíceis liberam depois que você vence a <b>Batalha final</b> de ${esc(trilha.nome)}.</p>
+      <a class="btn btn-coral btn-sm" href="trilhas.html?t=${encodeURIComponent(trilha.id)}">Voltar à trilha</a></div>`;
+    B.aguardarSync().then((mudou) => { if (mudou) location.reload(); });
+    return;
+  }
+  if (!ehExtra && !B.progresso.faseDisponivel(prog, trilha, fi) && !B.progresso.faseCompleta(prog, fase.id)) {
     const ant = trilha.fases[fi - 1];
     root.innerHTML = `<div class="block"><h2>Essa fase ainda está bloqueada</h2><p>Conclua antes a fase <b>${esc(ant.titulo)}</b> para liberar esta.</p>
       <a class="btn btn-coral btn-sm" href="licao.html?f=${encodeURIComponent(ant.id)}">Ir para a fase anterior</a></div>`;
@@ -31,12 +38,12 @@
   root.style.setProperty('--c', trilha.cor);
   root.style.setProperty('--on-c', trilha.on);
 
-  let view = 'aprender';     // aprender | praticar | resultado
+  let view = ehExtra ? 'praticar' : 'aprender';     // aprender | praticar | resultado
   let q = 0, acertos = 0, respondida = null, resumo = null, finalizada = false;
   // combo = maior sequência de acertos seguidos; tempo = do início da prática até o fim
   let combo = 0, melhorCombo = 0, inicioMs = Date.now(), duracaoMs = 0, animarPendente = false;
   // regra de aprovação: pelo menos 3 acertos (ou todos, se a fase tiver menos de 3 perguntas)
-  const MIN_ACERTOS = Math.min(3, fase.exercicios.length);
+  const MIN_ACERTOS = ehExtra ? 1 : Math.min(3, fase.exercicios.length);   // extras difíceis (2 questões): basta 1 acerto
   // erros da rodada (índices dos exercícios) e estado da revisão opcional
   let quieto = false, erros = [], reprovado = false, rev = { i: 0, resp: null, certas: 0 }, revNota = null;
   let dicas = {}; // id do exercício -> 'aberta' | 'fechada' (dica de uso único)
@@ -47,14 +54,22 @@
   /* ---------- estrutura comum ---------- */
   function topo() {
     return `
-      <div class="crumbs"><a href="trilhas.html?t=${encodeURIComponent(trilha.id)}">${esc(trilha.nome)}</a> / Fase ${fase.numero}</div>
-      <span class="badge" style="--c:${trilha.cor}">${esc(trilha.nome)} · Fase ${fase.numero}</span>
+      <div class="crumbs"><a href="trilhas.html?t=${encodeURIComponent(trilha.id)}">${esc(trilha.nome)}</a> / ${ehExtra ? 'Extra difícil' : 'Fase ' + fase.numero}</div>
+      <span class="badge" style="--c:${trilha.cor}">${esc(trilha.nome)} · ${ehExtra ? 'Extra difícil' : 'Fase ' + fase.numero}</span>
       <h1>${esc(fase.titulo)}</h1>
       <div class="steps-nav" role="tablist">
         <button role="tab" data-v="aprender" aria-selected="${view === 'aprender'}">1. Aprender</button>
         <button role="tab" data-v="praticar" aria-selected="${view === 'praticar'}">2. Praticar</button>
         <button role="tab" data-v="resultado" aria-selected="${view === 'resultado'}" ${(finalizada || reprovado) ? '' : 'disabled'}>3. Resultado</button>
-      </div>`;
+      </div>${avisoPersonalizada()}`;
+  }
+  /** Na trilha Personalizada o aluno pode começar sem ter visto o conteúdo: avisa o que é recomendado. */
+  function avisoPersonalizada() {
+    if (trilha.id !== 'personalizada' || !fase.materiasNomes || !fase.materiasNomes.length) return '';
+    if (view === 'resultado' || view === 'revisao') return '';
+    const n = fase.materiasNomes;
+    const lista = n.length > 1 ? n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1] : n[0];
+    return `<div class="pers-recomenda" role="note"><b>Antes de começar</b><p>É recomendado que você já tenha feito as fases de <b>${esc(lista)}</b>, os conteúdos que esta fase mistura. Se ainda não fez, sem problema: você pode tentar, mas pode ser que algumas questões sejam novas para você.</p></div>`;
   }
   function ligarNav() {
     $$('.steps-nav button').forEach((b) => b.addEventListener('click', () => {

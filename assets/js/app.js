@@ -1033,14 +1033,23 @@
       for (let fi = 0; fi < t.fases.length; fi++) {
         if (t.fases[fi].id === faseId) return { trilha: t, fase: t.fases[fi], ti, fi };
       }
+      // fases extras (difíceis), que ficam depois do boss e não entram na trilha Personalizada
+      const ex = (t.extras || []).find((x) => x.id === faseId);
+      if (ex) {
+        const origem = t.fases.find((f) => f.id === ex.faseOrigem) || t.fases[0];
+        const fase = Object.assign({}, origem, ex);   // herda a lição da fase de origem
+        return { trilha: t, fase, ti, fi: -1, extra: true, origem: ex.faseOrigem };
+      }
     }
     return null;
   }
   function faseDisponivel(p, t, fi) {
+    if (fi < 0) return bossDerrotado(p, t.id);   // extras difíceis: só depois de vencer o boss
     return fi === 0 || faseCompleta(p, t.fases[fi - 1].id);
   }
   function proximaFase(ti, fi) {
     const t = TRILHAS[ti];
+    if (fi < 0) return null;
     if (fi + 1 < t.fases.length) return { trilha: t, fase: t.fases[fi + 1] };
     return null;
   }
