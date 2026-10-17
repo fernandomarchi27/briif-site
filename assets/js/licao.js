@@ -39,7 +39,8 @@
   const MIN_ACERTOS = Math.min(3, fase.exercicios.length);
   // erros da rodada (índices dos exercícios) e estado da revisão opcional
   let quieto = false, erros = [], reprovado = false, rev = { i: 0, resp: null, certas: 0 }, revNota = null;
-  function reiniciarPratica() { q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); erros = []; reprovado = false; revNota = null; quieto = false; }
+  let dicas = {}; // id do exercício -> 'aberta' | 'fechada' (dica de uso único)
+  function reiniciarPratica() { dicas = {}; q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); erros = []; reprovado = false; revNota = null; quieto = false; }
 
   const DIFF = { facil: 'Fácil', media: 'Média', dificil: 'Difícil' };
 
@@ -150,6 +151,7 @@
         ${ex.materia ? `<span class="mat-tag" style="--c:${ex.materiaCor}">${esc(ex.materia)}</span>` : ''}
         <div class="diff">Dificuldade: ${DIFF[ex.dificuldade] || 'Média'}</div>
         <h2>${esc(ex.pergunta)}</h2>
+        ${dicaHtml(ex)}
         <div class="q-options">
           ${ex.opcoes.map((o, k) => {
             let cls = '';
@@ -161,10 +163,21 @@
       </div>
       <div id="rasc-host"></div>`;
   }
+  function dicaHtml(ex) {
+    if (!ex.dica) return '';
+    const st = dicas[ex.id];
+    if (st === 'aberta') return `<div class="dica-box" role="note"><small>Dica · só dá para ver uma vez</small><p>${esc(ex.dica)}</p><button class="btn btn-ink btn-sm" id="dica-fechar" type="button">Fechar dica</button></div>`;
+    if (st === 'fechada') return `<div class="dica-bar"><span class="dica-usada">Dica já usada</span></div>`;
+    if (respondida !== null) return '';
+    return `<div class="dica-bar"><button class="dica-btn" id="dica-abrir" type="button">Pedir dica (1 uso)</button></div>`;
+  }
   function ligarPraticar() {
     const ex = fase.exercicios[q];
+    const ab = $('#dica-abrir'); if (ab) ab.addEventListener('click', () => { dicas[ex.id] = 'aberta'; render(); });
+    const fe = $('#dica-fechar'); if (fe) fe.addEventListener('click', () => { dicas[ex.id] = 'fechada'; render(); });
     const responder = (k) => {
       if (respondida !== null) return;
+      if (dicas[ex.id] === 'aberta') dicas[ex.id] = 'fechada';
       respondida = k;
       if (respondida === ex.correta) { acertos++; combo++; if (combo > melhorCombo) melhorCombo = combo; } else { combo = 0; erros.push(q); }
       som(respondida === ex.correta ? 'acerto' : 'erro');
@@ -273,7 +286,7 @@
         <div class="rs-extras">
           ${resumo.primeiraVez && resumo.moedas ? `<span class="rs-pilula"><img src="assets/img/moeda.svg" alt="">+${resumo.moedas}</span>` : ''}
           ${resumo.streakAumentou ? `<span class="rs-pilula"><img src="assets/img/fogo.svg" alt="">Ofensiva de ${resumo.streak} ${resumo.streak === 1 ? 'dia' : 'dias'}</span>` : ''}
-          ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}! +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios' : 'bloqueio'}</span>` : ''}
+          ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}!${resumo.bloqueioGanho > 0 ? ` +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios' : 'bloqueio'}` : ' (limite de bloqueios)'}</span>` : ''}
           ${resumo.primeiraVez ? '' : '<span class="rs-nota">Fase já concluída antes: XP e MathCoins só valem na primeira vez.</span>'}
           ${notaRevisao()}
         </div>

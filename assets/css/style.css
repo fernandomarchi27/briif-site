@@ -1883,3 +1883,12 @@ body.cel-aberta { overflow: hidden; }
 .skip-link { position: fixed; left: 12px; top: -60px; z-index: 2000; padding: 10px 16px; border-radius: 10px; background: #2A2340; color: #fff; font-weight: 700; text-decoration: none; transition: top .15s; }
 .skip-link:focus { top: 12px; outline: 3px solid #FFC857; outline-offset: 2px; }
 main:focus { outline: none; }
+
+/* dica de uso único (exercícios 4 e 5) */
+.dica-bar { margin: 0 0 14px; }
+.dica-btn { font: inherit; font-weight: 700; font-size: 14px; padding: 8px 14px; border-radius: 999px; cursor: pointer; border: 1.5px dashed var(--c, var(--ink)); background: transparent; color: var(--ink); }
+.dica-btn:hover { background: color-mix(in srgb, var(--c, #888) 14%, transparent); }
+.dica-usada { font-size: 13px; color: var(--faint); font-weight: 600; }
+.dica-box { margin: 0 0 14px; padding: 14px 16px; border-radius: var(--r-md); border: 1.5px solid var(--c, var(--ink)); background: color-mix(in srgb, var(--c, #888) 10%, transparent); }
+.dica-box small { display: block; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; font-size: 11px; margin-bottom: 4px; color: var(--muted, var(--faint)); }
+.dica-box p { margin: 0 0 10px; }

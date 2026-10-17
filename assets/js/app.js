@@ -486,6 +486,7 @@
   /* Loja: por enquanto só o bloqueio de ofensiva. */
   const LOJA = {
     custoBloqueio: 100, bloqueiosPorNivel: 1, bloqueiosBoasVindas: 2,
+    maxBloqueios: 5,   // limite por conta: o saldo de bloqueios nunca passa disso
     // código promocional de moedas grátis (configurações da loja) — por enquanto sem limite de usos
     codigoMoedas: '#fefe10', limiteCodigoMoedas: 10000
   };
@@ -519,9 +520,17 @@
     ['moedas:moedasGanhas:moedasGastas', 'bloqueios:bloqueiosGanhos:bloqueiosUsados'].forEach((t) => {
       const [saldo, ganho, gasto] = t.split(':');
       if (typeof p[ganho] !== 'number' || typeof p[gasto] !== 'number') { p[ganho] = Math.max(0, Number(p[saldo]) || 0); p[gasto] = 0; }
+      // bloqueios: no máximo LOJA.maxBloqueios na conta (o que passar disso é descartado, inclusive vindo da nuvem)
+      if (saldo === 'bloqueios' && p[ganho] - p[gasto] > LOJA.maxBloqueios) p[ganho] = p[gasto] + LOJA.maxBloqueios;
       p[saldo] = Math.max(0, p[ganho] - p[gasto]);
     });
     return p;
+  }
+  /** Soma bloqueios ao progresso respeitando o limite. Devolve quantos realmente entraram. */
+  function darBloqueios(p, n) {
+    const dado = Math.max(0, Math.min(n, LOJA.maxBloqueios - (p.bloqueios || 0)));
+    p.bloqueios = (p.bloqueios || 0) + dado;
+    return dado;
   }
 
   function lerProgresso() {
@@ -555,7 +564,7 @@
   function concederBoasVindas() {
     const p = lerProgresso();
     if (p.boasVindasDadas) return false;
-    p.bloqueios = (p.bloqueios || 0) + LOJA.bloqueiosBoasVindas;
+    darBloqueios(p, LOJA.bloqueiosBoasVindas);
     p.boasVindasDadas = true;
     salvarProgresso(p);
     agendarEnvio();
@@ -565,9 +574,10 @@
   /** Compra um bloqueio de ofensiva com MathCoins. Devolve { ok, motivo, progresso }. */
   function comprarBloqueio() {
     const p = lerProgresso();
+    if ((p.bloqueios || 0) >= LOJA.maxBloqueios) return { ok: false, motivo: 'limite', progresso: p };
     if (p.moedas < LOJA.custoBloqueio) return { ok: false, motivo: 'moedas', progresso: p };
     p.moedas -= LOJA.custoBloqueio;
-    p.bloqueios = (p.bloqueios || 0) + 1;
+    darBloqueios(p, 1);
     salvarProgresso(p);
     agendarEnvio();
     return { ok: true, progresso: p };
@@ -671,9 +681,8 @@
         p.xp -= p.xpProx;
         p.nivel += 1;
         p.xpProx = Math.round(p.xpProx * REWARD.crescimentoXpPorNivel);
-        p.bloqueios = (p.bloqueios || 0) + LOJA.bloqueiosPorNivel;
         resumo.subiu = true;
-        resumo.bloqueioGanho = (resumo.bloqueioGanho || 0) + LOJA.bloqueiosPorNivel;
+        resumo.bloqueioGanho = (resumo.bloqueioGanho || 0) + darBloqueios(p, LOJA.bloqueiosPorNivel);
       }
     }
 
@@ -728,12 +737,11 @@
       p.bosses = (p.bosses || []).concat(trilhaId);
       resumo.xp = BOSS.xp; resumo.moedas = BOSS.moedas;
       p.xp += BOSS.xp; p.moedas += BOSS.moedas;
-      p.bloqueios = (p.bloqueios || 0) + BOSS.bloqueios; resumo.bloqueioGanho += BOSS.bloqueios;
+      resumo.bloqueioGanho += darBloqueios(p, BOSS.bloqueios);
       while (p.xp >= p.xpProx) {
         p.xp -= p.xpProx; p.nivel += 1;
         p.xpProx = Math.round(p.xpProx * REWARD.crescimentoXpPorNivel);
-        p.bloqueios = (p.bloqueios || 0) + LOJA.bloqueiosPorNivel;
-        resumo.subiu = true; resumo.bloqueioGanho += LOJA.bloqueiosPorNivel;
+        resumo.subiu = true; resumo.bloqueioGanho += darBloqueios(p, LOJA.bloqueiosPorNivel);
       }
     }
     const h = hoje();
@@ -1408,7 +1416,7 @@
     auth, wordmark, iniciar, atualizarHeader, aguardarSync, avatarHtml, simbolos, trilhaIcon,
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
     progresso: { mesclar, ler: lerProgresso, completarFase, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
-    loja: { custoBloqueio: LOJA.custoBloqueio, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
+    loja: { custoBloqueio: LOJA.custoBloqueio, maxBloqueios: LOJA.maxBloqueios, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
     avatares: { lista: AVATARES, comprar: comprarAvatar, selecionar: selecionarAvatar, salvarPersonalizado: salvarAvatarPersonalizado },
     ranking: { buscar: buscarRanking, perfil: buscarPerfilPublico, avatar: avatarRanking, oculto: rankingOculto, alterarOculto: alterarRankingOculto },
     acharFase, proximaFase,

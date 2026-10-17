@@ -16,6 +16,7 @@
     const p = B.progresso.ler();
     const custo = B.loja.custoBloqueio;
     const daPra = p.moedas >= custo;
+    const cheio = (p.bloqueios || 0) >= B.loja.maxBloqueios;
     const limite = B.loja.limiteCodigoMoedas;
 
     const pl = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
@@ -72,12 +73,12 @@
           <p>Se um dia passar em branco, um bloqueio é usado sozinho e sua ofensiva não zera.</p>
           <ul class="shop-lista">
             <li>${ICONS.check}<span>Você ganha <b>2</b> ao criar a conta</span></li>
-            <li>${ICONS.check}<span>Mais <b>1</b> toda vez que sobe de nível</span></li>
-            <li>${ICONS.check}<span>Você tem <b>${pl(p.bloqueios || 0, 'bloqueio', 'bloqueios')}</b> agora</span></li>
+            <li>${ICONS.check}<span>Mais <b>1</b> toda vez que sobe de nível (até o limite)</span></li>
+            <li>${ICONS.check}<span>Você tem <b>${p.bloqueios || 0} de ${B.loja.maxBloqueios}</b> (limite por conta)</span></li>
           </ul>
           <div class="shop-compra">
             <span class="shop-preco">${ICONS.coin}<b>${custo}</b></span>
-            <button class="btn btn-coral" id="comprar-bloqueio" type="button" ${daPra ? '' : 'disabled'}>${daPra ? 'Comprar bloqueio' : `Faltam ${faltam(custo)} MathCoins`}</button>
+            <button class="btn btn-coral" id="comprar-bloqueio" type="button" ${daPra && !cheio ? '' : 'disabled'}>${cheio ? `Limite de ${B.loja.maxBloqueios} bloqueios` : daPra ? 'Comprar bloqueio' : `Faltam ${faltam(custo)} MathCoins`}</button>
           </div>
         </div>
       </article>

@@ -119,7 +119,7 @@
           <li><b>Tempo limitado</b><span>${CFG.tempo.facil}–${CFG.tempo.dificil} s por pergunta, conforme a dificuldade.</span></li>
         </ul>
         <p class="bs-prize">${primeiraVitoria
-          ? `Recompensa da 1ª vitória: <b>+${CFG.xp} XP</b> · <b>+${CFG.moedas} MathCoins</b> · <b>+${CFG.bloqueios} bloqueio de ofensiva</b>`
+          ? `Recompensa da 1ª vitória: <b>+${CFG.xp} XP</b> · <b>+${CFG.moedas} MathCoins</b> · <b>+${CFG.bloqueios} bloqueio de ofensiva</b> (até o limite de ${B.loja.maxBloqueios} por conta)`
           : 'Você já derrotou este boss — a revanche não dá recompensa, mas conta como dia de estudo.'}</p>
         <div class="actions"><button class="btn btn-coral" id="bs-go" type="button">Começar batalha</button>
         <a class="btn btn-ink" href="trilhas.html?t=${encodeURIComponent(trilha.id)}">Ainda não</a></div>
@@ -290,7 +290,7 @@
           <div class="rewards">
             <div class="reward"><b>+${resumo ? resumo.xp : 0}</b><span>XP</span></div>
             <div class="reward"><b>+${resumo ? resumo.moedas : 0}</b><span>MathCoins</span></div>
-            <div class="reward"><b>+${resumo ? resumo.bloqueioGanho : 0}</b><span>bloqueio${resumo && resumo.bloqueioGanho > 1 ? 's' : ''}</span></div>
+            <div class="reward"><b>+${resumo ? resumo.bloqueioGanho : 0}</b><span>bloqueio${resumo && resumo.bloqueioGanho > 1 ? 's' : ''}${resumo && resumo.primeiraVez && !resumo.bloqueioGanho ? ' (limite de ' + B.loja.maxBloqueios + ')' : ''}</span></div>
           </div>
           <div class="actions"><a class="btn btn-coral" href="${href}">Voltar à trilha</a>
           <button class="btn btn-ink" id="bs-again" type="button">Lutar de novo</button></div>
