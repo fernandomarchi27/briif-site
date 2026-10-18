@@ -56,7 +56,7 @@
   ];
 
   // ---------------------------------------------------------------- estado
-  let etapa = 'tutorial'; // tutorial | oferta | quiz | resultado
+  let etapa = params.get('avatar') === '1' ? 'avatar' : 'tutorial'; // tutorial | oferta | quiz | resultado | avatar
   let slide = 0;
   let perguntas = [];
   let qi = 0;
@@ -85,14 +85,16 @@
     return embaralhar(lista);
   }
 
-  // depois do quiz (ou de pular) o aluno cria o avatar e só então vai para `alvo`
-  function paraAvatar(alvo) { return 'avatar.html?onb=1&next=' + encodeURIComponent(alvo); }
+  // depois do quiz (ou de pular) vem a oferta do avatar (opcional); `alvoFinal` é para onde o aluno vai depois
+  let alvoFinal = destino;
+  function paraAvatar(alvo) { return 'onboarding.html?avatar=1&next=' + encodeURIComponent(alvo); }
 
   // ---------------------------------------------------------------- render
   function render() {
     if (etapa === 'tutorial') return renderTutorial();
     if (etapa === 'oferta') return renderOferta();
     if (etapa === 'quiz') return renderQuiz();
+    if (etapa === 'avatar') return renderAvatar();
     return renderResultado();
   }
 
@@ -199,6 +201,22 @@
         else { etapa = 'resultado'; render(); if (window.BriifSom) window.BriifSom.tocar(respostas.every((r) => r.certa) ? 'perfeito' : 'concluir'); }
       });
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderAvatar() {
+    const A = window.BriifAvatar;
+    const cfg = A ? (B.progresso.ler().avatarCfg || A.padrao()) : null;
+    host.innerHTML = `
+      <div class="onb-slide">
+        ${A ? `<span class="onb-avatar">${A.svg(cfg)}</span>` : `<span class="onb-icon">${ICONS.mix}</span>`}
+        <h1>Quer criar o seu avatar?</h1>
+        <p>É opcional: escolha o visual do seu personagem (pele, cabelo, roupa e mais). Ele aparece no seu perfil, nas batalhas e no ranking. Você pode criar ou mudar depois, quando quiser, em Perfil → Editar meu avatar.</p>
+        <div class="onb-quiz-oferta">
+          <a class="btn btn-coral" id="onb-criar-av" href="avatar.html?onb=1&next=${encodeURIComponent(alvoFinal)}">Criar meu avatar ${ICONS.arrow}</a>
+          <a class="onb-skip" id="onb-pular-av" href="${esc(alvoFinal)}">Agora não, ver as trilhas</a>
+        </div>
+      </div>`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

@@ -44,10 +44,12 @@
         ${B.avatarHtml(sessao || { nome })}
         <div class="info">
           <h1>${esc(nome)}</h1>
-          <a class="btn btn-ink btn-sm" href="avatar.html" style="margin-top:10px">Editar meu avatar</a>
+          <div class="profile-acoes">
+            <a class="btn btn-ink btn-sm" href="avatar.html">Editar meu avatar</a>
+            ${sessao ? `<button class="btn btn-ink btn-sm" id="logout-btn" type="button">Sair</button>` : ''}
+          </div>
           <p>${esc(sessao ? (sessao.email || (sessao.tipo === 'anonimo' ? 'Conta de convidado' : '')) : 'Progresso salvo apenas neste navegador')}</p>
         </div>
-        ${sessao ? `<button class="btn btn-ink btn-sm" id="logout-btn" type="button">Sair</button>` : ''}
         <div class="profile-stats">
           <div class="pstat"><b>${p.nivel}</b><span>Nível</span></div>
           <div class="pstat"><b>${p.moedas}</b><span>MathCoins</span></div>
