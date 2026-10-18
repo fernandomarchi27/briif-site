@@ -86,3 +86,8 @@
 .rk-link { position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
 .rk-row:hover { border-color: var(--indigo); }
 .rk-link:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+
+/* ---- primeiro acesso (depois do quiz do onboarding) ---- */
+.pxe-onb { margin: 0 0 14px; padding: 12px 14px; border: 2px solid var(--borda); border-radius: 12px; background: rgba(120, 90, 255, .12); font-size: 15px; line-height: 1.45; }
+.pxe-onb-nav { display: flex; justify-content: center; margin-top: 18px; }
+.pxe-continuar { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 14px 26px; }

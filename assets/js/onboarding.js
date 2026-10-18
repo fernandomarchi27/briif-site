@@ -85,6 +85,9 @@
     return embaralhar(lista);
   }
 
+  // depois do quiz (ou de pular) o aluno cria o avatar e só então vai para `alvo`
+  function paraAvatar(alvo) { return 'avatar.html?onb=1&next=' + encodeURIComponent(alvo); }
+
   // ---------------------------------------------------------------- render
   function render() {
     if (etapa === 'tutorial') return renderTutorial();
@@ -124,7 +127,7 @@
         <p>Um quiz rápido e opcional com 10 perguntas misturando Álgebra, Geometria, Funções e Estatística. No final, indicamos a matéria mais recomendada pra você começar — mas você pode pular e escolher sozinho.</p>
         <div class="onb-quiz-oferta">
           <button class="btn btn-coral" id="onb-ir-quiz" type="button">Fazer o quiz (recomendado)</button>
-          <button class="onb-skip" id="onb-ir-trilhas" type="button">Pular e ver as trilhas</button>
+          <button class="onb-skip" id="onb-ir-trilhas" type="button">Pular o quiz</button>
         </div>
       </div>`;
     $('#onb-ir-quiz').addEventListener('click', () => {
@@ -132,7 +135,7 @@
       qi = 0; respondida = null; respostas = [];
       etapa = 'quiz'; render();
     });
-    $('#onb-ir-trilhas').addEventListener('click', () => { location.href = destino; });
+    $('#onb-ir-trilhas').addEventListener('click', () => { location.href = paraAvatar(destino); });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -241,11 +244,11 @@
             <p>Foi onde você mais errou — reforçar essa base agora deixa o resto mais fácil depois.</p>
           </div>
           <div class="onb-nav">
-            <a class="btn btn-ink btn-sm" href="trilhas.html">Ver todas as trilhas</a>
-            <a class="btn btn-coral" href="trilhas.html?t=${encodeURIComponent(recomendada.id)}">Começar em ${esc(recomendada.nome)} ${ICONS.arrow}</a>
+            <a class="btn btn-ink btn-sm" href="${paraAvatar('trilhas.html')}">Continuar sem escolher matéria</a>
+            <a class="btn btn-coral" href="${paraAvatar('trilhas.html?t=' + encodeURIComponent(recomendada.id))}">Continuar (começar em ${esc(recomendada.nome)}) ${ICONS.arrow}</a>
           </div>` : `
           <div class="onb-nav">
-            <a class="btn btn-coral" href="${destino}">Ver as trilhas ${ICONS.arrow}</a>
+            <a class="btn btn-coral" href="${paraAvatar(destino)}">Continuar ${ICONS.arrow}</a>
           </div>`}
       </div>`;
     window.scrollTo({ top: 0, behavior: 'smooth' });

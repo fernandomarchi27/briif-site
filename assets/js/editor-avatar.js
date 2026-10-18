@@ -6,6 +6,11 @@
   B.iniciar('perfil');
 
   const host = $('#editor');
+  // modo "primeiro acesso": vem do onboarding (depois do quiz) e segue para as trilhas
+  const qs = new URLSearchParams(location.search);
+  const onb = qs.get('onb') === '1';
+  const nx = qs.get('next');
+  const proximo = nx && /^[a-z0-9_\-]+\.html(\?.*)?$/i.test(nx) ? nx : 'trilhas.html';
   let p = B.progresso.ler();
   let salvo = A.limpar(p.avatarCfg || A.padrao());   // o que está gravado na conta
   let cfg = Object.assign({}, salvo);                 // o que está sendo montado
@@ -57,7 +62,8 @@
 
     host.innerHTML = `
       <div class="pxe">
-        <div class="pxe-topo"><h1>MEU AVATAR</h1><div class="pxe-saldo" title="Seus MathCoins">${ICONS.coin}<b>${p.moedas}</b></div></div>
+        <div class="pxe-topo"><h1>${onb ? 'CRIE SEU AVATAR' : 'MEU AVATAR'}</h1><div class="pxe-saldo" title="Seus MathCoins">${ICONS.coin}<b>${p.moedas}</b></div></div>
+        ${onb ? '<p class="pxe-onb">Escolha o visual do seu personagem: pele, cabelo, roupa e mais. Ele vai te acompanhar nas fases, nas batalhas e no ranking. Quando terminar, salve e continue. Dá para mudar depois no Perfil.</p>' : ''}
         <div class="pxe-corpo">
           <nav class="pxe-nav" role="tablist" aria-label="Partes do avatar">
             ${A.DATA.abas.map((a) => `<button type="button" role="tab" class="pxe-aba" data-aba="${a.id}" aria-selected="${a.id === aba}">${thumbAba(a)}<span>${ROTULO[a.id] || esc(a.nome)}</span></button>`).join('')}
@@ -83,6 +89,7 @@
             <button class="pxe-salvar" id="av-salvar" type="button" ${(!mudou && p.avatarAtivo === 'custom') || semSaldo ? 'disabled' : ''}>${esc(rotuloSalvar)}</button>
           </aside>
         </div>
+        ${onb ? `<div class="pxe-onb-nav"><a class="pxe-bt pxe-continuar" id="av-continuar" href="${esc(proximo)}">${mudou ? 'CONTINUAR SEM SALVAR' : (p.avatarAtivo === 'custom' ? 'CONTINUAR PARA AS TRILHAS' : 'FAZER DEPOIS')} →</a></div>` : ''}
       </div>`;
     ligar();
   }
