@@ -510,7 +510,7 @@
   }
 
   function progressoVazio() {
-    return { xp: 0, nivel: 1, xpProx: REWARD.xpBaseNivel1, moedas: 0, bloqueios: 0, fases: [], bosses: [], streak: 0, recorde: 0, ultimoDia: null, dias: [], protegidos: [], porTrilha: {}, ultimo: null, boasVindasDadas: false, avatares: [], avatarAtivo: null, avatarAtivoTs: 0, avatarPecas: [], avatarCfg: null, avatarCfgTs: 0 };
+    return { xp: 0, nivel: 1, xpProx: REWARD.xpBaseNivel1, moedas: 0, bloqueios: 0, fases: [], bosses: [], streak: 0, recorde: 0, ultimoDia: null, dias: [], protegidos: [], porTrilha: {}, porAssunto: {}, ultimo: null, boasVindasDadas: false, avatares: [], avatarAtivo: null, avatarAtivoTs: 0, avatarPecas: [], avatarCfg: null, avatarCfgTs: 0 };
   }
 
   /** Moedas e bloqueios têm contadores que só crescem (ganhos e gastos); o saldo é a diferença.
@@ -664,6 +664,42 @@
 
   const ofensivaFeitaHoje = (p) => p.ultimoDia === hoje();
   const faseCompleta = (p, id) => p.fases.indexOf(id) !== -1;
+
+  /* ---------------------------- Desempenho por assunto ----------------------------
+     Cada fase é um "assunto". Guardamos, por fase de origem, quantas questões o aluno acertou e quantas respondeu
+     (porAssunto[faseId] = { a: acertos, t: total }). As questões da Personalizada e dos extras difíceis contam
+     para a fase de onde vieram. */
+  let indiceAssunto = null;
+  function assuntoDaQuestao(idQuestao) {
+    if (!indiceAssunto) {
+      indiceAssunto = {};
+      TRILHAS.forEach((t) => {
+        if (t.id === 'personalizada') return;
+        (t.fases || []).forEach((f) => (f.exercicios || []).forEach((e) => { indiceAssunto[e.id] = f.id; }));
+        (t.extras || []).forEach((x) => (x.exercicios || []).forEach((e) => { if (x.faseOrigem) indiceAssunto[e.id] = x.faseOrigem; }));
+      });
+    }
+    return indiceAssunto[idQuestao] || null;
+  }
+  /** lista = [{ id, certa }]: uma tentativa (passando ou não) de uma fase. */
+  function registrarRespostas(lista) {
+    if (!lista || !lista.length) return;
+    const p = lerProgresso();
+    const pa = p.porAssunto = Object.assign({}, p.porAssunto || {});
+    let mudou = false;
+    lista.forEach((r) => {
+      const a = assuntoDaQuestao(r.id);
+      if (!a) return;
+      const x = Object.assign({ a: 0, t: 0 }, pa[a]);
+      x.t += 1;
+      if (r.certa) x.a += 1;
+      pa[a] = x;
+      mudou = true;
+    });
+    if (!mudou) return;
+    salvarProgresso(p);
+    agendarEnvio();
+  }
 
   /** Registra a conclusão de uma fase. Devolve o resumo para a tela de resultado. */
   function completarFase(faseId, trilhaId, xpGanho, acertos, total) {
@@ -835,6 +871,11 @@
     chaves.forEach((k) => {
       const a = (l.porTrilha || {})[k], b = (r.porTrilha || {})[k];
       m.porTrilha[k] = !a ? b : !b ? a : (b.total > a.total ? b : a);
+    });
+    m.porAssunto = {};
+    Array.from(new Set(Object.keys(l.porAssunto || {}).concat(Object.keys(r.porAssunto || {})))).forEach((k) => {
+      const a = (l.porAssunto || {})[k], b = (r.porAssunto || {})[k];
+      m.porAssunto[k] = !a ? b : !b ? a : ((b.t || 0) > (a.t || 0) ? b : a);
     });
     m.ultimo = ((l.ultimo && l.ultimo.ts) || 0) >= ((r.ultimo && r.ultimo.ts) || 0) ? (l.ultimo || null) : (r.ultimo || null);
     return m;
@@ -1424,7 +1465,7 @@
     TRILHAS, AULAS, ICONS, $, $$, esc, fmt, rich,
     auth, wordmark, iniciar, atualizarHeader, aguardarSync, avatarHtml, simbolos, trilhaIcon,
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
-    progresso: { mesclar, ler: lerProgresso, completarFase, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
+    progresso: { mesclar, ler: lerProgresso, completarFase, registrarRespostas, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
     loja: { custoBloqueio: LOJA.custoBloqueio, maxBloqueios: LOJA.maxBloqueios, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
     avatares: { lista: AVATARES, comprar: comprarAvatar, selecionar: selecionarAvatar, salvarPersonalizado: salvarAvatarPersonalizado },
     ranking: { buscar: buscarRanking, perfil: buscarPerfilPublico, avatar: avatarRanking, oculto: rankingOculto, alterarOculto: alterarRankingOculto },

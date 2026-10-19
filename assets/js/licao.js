@@ -45,9 +45,10 @@
   // regra de aprovação: pelo menos 3 acertos (ou todos, se a fase tiver menos de 3 perguntas)
   const MIN_ACERTOS = ehExtra ? 1 : Math.min(3, fase.exercicios.length);   // extras difíceis (2 questões): basta 1 acerto
   // erros da rodada (índices dos exercícios) e estado da revisão opcional
+  let respostas = [], respostasRegistradas = false;   // para o painel de desempenho (acerto por assunto)
   let quieto = false, erros = [], reprovado = false, rev = { i: 0, resp: null, certas: 0 }, revNota = null;
   let dicas = {}; // id do exercício -> 'aberta' | 'fechada' (dica de uso único)
-  function reiniciarPratica() { dicas = {}; q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); erros = []; reprovado = false; revNota = null; quieto = false; }
+  function reiniciarPratica() { respostas = []; respostasRegistradas = false; dicas = {}; q = 0; acertos = 0; respondida = null; finalizada = false; combo = 0; melhorCombo = 0; inicioMs = Date.now(); erros = []; reprovado = false; revNota = null; quieto = false; }
 
   const DIFF = { facil: 'Fácil', media: 'Média', dificil: 'Difícil' };
 
@@ -194,6 +195,7 @@
       if (respondida !== null) return;
       if (dicas[ex.id] === 'aberta') dicas[ex.id] = 'fechada';
       respondida = k;
+      respostas.push({ id: ex.id, certa: k === ex.correta });
       if (respondida === ex.correta) { acertos++; combo++; if (combo > melhorCombo) melhorCombo = combo; } else { combo = 0; erros.push(q); }
       som(respondida === ex.correta ? 'acerto' : 'erro');
       render();
@@ -218,6 +220,7 @@
   }
 
   function finalizar() {
+    if (!respostasRegistradas) { respostasRegistradas = true; B.progresso.registrarRespostas(respostas); }
     // menos de 3 acertos: a fase NÃO é concluída, não dá XP e não conta a ofensiva do dia
     if (acertos < MIN_ACERTOS) {
       reprovado = true;

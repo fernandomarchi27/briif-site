@@ -46,6 +46,7 @@
           <h1>${esc(nome)}</h1>
           <div class="profile-acoes">
             <a class="btn btn-ink btn-sm" href="avatar.html">Editar meu avatar</a>
+            <a class="btn btn-ink btn-sm" href="desempenho.html">Meu desempenho</a>
             ${sessao ? `<button class="btn btn-ink btn-sm" id="logout-btn" type="button">Sair</button>` : ''}
           </div>
           <p>${esc(sessao ? (sessao.email || (sessao.tipo === 'anonimo' ? 'Conta de convidado' : '')) : 'Progresso salvo apenas neste navegador')}</p>
