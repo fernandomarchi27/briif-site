@@ -52,17 +52,13 @@
     config: svg('<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5a7.97 7.97 0 0 0 0-3l2-1.4-2-3.4-2.3.9a8 8 0 0 0-2.6-1.5L14 2.5h-4l-.5 2.6a8 8 0 0 0-2.6 1.5l-2.3-.9-2 3.4 2 1.4a7.97 7.97 0 0 0 0 3l-2 1.4 2 3.4 2.3-.9a8 8 0 0 0 2.6 1.5l.5 2.6h4l.5-2.6a8 8 0 0 0 2.6-1.5l2.3.9 2-3.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>')
   };
 
-  /* ---- Avatares da loja: ilustrações detalhadas (gradientes, sombras e acessórios) ---- */
-  const AVATARES = [
-    { id: "mago-roxo", nome: "Mago Roxo", preco: 100, cor: "#2E2270",
-      svg: "<svg viewBox=\"0 0 64 64\" width=\"100%\" height=\"100%\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><defs><radialGradient id=\"mgBg\" cx=\".5\" cy=\".28\" r=\".85\"><stop offset=\"0\" stop-color=\"#5A47C9\"/><stop offset=\".55\" stop-color=\"#2E2270\"/><stop offset=\"1\" stop-color=\"#150E38\"/></radialGradient><linearGradient id=\"mgHat\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7B63E8\"/><stop offset=\".55\" stop-color=\"#4A38B5\"/><stop offset=\"1\" stop-color=\"#2E2278\"/></linearGradient><linearGradient id=\"mgRobe\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5A47C9\"/><stop offset=\"1\" stop-color=\"#22185C\"/></linearGradient><linearGradient id=\"mgBeard\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"/><stop offset=\"1\" stop-color=\"#B9B1EA\"/></linearGradient><linearGradient id=\"mgFace\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#9C7360\"/><stop offset=\".5\" stop-color=\"#E0AD90\"/><stop offset=\"1\" stop-color=\"#D49C7E\"/></linearGradient><radialGradient id=\"mgEye\"><stop offset=\"0\" stop-color=\"#fff\"/><stop offset=\".45\" stop-color=\"#FFF0A0\"/><stop offset=\"1\" stop-color=\"#FFD54A\" stop-opacity=\"0\"/></radialGradient><radialGradient id=\"mgOrb\" cx=\".35\" cy=\".3\" r=\".8\"><stop offset=\"0\" stop-color=\"#fff\"/><stop offset=\".35\" stop-color=\"#C9BDFF\"/><stop offset=\"1\" stop-color=\"#6A55E0\"/></radialGradient></defs><rect width=\"64\" height=\"64\" fill=\"url(#mgBg)\"/><g fill=\"#fff\"><circle cx=\"9\" cy=\"10\" r=\".9\"/><circle cx=\"55\" cy=\"21\" r=\".8\" opacity=\".8\"/><circle cx=\"12\" cy=\"31\" r=\".6\" opacity=\".7\"/><circle cx=\"52\" cy=\"40\" r=\".6\" opacity=\".6\"/><circle cx=\"19\" cy=\"5\" r=\".6\" opacity=\".7\"/><path d=\"M50 8l.9 2.200 2.200.9-2.200.9-.9 2.200-.9-2.200-2.200-.9 2.200-.9z\" opacity=\".95\"/><path d=\"M8 22l.6 1.500 1.500.6-1.500.6-.6 1.500-.6-1.500-1.500-.6 1.500-.6z\" opacity=\".8\"/></g><path d=\"M54 30a7 7 0 1 1-7.500-8.800 5.600 5.600 0 0 0 7.500 8.800z\" transform=\"translate(-4 -14) scale(.8)\" fill=\"#FFE9A8\" opacity=\".9\"/><!-- manto --><path d=\"M3 64c1-10 9-14 17-15.500L32 47l12 1.500c8 1.500 16 5.500 17 15.500z\" fill=\"url(#mgRobe)\"/><path d=\"M20 48.500 32 47l12 1.500-4 3-8 1.500-8-1.500z\" fill=\"#1B1250\" opacity=\".55\"/><path d=\"M3 64c.4-3.500 1.800-6.200 4-8.200M61 64c-.4-3.500-1.800-6.200-4-8.200\" stroke=\"#FFD66B\" stroke-width=\"1.600\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M12 64c1-4 3-7 6-9M52 64c-1-4-3-7-6-9\" stroke=\"#FFD66B\" stroke-width=\".7\" fill=\"none\" opacity=\".6\"/><!-- barba --><path d=\"M21 34c-3 9-1 19 5 25 2 2 4 3 6 4 2-1 4-2 6-4 6-6 8-16 5-25-3 4-8 6-11 6s-8-2-11-6z\" fill=\"url(#mgBeard)\"/><path d=\"M27 42c-.5 5 .5 10 2 14M32 44v16M37 42c.5 5-.5 10-2 14M24 38c-.8 4-.4 8 1 11M40 38c.8 4 .4 8-1 11\" stroke=\"#9A90D8\" stroke-width=\".7\" fill=\"none\" stroke-linecap=\"round\" opacity=\".7\"/><!-- rosto --><path d=\"M23 33c0-6 4-9.500 9-9.500s9 3.500 9 9.500c0 4-3 7-9 7s-9-3-9-7z\" fill=\"url(#mgFace)\"/><path d=\"M30.500 35.500c.5 1.800 2.500 1.800 3 0l-1.500-2.500z\" fill=\"#C98E72\"/><path d=\"M23.500 38.500c3 .5 6.500-.5 8.500 1.500-1.800 1.300-5 1.500-8 .3zM40.500 38.500c-3 .5-6.500-.5-8.500 1.500 1.800 1.300 5 1.500 8 .3z\" fill=\"#FFFFFF\"/><!-- olhos brilhantes --><circle cx=\"27.500\" cy=\"31.500\" r=\"3.600\" fill=\"url(#mgEye)\"/><circle cx=\"36.500\" cy=\"31.500\" r=\"3.600\" fill=\"url(#mgEye)\"/><ellipse cx=\"27.500\" cy=\"31.700\" rx=\"1.500\" ry=\"1.100\" fill=\"#fff\"/><ellipse cx=\"36.500\" cy=\"31.700\" rx=\"1.500\" ry=\"1.100\" fill=\"#fff\"/><path d=\"M24.500 28.800c1.800-1 4-1 5.400.2M39.500 28.800c-1.800-1-4-1-5.400.2\" stroke=\"#EDEBFF\" stroke-width=\"1\" fill=\"none\" stroke-linecap=\"round\"/><!-- chap\u00e9u --><ellipse cx=\"32\" cy=\"25.500\" rx=\"19.500\" ry=\"4.300\" fill=\"#2A1F70\"/><path d=\"M12.800 25c4-1.600 11-2.400 19.200-2.400S47.200 23.400 51.200 25c-4 3.300-11 4.500-19.200 4.500S16.800 28.300 12.800 25z\" fill=\"url(#mgHat)\"/><path d=\"M13 25c4-1.200 10-1.800 19-1.800\" stroke=\"#A596FF\" stroke-width=\".8\" fill=\"none\" opacity=\".7\"/><path d=\"M32 2.500c1.200 7 5 12 8.500 16.500 1.500 1.900 2.700 3.200 4.200 4.500-4 1.300-8.500 1.800-12.700 1.800s-8.700-.5-12.700-1.800c1.500-1.300 2.700-2.600 4.200-4.500C27 14.500 30.800 9.500 32 2.500z\" fill=\"url(#mgHat)\" transform=\"translate(0 0)\"/><path d=\"M32 2.500c-1.200 7-5 12-8.500 16.500-1.500 1.900-2.700 3.200-4.200 4.500 2 .7 4 1.100 6 1.400C28 17.800 30.500 11 32 2.500z\" fill=\"#fff\" opacity=\".12\"/><path d=\"M19.800 21.800c8 2.200 16.400 2.200 24.400 0l-1.300 3c-7 1.800-14.800 1.800-21.800 0z\" fill=\"#FFD66B\"/><path d=\"M19.800 21.800c8 2.200 16.400 2.200 24.400 0\" stroke=\"#FFF1B8\" stroke-width=\".6\" fill=\"none\"/><path d=\"M32 10.800l1.400 2.800 3.100.4-2.250 2.200.55 3.100L32 17.800l-2.800 1.500.55-3.100-2.250-2.200 3.100-.4z\" fill=\"#FFE27A\" stroke=\"#E7B93A\" stroke-width=\".4\"/><!-- cajado / orbe --><path d=\"M55 64V48\" stroke=\"#8B5E34\" stroke-width=\"2.200\" stroke-linecap=\"round\"/><circle cx=\"55\" cy=\"45\" r=\"4.200\" fill=\"url(#mgOrb)\"/><circle cx=\"55\" cy=\"45\" r=\"6.500\" fill=\"#9C8BFF\" opacity=\".25\"/><circle cx=\"53.600\" cy=\"43.600\" r=\"1.100\" fill=\"#fff\" opacity=\".9\"/></svg>" },
-    { id: "bubu", nome: "Bubu", preco: 100, cor: "#15406B",
-      svg: "<svg viewBox=\"0 0 64 64\" width=\"100%\" height=\"100%\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"bbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1D5C8F\"/><stop offset=\"1\" stop-color=\"#0D2347\"/></linearGradient><radialGradient id=\"bbFace\" cx=\".4\" cy=\".3\" r=\".9\"><stop offset=\"0\" stop-color=\"#F6CBA6\"/><stop offset=\"1\" stop-color=\"#DDA37C\"/></radialGradient><linearGradient id=\"bbHair\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5B3F2E\"/><stop offset=\"1\" stop-color=\"#2A1B13\"/></linearGradient><linearGradient id=\"bbHood\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#27A5A0\"/><stop offset=\"1\" stop-color=\"#136A6C\"/></linearGradient><linearGradient id=\"bbLens\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff\" stop-opacity=\".55\"/><stop offset=\".5\" stop-color=\"#BFE3FF\" stop-opacity=\".18\"/><stop offset=\"1\" stop-color=\"#fff\" stop-opacity=\".05\"/></linearGradient></defs><rect width=\"64\" height=\"64\" fill=\"url(#bbBg)\"/><g fill=\"#9CD3FF\" opacity=\".22\" font-family=\"Georgia,serif\" font-weight=\"700\"><text x=\"5\" y=\"14\" font-size=\"11\">\u03c0</text><text x=\"49\" y=\"12\" font-size=\"9\">+</text><text x=\"46\" y=\"31\" font-size=\"10\">\u221a</text><text x=\"3\" y=\"36\" font-size=\"9\">x\u00b2</text></g><!-- moletom --><path d=\"M5 64c1-9 8-14 16-15.500l11-2.500 11 2.500c8 1.500 15 6.500 16 15.500z\" fill=\"url(#bbHood)\"/><path d=\"M21 48.500c2.500 5 7 7.500 11 7.500s8.500-2.500 11-7.500l-3-1.800c-2 3-5 4.500-8 4.500s-6-1.500-8-4.500z\" fill=\"#0E4F52\"/><path d=\"M27 53v8M37 53v8\" stroke=\"#fff\" stroke-width=\"1.300\" stroke-linecap=\"round\"/><circle cx=\"27\" cy=\"61.500\" r=\"1.200\" fill=\"#fff\"/><circle cx=\"37\" cy=\"61.500\" r=\"1.200\" fill=\"#fff\"/><path d=\"M12 64c1.500-5 4-8 8-10M52 64c-1.500-5-4-8-8-10\" stroke=\"#fff\" stroke-opacity=\".12\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/><!-- pesco\u00e7o --><path d=\"M27.500 40h9v7.500c-2 1.600-7 1.600-9 0z\" fill=\"#C98E69\"/><!-- orelhas --><ellipse cx=\"18.500\" cy=\"31\" rx=\"2.600\" ry=\"3.600\" fill=\"#E0A981\"/><ellipse cx=\"45.500\" cy=\"31\" rx=\"2.600\" ry=\"3.600\" fill=\"#E0A981\"/><!-- rosto --><path d=\"M19.500 28c0-8.500 5-14 12.500-14s12.500 5.500 12.500 14c0 9.500-5 14.500-12.500 14.500S19.500 37.500 19.500 28z\" fill=\"url(#bbFace)\"/><ellipse cx=\"24.500\" cy=\"35.500\" rx=\"2.800\" ry=\"1.700\" fill=\"#F28B82\" opacity=\".35\"/><ellipse cx=\"39.500\" cy=\"35.500\" rx=\"2.800\" ry=\"1.700\" fill=\"#F28B82\" opacity=\".35\"/><!-- cabelo --><path d=\"M18.500 27c-1.500-9 3-17.500 13.500-17.500 6 0 9.500 2.300 11.500 5.500 3 1 4.500 4 4 8-1.200-3-3.200-4.700-5.700-5.500-2.200 2-5 3.200-8 3.500-5-.5-9-2.800-11-6.500-2.500 2.800-3.500 6.500-3.300 12.500z\" fill=\"url(#bbHair)\"/><path d=\"M31 9.800c-.5-2.300.8-4.500 3.500-5.300-.4 2 .2 3.500 1.800 4.800zM37.500 10.200c1-1.800 3-2.800 5-2.500-1 1.300-1.200 2.800-.5 4.200z\" fill=\"url(#bbHair)\"/><path d=\"M24 13.500c3-2.300 7-2.800 10-1.800M38 12.800c2 .5 4 1.800 5 3.700\" stroke=\"#8D6A53\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\" opacity=\".7\"/><!-- sobrancelhas, olhos --><path d=\"M22.500 25c1.500-1.100 3.800-1.300 5.500-.5M41.500 25c-1.500-1.100-3.800-1.300-5.500-.5\" stroke=\"#3A271C\" stroke-width=\"1.200\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"25.500\" cy=\"29.500\" r=\"2\" fill=\"#2A1B13\"/><circle cx=\"38.500\" cy=\"29.500\" r=\"2\" fill=\"#2A1B13\"/><circle cx=\"26.200\" cy=\"28.800\" r=\".7\" fill=\"#fff\"/><circle cx=\"39.200\" cy=\"28.800\" r=\".7\" fill=\"#fff\"/><!-- \u00f3culos --><circle cx=\"25.500\" cy=\"29.500\" r=\"5.600\" fill=\"url(#bbLens)\" stroke=\"#1B2A44\" stroke-width=\"1.700\"/><circle cx=\"38.500\" cy=\"29.500\" r=\"5.600\" fill=\"url(#bbLens)\" stroke=\"#1B2A44\" stroke-width=\"1.700\"/><path d=\"M31 29c.6-.8 1.400-.8 2 0M19.800 28.500l-2.500-.8M44.200 28.500l2.500-.8\" stroke=\"#1B2A44\" stroke-width=\"1.500\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M22 26.800c1-.9 2.300-1.200 3.500-1M35 26.800c1-.9 2.300-1.200 3.500-1\" stroke=\"#fff\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\" opacity=\".85\"/><!-- nariz e sorriso --><path d=\"M32 31.500c-.8 2.200-.6 3.500.4 4\" stroke=\"#C48A66\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M27.500 37.200c2.500 2.400 6.500 2.400 9 0\" stroke=\"#8E4B3A\" stroke-width=\"1.200\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M28.800 37.800c2 1.300 4.400 1.300 6.400 0-.8 1.800-5.600 1.800-6.400 0z\" fill=\"#fff\" opacity=\".9\"/></svg>" },
-    { id: "riri", nome: "Riri", preco: 100, cor: "#22397A",
-      svg: "<svg viewBox=\"0 0 64 64\" width=\"100%\" height=\"100%\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"rrBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3C5FA8\"/><stop offset=\"1\" stop-color=\"#15234A\"/></linearGradient><radialGradient id=\"rrFace\" cx=\".4\" cy=\".3\" r=\".9\"><stop offset=\"0\" stop-color=\"#FBD3B0\"/><stop offset=\"1\" stop-color=\"#E4A982\"/></radialGradient><linearGradient id=\"rrHair\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7A4B33\"/><stop offset=\".6\" stop-color=\"#4A2B1D\"/><stop offset=\"1\" stop-color=\"#2A160E\"/></linearGradient><linearGradient id=\"rrShirt\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"/><stop offset=\"1\" stop-color=\"#D9DEEA\"/></linearGradient></defs><rect width=\"64\" height=\"64\" fill=\"url(#rrBg)\"/><g fill=\"#fff\" opacity=\".35\"><circle cx=\"9\" cy=\"12\" r=\"1.100\"/><circle cx=\"55\" cy=\"9\" r=\".8\"/><circle cx=\"53\" cy=\"29\" r=\"1.300\"/><circle cx=\"8\" cy=\"30\" r=\".7\"/></g><g stroke=\"#BFD4FF\" stroke-width=\".8\" opacity=\".3\" fill=\"none\"><path d=\"M50 40l4 4M54 40l-4 4\"/><circle cx=\"9\" cy=\"44\" r=\"2.200\"/></g><!-- cabelo de tr\u00e1s --><path d=\"M13 30c-1-12 6-22 19-22s20 10 19 22c-.4 9 1.500 17 5 24H8c3.500-7 5.400-15 5-24z\" fill=\"url(#rrHair)\"/><!-- camisa --><path d=\"M6 64c1.500-9 9-14 17-15.500l9-1.800 9 1.800c8 1.500 15.500 6.500 17 15.500z\" fill=\"url(#rrShirt)\"/><path d=\"M24 48.500l8 6 8-6-1.500-1.800-6.500 5-6.500-5z\" fill=\"#C9D3E8\"/><path d=\"M24 48.500l8 4.500-3.200 6.500zM40 48.500l-8 4.500 3.200 6.500z\" fill=\"#fff\"/><!-- la\u00e7o --><path d=\"M32 54l-5.500-3v6zM32 54l5.500-3v6z\" fill=\"#E5484D\"/><circle cx=\"32\" cy=\"54\" r=\"1.700\" fill=\"#B52E3A\"/><!-- pesco\u00e7o --><path d=\"M27.500 41h9v6.500l-4.500 4-4.500-4z\" fill=\"#D49A74\"/><!-- rosto --><path d=\"M19.500 28c0-8.500 5-14 12.500-14s12.500 5.500 12.500 14c0 9-5 14.500-12.500 14.500S19.500 37 19.500 28z\" fill=\"url(#rrFace)\"/><ellipse cx=\"24\" cy=\"35\" rx=\"3\" ry=\"1.800\" fill=\"#F27C86\" opacity=\".45\"/><ellipse cx=\"40\" cy=\"35\" rx=\"3\" ry=\"1.800\" fill=\"#F27C86\" opacity=\".45\"/><!-- franja --><path d=\"M18.500 29c-1-11 4-20.500 13.500-20.500S46.500 18 45.500 29c-.6-4.500-2.500-8-5.500-10.500-3 2.500-9.500 3.800-15.500 2-2.800 2.500-4.800 5.800-6 8.500z\" fill=\"url(#rrHair)\"/><path d=\"M23 14c3-2.500 8-3.500 12-2.500M37 11.800c3 .8 6 3 7.500 6.200\" stroke=\"#B07A57\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\" opacity=\".75\"/><path d=\"M26 17c3.500 1.500 8 1.600 12 0\" stroke=\"#2A160E\" stroke-width=\".6\" fill=\"none\" opacity=\".5\"/><!-- tiara/la\u00e7o de cabelo --><path d=\"M15.500 21c1-1 2.500-1.300 4-.8l1.200 4.500c-1.500.4-3 .1-4-.8z\" fill=\"#7C6CF0\"/><path d=\"M15.500 21c-1.200-1.500-3.200-1.600-4.500-.6l1 4.500c1.400.7 3 .3 3.500-1z\" fill=\"#9C8DFF\"/><circle cx=\"16.500\" cy=\"23\" r=\"1.300\" fill=\"#5546D3\"/><!-- olhos --><path d=\"M22.200 25.800c1.600-1.200 4-1.300 5.800-.3M41.800 25.800c-1.600-1.200-4-1.300-5.800-.3\" stroke=\"#4A2B1D\" stroke-width=\"1.100\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"25.500\" cy=\"29.800\" rx=\"2.800\" ry=\"3.200\" fill=\"#fff\"/><ellipse cx=\"38.500\" cy=\"29.800\" rx=\"2.800\" ry=\"3.200\" fill=\"#fff\"/><circle cx=\"25.700\" cy=\"30.200\" r=\"2.100\" fill=\"#3C6FB0\"/><circle cx=\"38.300\" cy=\"30.200\" r=\"2.100\" fill=\"#3C6FB0\"/><circle cx=\"25.700\" cy=\"30.200\" r=\"1.100\" fill=\"#122140\"/><circle cx=\"38.300\" cy=\"30.200\" r=\"1.100\" fill=\"#122140\"/><circle cx=\"26.500\" cy=\"29.300\" r=\".8\" fill=\"#fff\"/><circle cx=\"39.100\" cy=\"29.300\" r=\".8\" fill=\"#fff\"/><path d=\"M22.500 28.200c.8-1 2-1.600 3.300-1.600M41.500 28.200c-.8-1-2-1.600-3.300-1.600\" stroke=\"#2A160E\" stroke-width=\"1.200\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M32 31.800c-.6 1.800-.5 2.800.4 3.200\" stroke=\"#C98B66\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M28 37.300c2.300 2.500 5.700 2.500 8 0\" stroke=\"#B5453F\" stroke-width=\"1.300\" fill=\"none\" stroke-linecap=\"round\"/><!-- mechas da frente --><path d=\"M17 30c-1 6-.5 12 1.500 17-3-1-4.500-5-4.500-9.500 0-3 1-5.500 3-7.500z\" fill=\"url(#rrHair)\"/><path d=\"M47 30c1 6 .5 12-1.500 17 3-1 4.500-5 4.500-9.500 0-3-1-5.500-3-7.500z\" fill=\"url(#rrHair)\"/></svg>" },
-    { id: "fefe", nome: "Fefe", preco: 100, cor: "#3B2275",
-      svg: "<svg viewBox=\"0 0 64 64\" width=\"100%\" height=\"100%\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"ffBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#6A3FB0\"/><stop offset=\"1\" stop-color=\"#1C1040\"/></linearGradient><radialGradient id=\"ffFace\" cx=\".4\" cy=\".3\" r=\".9\"><stop offset=\"0\" stop-color=\"#EDB88E\"/><stop offset=\"1\" stop-color=\"#C98A63\"/></radialGradient><linearGradient id=\"ffHair\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3A2A4A\"/><stop offset=\"1\" stop-color=\"#0E0814\"/></linearGradient><linearGradient id=\"ffJacket\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3B2D7A\"/><stop offset=\"1\" stop-color=\"#1C1448\"/></linearGradient><linearGradient id=\"ffLens\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4B4B66\"/><stop offset=\".5\" stop-color=\"#14141F\"/><stop offset=\"1\" stop-color=\"#05050A\"/></linearGradient></defs><rect width=\"64\" height=\"64\" fill=\"url(#ffBg)\"/><g fill=\"#FFC857\" opacity=\".85\"><path d=\"M52 12l1 2.300 2.300 1-2.300 1-1 2.300-1-2.300-2.300-1 2.300-1z\"/><circle cx=\"10\" cy=\"14\" r=\"1.200\" opacity=\".7\"/><circle cx=\"8\" cy=\"40\" r=\".9\" opacity=\".6\"/></g><path d=\"M0 46c14-6 30-6 64 2v16H0z\" fill=\"#fff\" opacity=\".05\"/><!-- fone no pesco\u00e7o --><path d=\"M18 46c-1.500 6-.5 11 1 15M46 46c1.500 6 .5 11-1 15\" stroke=\"#14141F\" stroke-width=\"2.600\" fill=\"none\" stroke-linecap=\"round\"/><!-- jaqueta --><path d=\"M4 64c1.500-9 9-14.500 17-16l11-2.200 11 2.200c8 1.500 15.500 7 17 16z\" fill=\"url(#ffJacket)\"/><path d=\"M22 47.500l10 17 10-17-3-1.800-7 8-7-8z\" fill=\"#EEEAF8\"/><path d=\"M32 50v14\" stroke=\"#1C1448\" stroke-width=\".8\" opacity=\".5\"/><path d=\"M32 64V53\" stroke=\"#7B6AE0\" stroke-width=\"1\" opacity=\".0\"/><path d=\"M21 47.500c-2 3-3 8-3 16.500M43 47.500c2 3 3 8 3 16.500\" stroke=\"#7B6AE0\" stroke-width=\"1.100\" fill=\"none\" stroke-linecap=\"round\" opacity=\".7\"/><rect x=\"14.500\" y=\"52\" width=\"3.600\" height=\"6\" rx=\"1.800\" fill=\"#14141F\"/><rect x=\"45.900\" y=\"52\" width=\"3.600\" height=\"6\" rx=\"1.800\" fill=\"#14141F\"/><!-- pesco\u00e7o --><path d=\"M27.500 40h9v6.500c-2 1.700-7 1.700-9 0z\" fill=\"#B97B56\"/><!-- orelhas --><ellipse cx=\"18.500\" cy=\"30\" rx=\"2.500\" ry=\"3.500\" fill=\"#D79D76\"/><ellipse cx=\"45.500\" cy=\"30\" rx=\"2.500\" ry=\"3.500\" fill=\"#D79D76\"/><!-- rosto --><path d=\"M19.500 27c0-8.500 5-13.500 12.500-13.500S44.500 18.500 44.500 27c0 9.500-5 15.500-12.500 15.500S19.500 36.500 19.500 27z\" fill=\"url(#ffFace)\"/><!-- cabelo --><path d=\"M17.500 28c-2-11 3.500-20.500 14.500-20.500S48.500 14 46.500 28c-.5-5-2.500-8.500-5-10.500-5 2-12 2-17.500-.5-3 2.500-5 6-6 11z\" fill=\"url(#ffHair)\"/><path d=\"M22 11c-3 1.200-5 3.800-5.500 7 2.500-2 5-3 8-3.300zM41 9.500c3 1.200 5.500 3.800 6 7.500-2-1.500-4.500-2.500-7-2.800z\" fill=\"url(#ffHair)\"/><path d=\"M24 10.500c3-1.800 8-2.200 12-1M40 9.800c2.500.8 4.600 2.500 5.500 5\" stroke=\"#7B6A96\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\" opacity=\".7\"/><path d=\"M27 15.500c3 1.200 7 1.200 10.500 0\" stroke=\"#7B6A96\" stroke-width=\".7\" fill=\"none\" opacity=\".5\"/><!-- \u00f3culos escuros --><path d=\"M19.500 26.500h25c.4 4-.6 8-4.200 8.600-3.600.5-5.200-2.200-6-4.600-.7-1.200-2.700-1.200-3.400 0-.8 2.400-2.400 5.100-6 4.600-3.600-.6-4.600-4.600-4.200-8.600z\" fill=\"url(#ffLens)\" stroke=\"#05050A\" stroke-width=\"1.100\" stroke-linejoin=\"round\"/><path d=\"M21.500 28l5 0-3.500 4.500zM34.500 28l5 0-3.500 4.500z\" fill=\"#fff\" opacity=\".28\"/><path d=\"M19.500 26.800l-3-1M44.500 26.800l3-1\" stroke=\"#05050A\" stroke-width=\"1.400\" stroke-linecap=\"round\"/><!-- sobrancelhas, nariz, sorriso --><path d=\"M22 24.500c2-1 4-1 5.500-.2M42 24.500c-2-1-4-1-5.500-.2\" stroke=\"#0E0814\" stroke-width=\"1.300\" fill=\"none\" stroke-linecap=\"round\" opacity=\".9\"/><path d=\"M32 33c-.8 1.800-.6 2.800.5 3.200\" stroke=\"#A8704D\" stroke-width=\".9\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M27.500 37.800c2.800 2 6 1.800 8.500-.8\" stroke=\"#7E3F32\" stroke-width=\"1.200\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"24\" cy=\"35.500\" rx=\"2.600\" ry=\"1.500\" fill=\"#E07A6B\" opacity=\".25\"/><ellipse cx=\"40\" cy=\"35.500\" rx=\"2.600\" ry=\"1.500\" fill=\"#E07A6B\" opacity=\".25\"/></svg>" }
-  ];
+  /* ---- Fotos de perfil da loja: 10 imagens pixel art (assets/img/perfil/, geradas por build/perfil/make_perfil.py), 100 Moedas cada.
+     Os ids têm o prefixo "foto-" de propósito: os ids das fotos antigas (mago-roxo, bubu, riri, fefe) deixam de existir e quem os
+     tinha volta à inicial/foto do Google, sem ganhar as novas de graça. Sem nome nem descrição: a imagem é o produto. ---- */
+  const FOTO_PRECO = 100;
+  const AVATARES = ['boss', 'bubu', 'fefe', 'fogo', 'iaia', 'mago', 'mao', 'moeda', 'pi', 'riri'].map((n) => (
+    { id: 'foto-' + n, preco: FOTO_PRECO, cor: '#2B2347', img: 'assets/img/perfil/foto-' + n + '.png' }));
+  const svgLegado = (av) => `<img class="foto-perfil" src="${av.img}" alt="" draggable="false">`;
   const AVATARES_POR_ID = {};
   AVATARES.forEach((a) => { AVATARES_POR_ID[a.id] = a; });
   /* ---- Versões pixel art dos ícones (aparecem só no modo pixel) ---- */
@@ -81,7 +77,10 @@
         x = e;
       }
     });
-    return `<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+    // viewBox justo ao desenho (sem folga vazia), para o ícone ficar centrado dentro do botão
+    let x0 = w, y0 = h, x1 = 0, y1 = 0;
+    rows.forEach((row, y) => { for (let x = 0; x < w; x++) if (row[x] !== '.') { x0 = Math.min(x0, x); x1 = Math.max(x1, x + 1); y0 = Math.min(y0, y); y1 = Math.max(y1, y + 1); } });
+    return `<svg viewBox="${x0} ${y0} ${x1 - x0} ${y1 - y0}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
   };
   const dual = (suave, pix, cls = '') => `<span class="ic-s">${suave}</span><span class="ic-p ${cls}">${pix}</span>`;
   // ícones de marca (arte nova): moeda, fogo e cadeado; no modo pixel usa a versão pixel art tingida
@@ -97,6 +96,12 @@
     check: pxArt([
       '..........##', '.........###', '........###.', '##.....###..', '###...###...', '.###.###....',
       '..#####.....', '...###......', '....#.......']),
+    carvao: pxArt([
+      '....####....', '..########..', '.##oo#####..', '.#ooo######.', '###o#######.', '###########.',
+      '.##########.', '.####o#####.', '..#########.', '...#######..', '....####....']),
+    fogoApagado: pxArt([
+      '....#.....', '.....#....', '....#.....', '...##.....', '..#..#....', '.#....#...', '.#.....#.#', '.#......##',
+      '.#.......#', '..#......#', '..#.....#.', '...#####..']),
     lock: pxArt([
       '...####...', '..##..##..', '..##..##..', '..##..##..', '.########.', '.########.',
       '.###..###.', '.###..###.', '.########.', '.########.']),
@@ -117,13 +122,14 @@
       '..#########..', '.###########.', '####.#####.##', '###...###.###', '####.####.#.#',
       '.###########.', '.####...####.', '..###.....##.'])
   };
-  ICONS.flame = dual(img('fogo'), PX.flame, 'px-fogo');
-  ICONS.coin = dual(img('moeda'), PX.coin, 'px-moeda');
-  ICONS.bloqueio = dual(img('bloqueio'), PX.lock, 'px-bloqueio');   // bloqueio de ofensiva (o cadeado simples segue nas fases bloqueadas)
-  ICONS.check = dual(ICONS.check, PX.check);
-  ICONS.lock = dual(ICONS.lock, PX.lock);
-  ICONS.moon = dual(ICONS.moon, PX.moon);
-  ICONS.sun = dual(ICONS.sun, PX.sun);
+  /* ---- ícones de jogo (PNGs pixel art em assets/img/ico/, estilos em dungeon.css): um único lugar define todos ----
+     fogo = faixa de 3 quadros animada (apagado quando fora de .on); moeda e carvão = imagem; sol e lua = máscara
+     tingida com a cor do texto do botão (currentColor), então as cores dos temas continuam as mesmas. */
+  ICONS.flame = '<span class="ic-img ic-fogo" aria-hidden="true"></span>';
+  ICONS.coin = '<span class="ic-img ic-moeda" aria-hidden="true"></span>';
+  ICONS.bloqueio = '<span class="ic-img ic-carvao" aria-hidden="true"></span>';   // Combustível
+  ICONS.moon = '<span class="ic-mask ic-lua" aria-hidden="true"></span>';
+  ICONS.sun = '<span class="ic-mask ic-sol" aria-hidden="true"></span>';
   ICONS.paleta = dual(ICONS.paleta, PX.paleta);
   ICONS.gamepad = PX.gamepad;
   ICONS.volume = dual(ICONS.volume, PX.volume);
@@ -154,18 +160,51 @@
     return `<g class="${cls}">${r}</g>`;
   };
   const iconePi = () =>
-    `<svg class="pxicon" viewBox="3 3 14 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="var(--indigo)"/><g fill="#fff">${PI_RECTS.map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`).join('')}</g></svg>`;
+    `<svg class="pxicon" viewBox="5 5 10 9" shape-rendering="crispEdges" aria-hidden="true"><g fill="currentColor">${PI_RECTS.map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`).join('')}</g></svg>`;
+  /* BRIIFF do cabeçalho/rodapé: o MESMO desenho do quadro final da animação de entrada (grade 104×30, extraída do spritesheet
+     original), para as letras serem idênticas (os "I" têm a mesma espessura). Pinta com a cor do texto (currentColor). */
   const palavraSvg = () =>
-    `<svg class="pxword" viewBox="0 0 21 5" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true">${glifoRects('B', 0, 0, 'w-b')}${glifoRects('R', 4, 0, 'w-r')}${glifoRects('I', 8, 0, 'w-i1')}${glifoRects('I', 11, 0, 'w-i2')}${glifoRects('F', 14, 0, 'w-f')}${glifoRects('F', 18, 0, 'w-f2')}</svg>`;
-  // animação de entrada: π → BRIIF (as pernas do π viram os dois "I")
-  const introSvg = () => {
-    const bar = [7, 8, 9, 10, 11, 12, 13, 14].map((x, i) => `<rect class="p-bar" style="--i:${i}" x="${x}" y="1" width="1" height="1"/>`).join('');
-    return `<svg viewBox="0 0 23 9" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true">
-      <g class="p-pi">${bar}<rect class="p-dot" style="--i:9" x="15" y="0" width="1" height="1"/><rect class="p-dot" style="--i:-1" x="6" y="2" width="1" height="1"/>
-      <rect class="p-leg" x="8" y="3" width="2" height="6"/><rect class="p-leg" x="12" y="3" width="2" height="6"/></g>
-      ${glifoRects('B', 1, 4, 'w-b')}${glifoRects('R', 5, 4, 'w-r')}${glifoRects('I', 9, 4, 'w-i1')}${glifoRects('I', 12, 4, 'w-i2')}${glifoRects('F', 15, 4, 'w-f')}${glifoRects('F', 19, 4, 'w-f2')}
-    </svg>`;
-  };
+    '<svg class="pxword" viewBox="0 0 104 30" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h16v2h-16zM20 0h18v2h-18zM40 0h10v2h-10zM54 0h10v2h-10zM66 0h18v2h-18zM86 0h18v2h-18zM0 2h18v4h-18zM20 2h18v4h-18zM40 2h10v4h-10zM54 2h10v4h-10zM66 2h18v4h-18zM86 2h18v4h-18zM0 6h6v6h-6zM12 6h6v6h-6zM20 6h6v6h-6zM32 6h6v6h-6zM40 6h10v6h-10zM54 6h10v6h-10zM66 6h9v6h-9zM86 6h9v6h-9zM0 12h15v6h-15zM20 12h12v6h-12zM40 12h10v6h-10zM54 12h10v6h-10zM66 12h18v6h-18zM86 12h18v6h-18zM0 18h6v6h-6zM12 18h6v6h-6zM20 18h6v6h-6zM32 18h6v6h-6zM40 18h10v6h-10zM54 18h10v6h-10zM66 18h9v6h-9zM86 18h9v6h-9zM0 24h18v6h-18zM20 24h6v6h-6zM32 24h6v6h-6zM40 24h10v6h-10zM54 24h10v6h-10zM66 24h9v6h-9zM86 24h9v6h-9z"/></svg>';
+  /* animação de entrada do logo (π → BRIIFF): os quadros vêm da folha assets/img/intro-briiff.png (23 quadros 760×400 em grade
+     6×4, só o logo, máscara branca; gerada por build/intro/make_intro.py a partir do spritesheet original). O canvas pinta a
+     máscara com a cor do tema, toca uma vez (12 quadros/s) e fica no último quadro. Sem movimento reduzido → vai direto ao final. */
+  const INTRO = { src: 'assets/img/intro-briiff.png', cols: 6, cw: 760, ch: 400, n: 23, fps: 12, espera: 500 };
+  let introImg = null;
+  const carregarIntro = () => introImg || (introImg = new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = INTRO.src; }));
+  function animarIntro(cv) {
+    if (cv.dataset.on) return;
+    cv.dataset.on = '1';
+    const ctx = cv.getContext('2d');
+    const tmp = document.createElement('canvas'); tmp.width = INTRO.cw; tmp.height = INTRO.ch;
+    const tc = tmp.getContext('2d');
+    const reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    carregarIntro().then((img) => {
+      let atual = -1;
+      const desenha = (i) => {
+        atual = i;
+        tc.globalCompositeOperation = 'source-over'; tc.clearRect(0, 0, INTRO.cw, INTRO.ch);
+        tc.drawImage(img, (i % INTRO.cols) * INTRO.cw, Math.floor(i / INTRO.cols) * INTRO.ch, INTRO.cw, INTRO.ch, 0, 0, INTRO.cw, INTRO.ch);
+        tc.globalCompositeOperation = 'source-in'; tc.fillStyle = getComputedStyle(cv).color; tc.fillRect(0, 0, INTRO.cw, INTRO.ch);
+        ctx.clearRect(0, 0, cv.width, cv.height); ctx.imageSmoothingEnabled = false; ctx.drawImage(tmp, 0, 0);
+      };
+      // trocar de tema muda a cor: repinta o quadro atual
+      const obs = new MutationObserver(() => { if (cv.isConnected && atual >= 0) desenha(atual); else obs.disconnect(); });
+      obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-tema'] });
+      if (reduz) { desenha(INTRO.n - 1); return; }
+      desenha(0);
+      let t0 = null;
+      const passo = (ts) => {
+        if (!cv.isConnected) return;
+        if (t0 === null) t0 = ts;
+        const dec = ts - t0 - INTRO.espera;
+        const i = dec < 0 ? 0 : Math.min(INTRO.n - 1, Math.floor(dec / (1000 / INTRO.fps)));
+        if (i !== atual) desenha(i);
+        if (i < INTRO.n - 1) requestAnimationFrame(passo);
+      };
+      requestAnimationFrame(passo);
+    }).catch(() => {});
+  }
+  const introSvg = () => '<canvas class="intro-px" width="760" height="400" aria-hidden="true"></canvas>';
   const logoPixel = (grande) => grande
     ? `<span class="pxintro" aria-hidden="true">${introSvg()}</span>`
     : `<span class="pxlogo" aria-hidden="true">${iconePi()}${palavraSvg()}</span>`;
@@ -175,6 +214,7 @@
       if (a.querySelector('.pxlogo, .pxintro')) return;
       a.insertAdjacentHTML('beforeend', logoPixel(a.classList.contains('lg')));
     });
+    document.querySelectorAll('canvas.intro-px').forEach(animarIntro);
   }
 
   const TRILHA_ICON = { algebra: 'algebra', geometria: 'geometria', funcoes: 'funcoes', estatistica: 'estatistica' };
@@ -254,9 +294,21 @@
   const cfg = window.BRIIF_FIREBASE_CONFIG;
   const firebaseAtivo = !!(cfg && cfg.apiKey && cfg.apiKey.indexOf('COLE_') !== 0);
 
+  /* Modo desenvolvedor (só teste local): permitido em localhost ou quando ambiente.js liga a flag. Nunca fala com o Firebase. */
+  const AMBIENTE = window.BRIIF_AMBIENTE || {};
+  const hostLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  const devPermitido = () => AMBIENTE.modoDesenvolvedor === true || hostLocal;
+  const DEV_UID = 'dev-local';
   function lerSessao() {
-    try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { return null; }
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { return null; }
+    if (s && s.modo === 'dev' && !devPermitido()) {      // sessão "dev" escrita à mão num ambiente que não permite: descarta
+      try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignora */ }
+      return null;
+    }
+    return s;
   }
+  const emDev = () => { const s = lerSessao(); return !!(s && s.modo === 'dev'); };
   function salvarSessao(s) {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) { /* ignora */ }
   }
@@ -343,6 +395,15 @@
       }
       salvarSessao({ uid: 'convidado-local', nome: 'Convidado', email: '', tipo: 'anonimo', modo: 'demo' });
       return concederBoasVindas();
+    },
+    /** Só teste local: sessão isolada, sem Firebase, sem ranking. Recomeça sempre de um estado de teste limpo. */
+    async desenvolvedor() {
+      if (!devPermitido()) throw new Error('dev-desativado');
+      const antes = lerSessao();
+      if (antes && antes.modo === 'firebase') { try { const fb = await carregarFirebase(); await fb.auth().signOut(); } catch (e) { /* segue */ } }   // só encerra uma conta real se havia
+      salvarSessao({ uid: DEV_UID, nome: 'Desenvolvedor', email: '', tipo: 'dev', modo: 'dev' });
+      semearDev();
+      return false;
     },
     async entrarEmail(email, senha) {
       const fb = await carregarFirebase();
@@ -483,7 +544,7 @@
     vidas: 3, golpes: 6, xp: 60, moedas: 50, bloqueios: 1,
     tempo: { facil: 30, media: 40, dificil: 50 }   // segundos por pergunta, conforme a dificuldade
   };
-  /* Loja: por enquanto só o bloqueio de ofensiva. */
+  /* Loja: por enquanto só o combustível. */
   const LOJA = {
     custoBloqueio: 100, bloqueiosPorNivel: 1, bloqueiosBoasVindas: 2,
     maxBloqueios: 5,   // limite por conta: o saldo de bloqueios nunca passa disso
@@ -491,7 +552,7 @@
     codigoMoedas: '#fefe10', limiteCodigoMoedas: 10000
   };
 
-  /* Aviso "seu bloqueio de ofensiva foi usado": fica guardado (por conta) até a animação ser mostrada.
+  /* Aviso "seu combustível foi usado": fica guardado (por conta) até a animação ser mostrada.
      Mora fora do progresso para não ser misturado/enviado à nuvem. */
   const chaveAviso = () => { const s = lerSessao(); return 'briif:aviso-bloqueio:' + (s ? s.uid : 'visitante'); };
   function registrarAvisoBloqueio(info) {
@@ -537,7 +598,7 @@
     let p;
     try { p = JSON.parse(localStorage.getItem(chaveProgresso())); } catch (e) { p = null; }
     p = normalizarEconomia(Object.assign(progressoVazio(), p || {}));
-    // Ofensiva: se pulou dia(s), usa bloqueios de ofensiva guardados pra cobrir
+    // Ofensiva: se pulou dia(s), usa combustível guardados pra cobrir
     // automaticamente, um bloqueio por dia perdido. Só quebra se não tiver o suficiente.
     if (p.streak > 0 && p.ultimoDia) {
       let mudou = false;
@@ -559,7 +620,7 @@
     return p;
   }
 
-  /** Dá o bônus de boas-vindas (2 bloqueios de ofensiva) uma única vez por conta.
+  /** Dá o bônus de boas-vindas (2 combustível) uma única vez por conta.
    *  Devolve true só da primeira vez — serve também pra saber se a conta é nova. */
   function concederBoasVindas() {
     const p = lerProgresso();
@@ -571,7 +632,22 @@
     return true;
   }
 
-  /** Compra um bloqueio de ofensiva com MathCoins. Devolve { ok, motivo, progresso }. */
+  /** Estado inicial do modo desenvolvedor: saldo e ofensiva prontos para testar; NENHUMA fase concluída (a liberação vem do emDev). */
+  function semearDev() {
+    const h = hoje();
+    const p = Object.assign(progressoVazio(), {
+      xp: 400, moedas: 1000, moedasGanhas: 1000, moedasGastas: 0, bloqueios: 3, bloqueiosGanhos: 3, bloqueiosUsados: 0,
+      streak: 5, recorde: 5, ultimoDia: h, dias: [h], boasVindasDadas: true
+    });
+    try {
+      localStorage.setItem('briif:progress:' + DEV_UID, JSON.stringify(p));
+      localStorage.setItem('briif:boasvindas:' + DEV_UID, h);       // sem animação de abertura
+      localStorage.setItem('briif:onboarding:' + DEV_UID, '1');
+    } catch (e) { /* ignora */ }
+    return p;
+  }
+
+  /** Compra um combustível com Moedas. Devolve { ok, motivo, progresso }. */
   function comprarBloqueio() {
     const p = lerProgresso();
     if ((p.bloqueios || 0) >= LOJA.maxBloqueios) return { ok: false, motivo: 'limite', progresso: p };
@@ -583,7 +659,7 @@
     return { ok: true, progresso: p };
   }
 
-  /** Compra um avatar da loja com MathCoins. Devolve { ok, motivo, progresso }. */
+  /** Compra um avatar da loja com Moedas. Devolve { ok, motivo, progresso }. */
   function comprarAvatar(id) {
     const av = AVATARES_POR_ID[id];
     const p = lerProgresso();
@@ -608,8 +684,9 @@
     p.avatarPecas = Array.from(new Set((p.avatarPecas || []).concat(f.lista.map((x) => x.cat + ':' + x.id))));
     p.avatarCfg = cfg;
     p.avatarCfgTs = Date.now();
-    p.avatarAtivo = 'custom';
-    p.avatarAtivoTs = p.avatarCfgTs;
+    // a foto de perfil é uma escolha à parte (editar avatar > Foto de perfil): só vira o avatar na 1ª vez ou se já era ele
+    const ativaAntes = p.avatarAtivo;
+    if (!ativaAntes || ativaAntes === 'custom' || !AVATARES_POR_ID[ativaAntes]) { p.avatarAtivo = 'custom'; p.avatarAtivoTs = p.avatarCfgTs; }
     salvarProgresso(p);
     agendarEnvio();
     return { ok: true, gasto: f.total, progresso: p };
@@ -632,7 +709,7 @@
     return String(codigo || '').trim().toLowerCase() === LOJA.codigoMoedas.toLowerCase();
   }
 
-  /** Resgata o código e credita a quantidade escolhida de MathCoins (até o limite). */
+  /** Resgata o código e credita a quantidade escolhida de Moedas (até o limite). */
   function resgatarCodigoMoedas(codigo, quantidade) {
     if (!validarCodigoMoedas(codigo)) return { ok: false, motivo: 'codigo' };
     const qtd = Math.round(Number(quantidade));
@@ -749,6 +826,7 @@
   const bossDerrotado = (p, trilhaId) => (p.bosses || []).indexOf(trilhaId) !== -1;
   /** O boss libera quando todas as fases da trilha estão concluídas (a Personalizada precisa estar montada). */
   function bossDisponivel(p, t) {
+    if (emDev()) return !!t && t.fases.length > 0;   // modo desenvolvedor: batalha liberada para teste
     return !!t && t.fases.length > 0 && t.fases.every((f) => faseCompleta(p, f.id));
   }
   function embaralhar(arr) {
@@ -764,7 +842,7 @@
     while (fila.length < qtd && todas.length) fila = fila.concat(embaralhar(todas));
     return fila.slice(0, qtd);
   }
-  /** Registra a vitória sobre o boss. Só a 1ª vitória dá XP, MathCoins e um bloqueio; qualquer vitória conta como dia de estudo. */
+  /** Registra a vitória sobre o boss. Só a 1ª vitória dá XP, Moedas e um bloqueio; qualquer vitória conta como dia de estudo. */
   function completarBoss(trilhaId) {
     const p = lerProgresso();
     const primeira = !bossDerrotado(p, trilhaId);
@@ -944,7 +1022,7 @@
     if (rankingOculto(s.uid)) { await ref.delete(); return; }
     let acertos = 0, total = 0;
     Object.keys(m.porTrilha || {}).forEach((k) => { acertos += m.porTrilha[k].acertos || 0; total += m.porTrilha[k].total || 0; });
-    const custom = m.avatarAtivo === 'custom' && m.avatarCfg && window.BriifAvatar ? window.BriifAvatar.limpar(m.avatarCfg) : null;
+    const custom = m.avatarCfg && window.BriifAvatar ? window.BriifAvatar.limpar(m.avatarCfg) : null;   // o personagem é público (corpo inteiro no perfil); a foto vai em avatarId
     const pub = {
       nome: nomePublico(s.nome, false),
       avatarId: m.avatarAtivo || null,
@@ -976,6 +1054,7 @@
   }
   /** Busca o ranking inteiro (até 500 contas); a ordenação por categoria é feita na tela. */
   async function buscarRanking() {
+    if (emDev()) throw new Error('sem-login');    // o modo desenvolvedor nunca consulta nem aparece no ranking
     const fb = await carregarFirebase();
     // espera o Firebase restaurar o login antes de consultar (as regras exigem estar logado)
     const user = await new Promise((res) => { const off = fb.auth().onAuthStateChanged((u) => { off(); res(u); }); });
@@ -983,11 +1062,16 @@
     const snap = await fb.firestore().collection('ranking').limit(500).get();
     return snap.docs.map((d) => Object.assign({ uid: d.id }, d.data()));
   }
+  /** Personagem de corpo inteiro (perfil pessoal e público). cfg vazio → null (quem chama decide o que mostrar). */
+  function avatarCorpoHtml(cfg, extra = '') {
+    if (!cfg || !window.BriifAvatar) return '';
+    return `<span class="av-corpo ${extra}" role="img" aria-label="Avatar de corpo inteiro">${window.BriifAvatar.svg(cfg, { corpo: true })}</span>`;
+  }
   /** Bolinha de outra pessoa: avatar comprado ou inicial (sem foto, por privacidade). */
   function avatarRanking(d, extra = '') {
     if (d.avatarId === 'custom' && d.avatarCfg && window.BriifAvatar) return `<span class="avatar avatar-custom ${extra}">${window.BriifAvatar.svg(d.avatarCfg)}</span>`;
     const av = d.avatarId && AVATARES_POR_ID[d.avatarId];
-    if (av) return `<span class="avatar avatar-custom ${extra}" title="${esc(av.nome)}">${av.svg}</span>`;
+    if (av) return `<span class="avatar avatar-custom ${extra}" title="Foto de perfil">${svgLegado(av)}</span>`;
     return `<span class="avatar ${extra}">${esc((d.nome || '?').trim().charAt(0).toUpperCase() || '?')}</span>`;
   }
 
@@ -1085,6 +1169,7 @@
     return null;
   }
   function faseDisponivel(p, t, fi) {
+    if (emDev()) return true;                    // modo desenvolvedor: tudo liberado (sem concluir as fases)
     if (fi < 0) return bossDerrotado(p, t.id);   // extras difíceis: só depois de vencer o boss
     return fi === 0 || faseCompleta(p, t.fases[fi - 1].id);
   }
@@ -1118,7 +1203,7 @@
   let wmN = 0;
   function wordmark(cls = 'sm', href = 'index.html') {
     const gid = 'bm' + (wmN++);
-    return `<a class="wordmark ${cls}" href="${href}" aria-label="Briiff, página inicial"><span class="root" aria-hidden="true"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7A68F0"/><stop offset="1" stop-color="#4635BC"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#${gid})"/><path d="M10 14.500h20M16 15v11.500c0 2.800-.9 4.300-2.900 5.200M25 15v11c0 3 1.300 4.700 3.800 4.700" fill="none" stroke="#fff" stroke-width="3.600" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="8.500" r="3" fill="#FFC857"/></svg></span><span class="name">Briiff</span>${logoPixel(/\blg\b/.test(cls))}</a>`;
+    return `<a class="wordmark ${cls}" href="${href}" aria-label="Briiff, página inicial"><span class="root" aria-hidden="true"><i class="pi-logo"></i></span><span class="name">Briiff</span>${logoPixel(/\blg\b/.test(cls))}</a>`;
   }
 
   const NAV = [
@@ -1214,7 +1299,7 @@
     const p = lerProgresso();
     if (p && p.avatarAtivo === 'custom' && p.avatarCfg && window.BriifAvatar) return `<span class="avatar avatar-custom ${extra}" title="Seu avatar">${window.BriifAvatar.svg(p.avatarCfg)}</span>`;
     const av = p && p.avatarAtivo && AVATARES_POR_ID[p.avatarAtivo];
-    if (av) return `<span class="avatar avatar-custom ${extra}" title="${esc(av.nome)}">${av.svg}</span>`;
+    if (av) return `<span class="avatar avatar-custom ${extra}" title="Foto de perfil">${svgLegado(av)}</span>`;
     // a inicial fica por baixo da foto; se a foto falhar, ela aparece
     const foto = s && s.foto ? `<img src="${esc(s.foto)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
     return `<span class="avatar ${extra}">${inicial}${foto}</span>`;
@@ -1263,7 +1348,7 @@
     const ferramentas = `
       <div class="tools-wrap" id="tools-wrap">
         <button type="button" class="theme-btn more-btn" id="more-btn" aria-haspopup="true" aria-expanded="false" aria-controls="tools-pop" aria-label="Mais opções" title="Mais opções">${ICONS.mais}</button>
-        <div class="tools-pop" id="tools-pop">${coresBtn}${temaBtn}${pixelBtn}${somBtn}</div>
+        <div class="tools-pop" id="tools-pop">${temaBtn}${somBtn}</div>
       </div>`;
 
     let right;
@@ -1271,8 +1356,8 @@
       right = `
         ${ferramentas}
         <span class="chip fire ${ofensivaFeitaHoje(p) ? 'on' : ''}" title="Ofensiva: dias seguidos estudando">${ICONS.flame}${p.streak}</span>
-        <span class="chip lock" title="Bloqueios de ofensiva: protegem sua ofensiva se você faltar um dia">${ICONS.bloqueio}${p.bloqueios || 0}</span>
-        <a class="chip coin" href="loja.html" title="MathCoins — abrir a loja">${ICONS.coin}${p.moedas}</a>
+        <span class="chip lock" title="Combustível: protegem sua ofensiva se você faltar um dia">${ICONS.bloqueio}${p.bloqueios || 0}</span>
+        <a class="chip coin" href="loja.html" title="Moedas — abrir a loja">${ICONS.coin}${p.moedas}</a>
         <a class="user-btn" id="user-btn" href="perfil.html" aria-label="Ver meu perfil e estatísticas">
           ${avatarHtml(s)}<span class="nm">${esc(nome)}</span>
         </a>`;
@@ -1391,7 +1476,7 @@
   let syncInicial = Promise.resolve(false);
 
   /* ---------------------------- Abertura do app ----------------------------
-     1ª abertura do dia: animação de boas-vindas. Se um bloqueio de ofensiva foi usado
+     1ª abertura do dia: animação de boas-vindas. Se um combustível foi usado
      (a pessoa faltou), mostra a animação do bloqueio no lugar da saudação. */
   const PAGINAS_SEM_ABERTURA = /(login|onboarding)\.html$/;
   function carregarCelebracao() {
@@ -1461,13 +1546,22 @@
     return Promise.race([syncInicial, new Promise((res) => setTimeout(() => res(false), 4000))]);
   }
 
+  /* Mago em pixel art (o mesmo da batalha): 'vitoria' = cajado erguido comemorando (2 quadros em vaivém);
+     'derrota' = animação de queda, toca uma vez e fica no último quadro. Sem fundo, sem esticar. */
+  const mago = (estado, rotulo) => estado === 'derrota'
+    ? `<span class="mago-px mago-derrota" role="img" aria-label="${esc(rotulo || 'Mago derrotado')}"></span>`
+    : `<span class="mago-px mago-vitoria" role="img" aria-label="${esc(rotulo || 'Mago comemorando')}"></span>`;
+
   window.Briif = {
-    TRILHAS, AULAS, ICONS, $, $$, esc, fmt, rich,
+    TRILHAS, AULAS, ICONS, $, $$, esc, fmt, rich, mago,
     auth, wordmark, iniciar, atualizarHeader, aguardarSync, avatarHtml, simbolos, trilhaIcon,
+    dev: { permitido: devPermitido, ativo: emDev, semear: semearDev, uid: DEV_UID },
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
     progresso: { mesclar, ler: lerProgresso, completarFase, registrarRespostas, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
     loja: { custoBloqueio: LOJA.custoBloqueio, maxBloqueios: LOJA.maxBloqueios, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
-    avatares: { lista: AVATARES, comprar: comprarAvatar, selecionar: selecionarAvatar, salvarPersonalizado: salvarAvatarPersonalizado },
+    avatares: { lista: AVATARES, svgDe: svgLegado, comprar: comprarAvatar, selecionar: selecionarAvatar, salvarPersonalizado: salvarAvatarPersonalizado },
+    corpoHtml: avatarCorpoHtml,
+    avatarPadrao: () => (window.BriifAvatar ? window.BriifAvatar.padrao() : null),
     ranking: { buscar: buscarRanking, perfil: buscarPerfilPublico, avatar: avatarRanking, oculto: rankingOculto, alterarOculto: alterarRankingOculto },
     acharFase, proximaFase,
     personalizada: { opcoes: MATERIAS_PERSONALIZAVEIS, minimo: MIN_MATERIAS, materiasAtuais: () => personalizadaEntry.materias || [], salvar: salvarNovaSelecaoPersonalizada }

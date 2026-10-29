@@ -26,11 +26,11 @@
       <section class="shop-hero">
         <div class="shop-hero-text">
           <h1>Loja</h1>
-          <p>Troque as MathCoins que você ganha completando fases por proteção e personagens.</p>
+          <p>Troque as Moedas que você ganha completando fases por proteção e personagens.</p>
         </div>
         <div class="wallet" aria-label="Sua carteira">
-          <div class="wallet-item moeda">${ICONS.coin}<div><b>${p.moedas.toLocaleString('pt-BR')}</b><span>MathCoins</span></div></div>
-          <div class="wallet-item bloqueio">${ICONS.bloqueio}<div><b>${p.bloqueios || 0}</b><span>${(p.bloqueios || 0) === 1 ? 'bloqueio' : 'bloqueios'}</span></div></div>
+          <div class="wallet-item moeda">${ICONS.coin}<div><b>${p.moedas.toLocaleString('pt-BR')}</b><span>Moedas</span></div></div>
+          <div class="wallet-item bloqueio">${ICONS.bloqueio}<div><b>${p.bloqueios || 0}</b><span>${'combustível'}</span></div></div>
           <button class="loja-config-btn" id="loja-config-btn" type="button" aria-expanded="${configAberta}" aria-controls="loja-config-painel" title="Código promocional" aria-label="Código promocional">${ICONS.config}</button>
         </div>
       </section>
@@ -47,7 +47,7 @@
             ${codigoValidado === false ? `<p class="loja-codigo-erro">Código inválido. Confira e tente de novo.</p>` : ''}
             ${codigoValidado === true ? `
               <div class="loja-codigo-ok">
-                <p>Código válido! Quantas MathCoins você quer resgatar? (até ${limite.toLocaleString('pt-BR')})</p>
+                <p>Código válido! Quantas Moedas você quer resgatar? (até ${limite.toLocaleString('pt-BR')})</p>
                 <div class="loja-codigo-linha">
                   <input id="loja-codigo-qtd" type="number" min="1" max="${limite}" step="1" value="${limite}">
                   <button class="btn btn-coral btn-sm" id="loja-codigo-resgatar" type="button">Resgatar</button>
@@ -69,8 +69,8 @@
           <span class="shop-art-img">${ICONS.bloqueio}</span>
         </div>
         <div class="shop-destaque-info">
-          <h3>Bloqueio de ofensiva</h3>
-          <p>Se um dia passar em branco, um bloqueio é usado sozinho e sua ofensiva não zera.</p>
+          <h3>Combustível</h3>
+          <p>Se um dia passar em branco, o combustível é usado sozinho e sua ofensiva não zera.</p>
           <ul class="shop-lista">
             <li>${ICONS.check}<span>Você ganha <b>2</b> ao criar a conta</span></li>
             <li>${ICONS.check}<span>Mais <b>1</b> toda vez que sobe de nível (até o limite)</span></li>
@@ -78,18 +78,18 @@
           </ul>
           <div class="shop-compra">
             <span class="shop-preco">${ICONS.coin}<b>${custo}</b></span>
-            <button class="btn btn-coral" id="comprar-bloqueio" type="button" ${daPra && !cheio ? '' : 'disabled'}>${cheio ? `Limite de ${B.loja.maxBloqueios} bloqueios` : daPra ? 'Comprar bloqueio' : `Faltam ${faltam(custo)} MathCoins`}</button>
+            <button class="btn btn-coral" id="comprar-bloqueio" type="button" ${daPra && !cheio ? '' : 'disabled'}>${cheio ? `Limite de ${B.loja.maxBloqueios} de combustível` : daPra ? 'Comprar combustível' : `Faltam ${faltam(custo)} Moedas`}</button>
           </div>
         </div>
       </article>
 
       <div class="shop-secao-head">
-        <h2>Avatares</h2>
-        <p>Troque sua foto de perfil por um destes personagens.</p>
+        <h2>Avatar e fotos de perfil</h2>
+        <p>Monte o seu mago ou use uma foto de perfil.</p>
       </div>
       <div class="block" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:22px">
         <span class="avatar avatar-custom" style="width:64px;height:64px">${window.BriifAvatar.svg(p.avatarCfg || undefined)}</span>
-        <div style="flex:1;min-width:200px"><b style="font-size:1.05rem">Monte o seu personagem</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Pele, cabelo, roupa, óculos, chapéus e fundos. Tem peças grátis e peças com MathCoins.</p></div>
+        <div style="flex:1;min-width:200px"><b style="font-size:1.05rem">Monte o seu personagem</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Manto, cajado, cabelo, barba, chapéus, acessórios e companheiros. Tem peças grátis e peças com Moedas.</p></div>
         <a class="btn btn-coral btn-sm" href="avatar.html">Editar avatar</a>
       </div>
       ${avatarMsg ? `<div class="shop-aviso ${avatarMsg.ok ? 'ok' : 'no'}" role="status">${esc(avatarMsg.texto)}</div>` : ''}
@@ -102,10 +102,9 @@
           <article class="shop-card ${ativo ? 'em-uso' : ''} ${tem ? 'tenho' : ''}">
             <div class="shop-art avatar-fundo" style="--av:${av.cor}">
               ${ativo ? `<span class="shop-selo ok">Em uso</span>` : tem ? `<span class="shop-selo">Seu</span>` : ''}
-              <span class="avatar-preview">${av.svg}</span>
+              <span class="avatar-preview">${B.avatares.svgDe(av)}</span>
             </div>
             <div class="shop-card-corpo">
-              <h3>${esc(av.nome)}</h3>
               ${ativo
                 ? `<button class="btn btn-ink btn-sm" type="button" disabled>${ICONS.check} Em uso</button>`
                 : tem
@@ -134,8 +133,8 @@
       btnComprar.addEventListener('click', () => {
         const r = B.loja.comprarBloqueio();
         mensagem = r.ok
-          ? { ok: true, texto: 'Comprado! Você já tem ' + (r.progresso.bloqueios || 0) + (r.progresso.bloqueios === 1 ? ' bloqueio de ofensiva.' : ' bloqueios de ofensiva.') }
-          : { ok: false, texto: 'Você ainda não tem MathCoins suficientes. Continue completando fases para ganhar mais.' };
+          ? { ok: true, texto: 'Comprado! Você já tem ' + (r.progresso.bloqueios || 0) + ' de combustível.' }
+          : { ok: false, texto: 'Você ainda não tem Moedas suficientes. Continue completando fases para ganhar mais.' };
         if (window.BriifSom) window.BriifSom.tocar(r.ok ? 'compra' : 'negado');
         render();
         B.atualizarHeader();
@@ -147,7 +146,7 @@
         const r = B.avatares.comprar(b.dataset.comprar);
         avatarMsg = r.ok
           ? { ok: true, texto: 'Avatar comprado! Clique em "Usar" para colocá-lo no seu perfil.' }
-          : { ok: false, texto: 'Você ainda não tem MathCoins suficientes pra esse avatar.' };
+          : { ok: false, texto: 'Você ainda não tem Moedas suficientes pra esse avatar.' };
         if (window.BriifSom) window.BriifSom.tocar(r.ok ? 'compra' : 'negado');
         render();
         B.atualizarHeader();
@@ -188,12 +187,12 @@
           const r = B.loja.resgatarCodigoMoedas(codigoDigitado, qtd);
           if (window.BriifSom) window.BriifSom.tocar(r.ok ? 'moeda' : 'negado');
           if (r.ok) {
-            codigoMsg = { ok: true, texto: `Resgatado! +${r.quantidade.toLocaleString('pt-BR')} MathCoins.` };
+            codigoMsg = { ok: true, texto: `Resgatado! +${r.quantidade.toLocaleString('pt-BR')} Moedas.` };
             codigoValidado = null;
             codigoDigitado = '';
             B.atualizarHeader();
           } else if (r.motivo === 'limite') {
-            codigoMsg = { ok: false, texto: `O máximo por resgate é ${limite.toLocaleString('pt-BR')} MathCoins.` };
+            codigoMsg = { ok: false, texto: `O máximo por resgate é ${limite.toLocaleString('pt-BR')} Moedas.` };
           } else {
             codigoMsg = { ok: false, texto: 'Digite uma quantidade válida.' };
           }

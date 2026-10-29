@@ -291,7 +291,7 @@
     return `
       <div class="rs ${pre ? 'rs-pre' : ''} ${quieto ? 'rs-quieto' : ''}">
         <div class="rs-confete" aria-hidden="true"></div>
-        <div class="rs-mago"><img src="assets/img/mago-feliz.svg" alt="Mago Roxo comemorando" width="250" height="292"></div>
+        <div class="rs-mago">${B.mago('vitoria', 'Mago comemorando a lição concluída')}</div>
         <h1>${titulo}</h1>
         <p class="sub">${perfeito ? `Você gabaritou “${esc(fase.titulo)}”: ${resumo.acertos} de ${total}!` : `Você acertou ${resumo.acertos} de ${total} em “${esc(fase.titulo)}”.`}</p>
         <div class="rs-cards">
@@ -302,10 +302,10 @@
             </div>`).join('')}
         </div>
         <div class="rs-extras">
-          ${resumo.primeiraVez && resumo.moedas ? `<span class="rs-pilula"><img src="assets/img/moeda.svg" alt="">+${resumo.moedas}</span>` : ''}
-          ${resumo.streakAumentou ? `<span class="rs-pilula"><img src="assets/img/fogo.svg" alt="">Ofensiva de ${resumo.streak} ${resumo.streak === 1 ? 'dia' : 'dias'}</span>` : ''}
-          ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}!${resumo.bloqueioGanho > 0 ? ` +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'bloqueios' : 'bloqueio'}` : ' (limite de bloqueios)'}</span>` : ''}
-          ${resumo.primeiraVez ? '' : '<span class="rs-nota">Fase já concluída antes: XP e MathCoins só valem na primeira vez.</span>'}
+          ${resumo.primeiraVez && resumo.moedas ? `<span class="rs-pilula">${B.ICONS.coin}+${resumo.moedas}</span>` : ''}
+          ${resumo.streakAumentou ? `<span class="rs-pilula">${B.ICONS.flame}Ofensiva de ${resumo.streak} ${resumo.streak === 1 ? 'dia' : 'dias'}</span>` : ''}
+          ${resumo.subiu ? `<span class="rs-pilula nivel">Nível ${resumo.nivelAntes + 1}!${resumo.bloqueioGanho > 0 ? ` +${resumo.bloqueioGanho} ${resumo.bloqueioGanho > 1 ? 'de combustível' : 'de combustível'}` : ' (limite de combustível)'}</span>` : ''}
+          ${resumo.primeiraVez ? '' : '<span class="rs-nota">Fase já concluída antes: XP e Moedas só valem na primeira vez.</span>'}
           ${notaRevisao()}
         </div>
         <div class="actions">
@@ -337,7 +337,7 @@
     ];
     return `
       <div class="rs rs-falha ${pre ? 'rs-pre' : ''} ${quieto ? 'rs-quieto' : ''}">
-        <div class="rs-mago triste"><img src="assets/img/mago-triste.svg" alt="Mago Roxo desanimado" width="250" height="292"></div>
+        <div class="rs-mago triste">${B.mago('derrota', 'Mago derrotado: a lição não foi concluída')}</div>
         <h1>${titulo}</h1>
         <p class="sub">Você acertou ${acertos} de ${total} em “${esc(fase.titulo)}”.</p>
         <p class="rs-regra">Para concluir a fase e contar a ofensiva de hoje, é preciso acertar <b>pelo menos ${MIN_ACERTOS}</b>. ${falta === 1 ? 'Faltou só 1 acerto!' : `Faltaram ${falta} acertos.`}</p>
@@ -349,7 +349,7 @@
             </div>`).join('')}
         </div>
         <div class="rs-extras">
-          <span class="rs-aviso"><img src="assets/img/fogo.svg" alt="" style="filter:grayscale(1)">A ofensiva de hoje só conta quando você passa na fase.</span>
+          <span class="rs-aviso"><span class="rs-apagado">${B.ICONS.flame}</span>A ofensiva de hoje só conta quando você passa na fase.</span>
           ${notaRevisao()}
         </div>
         <div class="actions">
@@ -464,18 +464,18 @@
       };
       requestAnimationFrame(passo);
     });
-    if (!reduzido && !reprovado) confete($('.rs-confete', el), resumo.acertos === fase.exercicios.length ? 80 : 52);
+    if (!reduzido && !reprovado) confete($('.rs-confete', el), resumo.acertos === fase.exercicios.length ? 18 : 10);
   }
 
   function confete(host, n) {
     if (!host) return;
-    const cores = [trilha.cor, '#FFD66B', '#FFFFFF', '#B9A8FF', '#FF9600'];
+    const cores = ['#C5B8FF', '#8E7BE8', '#F2D27A'];   // faíscas arcanas discretas (sem confete colorido)
     let html = '';
     for (let i = 0; i < n; i++) {
       const ang = -Math.PI * (0.05 + Math.random() * 0.9);
-      const dist = 180 + Math.random() * 330;
-      const x = Math.cos(ang) * dist, y = Math.sin(ang) * dist + 260;
-      html += `<i style="--w:${6 + Math.random() * 7}px;--cc:${cores[i % cores.length]};--x:${x.toFixed(0)}px;--y:${y.toFixed(0)}px;--rot:${Math.round((Math.random() - .5) * 1400)}deg;--d:${(Math.random() * .35).toFixed(2)}s;${Math.random() < .25 ? '--rd:50%;' : ''}"></i>`;
+      const dist = 70 + Math.random() * 160;
+      const x = Math.cos(ang) * dist, y = Math.sin(ang) * dist + 110;
+      html += `<i style="--w:${4 + Math.floor(Math.random() * 3) * 2}px;--cc:${cores[i % cores.length]};--x:${x.toFixed(0)}px;--y:${y.toFixed(0)}px;--rot:${Math.round((Math.random() - .5) * 1400)}deg;--d:${(Math.random() * .35).toFixed(2)}s;${Math.random() < .25 ? '--rd:50%;' : ''}"></i>`;
     }
     host.innerHTML = html;
   }

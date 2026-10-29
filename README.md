@@ -75,7 +75,9 @@ Funciona nos temas claro e noturno; o contraste é ajustado automaticamente e a 
 Cinco fases com as 15 questões do simulado (3 por fase), cada uma com aula, exemplos resolvidos e explicação de cada resposta.
 O conteúdo fica em `assets/js/data.js`, na trilha de id `enem` (fases `enem_1` a `enem_5`).
 
-## Modo pixel art
+## Modo pixel art (descontinuado na v27)
+> Desde a v27 não existe mais o botão de modo pixel/cores: o visual pixel art é permanente (`data-pixel` sempre ligado em `tema.js`) e só o claro/escuro alterna. Veja "Identidade medieval (v27)" abaixo. O texto a seguir fica como histórico.
+
 Botão de controle de videogame no header, ao lado do botão de cores. Liga um visual retrô: fonte pixel (Pixelify Sans / Silkscreen, carregadas só quando o modo é ligado), bordas grossas com cantos "quebrados", ícones em pixel, favicon do π em pixel, e o logo "√Briiff" vira a marca em pixel BRIIFF (baseada na imagem enviada), com a animação de entrada π → BRIIFF na tela de login.
 Funciona junto com o tema noturno e com as cores personalizadas.
 - Lógica: `assets/js/tema.js` (liga/desliga e troca o favicon) e `assets/js/app.js` (ícones, logo e botão).
@@ -149,3 +151,51 @@ Depois de publicar, teste: entrar, concluir uma fase e abrir o Ranking. Se algo 
 - No Firestore, `usuarios/{uid}.progresso` guarda `avatarCfg`, `avatarCfgTs` e `avatarPecas`. O personagem ativo também vai em `ranking/{uid}.avatarCfg` para os outros o verem.
 - **Importante:** republique o `firestore.rules` no console do Firebase (campo novo `avatarCfg` no ranking). Sem isso o ranking continua funcionando, mas sem mostrar o personagem montado.
 - Clicar numa linha do ranking abre `perfil.html?u=<uid>` com os dados públicos daquela pessoa.
+
+
+## Identidade medieval (v27)
+Um único visual de jogo medieval/fantasia (pixel art discreto) com dois temas, **escuro (padrão)** e **claro (pergaminho)**.
+- **Cores e fundo**: `assets/css/dungeon.css` (carregado depois de `suave.css`). Variáveis dos dois temas no topo; fundo de tijolos em CSS (SVG inline, sem imagem pesada) e brilho arcano. Escuro: `#171329` / painéis `#211B38` / elevado `#2B2347` / lilás `#C5B8FF`.
+- **Tema**: `tema.js` liga o pixel art sempre e alterna só claro/escuro (padrão escuro; cores personalizadas desativadas). O botão de tema fica no menu ⋮.
+- **Fórmulas flutuantes**: `assets/js/fundo.js` (6–16 símbolos, só `transform`, pausa com a aba oculta, parado com "reduzir movimento"). Carregado por `tema.js` junto com `menu.js`.
+- **Logo π**: `assets/img/pi.png` (branco) e `pi-roxo.png` (transparentes, reconstruídos pixel a pixel da logo `pi_1020.png`, sem fundo), `pi.svg` e `favicon.svg`. Classe `.pi-logo`.
+- **Menu lateral**: `assets/js/menu.js` + bloco "Menu lateral" do `dungeon.css`. Ícones 12×12 pixelados (vazado → preenchido no hover/foco/ativo); o nome é uma etiqueta flutuante (nada se desloca). No celular vira barra inferior com nomes sempre visíveis.
+- **Grimório**: `assets/js/grimorio.js` (livro por cima do site). Monta os capítulos com o conteúdo que já existe em `data.js` (lição + aula: passo a passo, exemplos resolvidos, erro comum, dica ENEM) e liga cada capítulo à prática da fase. Carregado só ao abrir.
+- **Moedas e Combustível**: o texto "MathCoins" virou **Moedas** e "bloqueio de ofensiva" virou **Combustível** (só rótulos; os campos `moedas`, `bloqueios`, `bloqueiosGanhos`… e as regras continuam iguais). Ícones pixel: moeda sem letra, carvão (`PX.carvao`), fogo aceso/apagado (`PX.flame` / `PX.fogoApagado`).
+
+## Batalha final integrada (v27)
+`boss.html` agora usa a arena do protótipo: `assets/js/bossfight.js` (canvas: mago, chefe "Os Desenvolvedores", bola de magia, dano em branco, explosão de carne, placa de vitória) + `assets/css/bossfight.css` + `assets/boss/` (spritesheets e `intro.mp4`).
+Regras, perguntas, rascunho, XP/Moedas/Combustível e ofensiva continuam sendo os do `app.js` (`Briif.boss`). A vitória só é registrada uma vez por batalha (`finalizado`) e a recompensa só na 1ª vitória da trilha (`bosses`). O vídeo aparece 1× por sessão, tem botão "Pular introdução" e, se não puder tocar, a batalha segue sem ele.
+
+
+## Correções e avatares de mago (v28)
+- **Menus**: o painel do menu ⋮ (celular) agora tem o próprio canto quebrado do pixel art e as opções ficam por dentro (antes o item aparecia como um quadrado separado no canto). Botões de tema/som: ícone centrado (grade) e sem `transform` no clique; os ícones pixel têm `viewBox` justo ao desenho (`pxArt` em `app.js`).
+- **Login/cadastro**: o palco (`.auth`) deixou de ter fundo próprio e o rodapé encosta nele (`main.auth + .site-footer`), sem faixa de fundo entre os dois.
+- **Onboarding**: removidos os slides "Modo game" e "Cores personalizadas" do array `TUTORIAL` (os indicadores e a navegação são calculados pelo tamanho do array).
+- **Trilha personalizada**: `.pers-op` usava `white` fixo no estado marcado; agora usa as variáveis do tema (`dungeon.css`).
+- **Fim de fase**: `resultado.css` + overrides em `dungeon.css` (lajes de pedra, número em fonte pixel, faíscas no lugar do confete). Celebrações de ofensiva/combustível em roxo.
+- **Mago em pixel art**: `Briif.mago('vitoria'|'derrota')` (sprites da batalha, `assets/img/mago-vitoria.png` e `mago-derrota.png`). Usado no fim de fase e nas telas finais da batalha. O mago/ilustrações antigas (`mago-feliz.svg`, `mago-triste.svg`) foram removidos.
+- **Chefe**: silhueta preta (`assets/boss/chefe-silhueta.png`, gerada do `chefe.png`, que permanece intacto) na introdução e no mapa da trilha; a arena continua usando o chefe colorido.
+- **Vitória da batalha**: o "tijolinho" de pedra (`tijolo()` em `bossfight.js`) substitui a placa; o callback de conclusão e as recompensas não mudaram.
+- **Avatares (magos de RPG)**: catálogo gerado por `python3 build/avatar/build.py` (peças em `build/avatar/pecas.py`) → `assets/js/avatar.js`. Grade 32×50, 20 categorias (limite de 20 chaves do `avatarCfg` nas regras do Firestore, por isso **as regras não foram alteradas**). Itens grátis: manto de aprendiz, cajado básico (o do mago da batalha), cabelos/barbas básicos, todas as cores e acessórios básicos. O editor (`editor-avatar.js` + `avatar.css`) mostra miniaturas sem texto, com os estados equipado / disponível / comprado / bloqueado. Compras continuam em `Briif.avatares.salvarPersonalizado` (valida saldo, desconta uma vez, grava `avatarPecas`).
+
+
+## Ajustes da v29 (menus, ícones, intro, fotos, ranking, modo desenvolvedor)
+- **Junção dos menus**: com o menu lateral, o `body` ganha 64 px de margem e o cabeçalho (fundo + borda) ficava só no miolo, deixando um "buraco" no canto. Em telas ≥ 861 px o `.site-header` agora se estende por baixo da margem (`dungeon.css`).
+- **Botão fantasma**: era o botão "⋮" (`.more-btn`, só do celular), reativado no desktop por uma regra minha de `.theme-btn`. Agora `.theme-btn.more-btn` só aparece em ≤ 760 px.
+- **Ícones** (`assets/img/ico/`, gerados por `build/icons/make_icons.py` a partir de `icones-menu/`; os originais não foram alterados): `ICONS.flame/coin/bloqueio/moon/sun` em `app.js` são a única definição. Fogo = faixa de 3 quadros animada em CSS (`.ic-fogo`), apagado = mesmo desenho cinza e parado (`fogo-apagado.png`), usado fora de `.chip.fire.on`, no ranking sem ofensiva e na tela de fim de fase. Moeda e carvão = imagem (`.ic-moeda`, `.ic-carvao`). Sol e lua = máscara pintada com `currentColor` (`.ic-mask`), então as cores de cada tema e os estados de hover/foco não mudaram.
+- **Animação da tela inicial**: `build/intro/make_intro.py` recorta do spritesheet original (28 quadros de 840×1491) só os quadros 0–22 (os 23–27 trazem os botões do login) e só a área do logo; saída `assets/img/intro-briiff.png` (grade 6×4, 32 KB, máscara branca). `animarIntro()` em `app.js` toca num canvas (12 quadros/s, uma vez, fica no último) pintando com a cor do tema; com "reduzir movimento" mostra direto o quadro final.
+- **Fotos de perfil**: 10 imagens em `assets/img/perfil/` (`build/perfil/make_perfil.py`), ids `foto-*`, 100 Moedas cada, sem nome nem descrição. As fotos antigas (`mago-roxo`, `bubu`, `riri`, `fefe`) saíram do catálogo; quem as tinha volta à inicial. Compra/seleção continuam em `Briif.avatares.comprar/selecionar` (valida saldo, não cobra duas vezes, grava em `avatares`/`avatarAtivo`, sincroniza como antes).
+- **Ranking**: o link que cobre a linha (`.rk-link`) não tinha CSS e virava uma célula vazia da grade, empurrando cada coluna e amontoando as estatísticas. Agora é `position:absolute; inset:0` (`style.css`).
+- **Modo desenvolvedor** (só teste local): `assets/js/ambiente.js` (`modoDesenvolvedor: false` por padrão). O link "Entrar como desenvolvedor" só é criado em `localhost/127.0.0.1` ou se a flag for ligada num ambiente de testes; em produção nem existe no HTML. A sessão é `{modo:'dev', uid:'dev-local'}`: nunca usa Firebase, não cria conta, não entra no ranking e guarda o progresso só em `briif:progress:dev-local`, recomeçando de um estado de teste a cada entrada. Todas as trilhas, fases, extras e batalhas ficam liberadas (`faseDisponivel`/`bossDisponivel`/`trilhas.js`), sem concluir nada. O painel **DEV** (`assets/js/dev.js`) cria estados: Moedas (+100/+500/ficar com 50/zerar), combustível, ofensiva (ativa/inativa/perder 1 ou 3 dias), XP, concluir fases de uma trilha, chefe vencido/pendente, zerar compras de avatar e recomeçar. Uma sessão "dev" forjada à mão num ambiente que não permite é descartada.
+
+- **Sol, lua e moeda (ajuste)**: sol e lua agora vêm da pasta `icones/` enviada (sol 20×20, lua 18×18; os pixels meio-transparentes do sol são descartados e a cor continua a do botão, via máscara). A moeda estava torta porque o gerador media o "pixel de arte" só pela silhueta (7×7) e perdia o detalhe interno; ela é 14×14 e agora a medida é por cor (`build/icons/make_icons.py`). Os ícones são exibidos em múltiplos da própria grade (final de `dungeon.css`).
+- **Sol e lua (correção)**: passaram a ser imagens comuns com as cores exatas dos arquivos enviados (sol lilás, lua preta). A versão anterior usava máscara CSS, que o navegador bloqueia quando o site é aberto direto do disco (`file://`), e o ícone sumia; testado agora abrindo por `file://` e por servidor.
+
+## Perfis, nome, números e batalha (v30)
+- **Nome BRIIFF do cabeçalho**: agora é o mesmo desenho do quadro final da animação de entrada (grade 104×30 extraída do spritesheet original); antes os "I" eram mais grossos (`palavraSvg` em `app.js`).
+- **Números em pixel art**: fonte própria só para dígitos e símbolos de conta (`assets/fonts/briiff-numeros.woff`, gerada por `build/fonte/make_fonte.py`; grade 5×7, quadrada). `--px` usa ela primeiro (via `unicode-range`) e cai na Pixelify Sans para as letras.
+- **Perfil pessoal** (`perfil.js` + final de `dungeon.css`): avatar de corpo inteiro ao lado do nome, da foto de perfil, das ações, dos números e da barra de XP.
+- **Perfil público** (ao clicar no ranking): mesmo layout do pessoal, com o avatar de corpo inteiro, a foto de perfil e os dados públicos que já existiam (nível, XP total, acertos, ofensiva, recorde). O personagem agora é sempre publicado no ranking (`avatarCfg`), independente da foto escolhida; perfis publicados antes só mostram o avatar depois da próxima sincronização da pessoa (senão aparece uma silhueta).
+- **Foto de perfil**: nova aba "Foto de perfil" em `avatar.html` (`editor-avatar.js`): o avatar (busto), as fotos que a pessoa já tem e a inicial do nome. A escolha fica em `avatarAtivo` (`custom`, `foto-*` ou vazio); salvar o avatar não troca mais a foto escolhida (só na primeira vez).
+- **Batalha final lado a lado** (≥ 900 px, `bossfight.css`): luta à esquerda e questões à direita, cabendo na tela em 1366×768 e 1920×1080; rascunho e o resto embaixo. Em telas estreitas continua empilhado.

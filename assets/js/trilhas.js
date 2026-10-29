@@ -33,7 +33,7 @@
           </div>
           <div class="counters">
             <span class="chip fire ${B.progresso.ofensivaFeitaHoje(p) ? 'on' : ''}" title="Ofensiva">${ICONS.flame}${p.streak}</span>
-            <a class="chip coin" href="loja.html" title="MathCoins — abrir a loja">${ICONS.coin}${p.moedas}</a>
+            <a class="chip coin" href="loja.html" title="Moedas — abrir a loja">${ICONS.coin}${p.moedas}</a>
           </div>
         </div>
         <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="XP do nível"><i style="width:${pct}%"></i></div>
@@ -91,7 +91,7 @@
     let html = '';
     t.fases.forEach((f, i) => {
       const completa = B.progresso.faseCompleta(p, f.id);
-      const anterior = i === 0 || B.progresso.faseCompleta(p, t.fases[i - 1].id);
+      const anterior = i === 0 || B.progresso.faseCompleta(p, t.fases[i - 1].id) || B.dev.ativo();   // modo desenvolvedor: tudo liberado
       const disponivel = anterior && !completa;
       const bloqueada = !anterior && !completa;
       const pos = POS[i % POS.length];
@@ -127,15 +127,15 @@
       const hrefB = liberado ? `href="boss.html?t=${encodeURIComponent(t.id)}"` : '';
       html += `
         <div class="path-row ${posB}">
-          <${tagB} class="node-wrap boss-wrap" ${hrefB} ${liberado ? '' : 'aria-disabled="true"'} aria-label="Batalha final contra o Mago Roxo (${rotB})">
-            <span class="node-btn boss-node ${estadoB}" style="--c:${t.cor};--on-c:${t.on}">${B.avatares.lista[0].svg}${vencido ? `<i class="boss-check">${ICONS.check}</i>` : liberado ? '' : `<i class="boss-lock">${ICONS.lock}</i>`}</span>
-            <span class="node-label">Batalha final<small>${vencido ? 'Lutar de novo' : liberado ? 'Enfrentar o Mago Roxo' : 'Conclua todas as fases'}</small></span>
+          <${tagB} class="node-wrap boss-wrap" ${hrefB} ${liberado ? '' : 'aria-disabled="true"'} aria-label="Batalha final contra Os Desenvolvedores (${rotB})">
+            <span class="node-btn boss-node ${estadoB}" style="--c:${t.cor};--on-c:${t.on}"><span class="boss-face" aria-hidden="true"></span>${vencido ? `<i class="boss-check">${ICONS.check}</i>` : liberado ? '' : `<i class="boss-lock">${ICONS.lock}</i>`}</span>
+            <span class="node-label">Batalha final<small>${vencido ? 'Lutar de novo' : liberado ? 'Enfrentar Os Desenvolvedores' : 'Conclua todas as fases'}</small></span>
           </${tagB}>
         </div>`;
     }
     // extras difíceis: uma fase por conteúdo, só liberam depois do boss (não entram na Personalizada)
     if (t.extras && t.extras.length) {
-      const liberadas = B.boss.derrotado(p, t.id);
+      const liberadas = B.boss.derrotado(p, t.id) || B.dev.ativo();
       html += `<div class="extras-sec"><h3>Extras difíceis</h3><p>${liberadas ? 'Só dois exercícios por fase, bem puxados. Cada um tem uma dica de uso único.' : 'Vença a Batalha final para liberar.'}</p>`;
       t.extras.forEach((x) => {
         const feita = B.progresso.faseCompleta(p, x.id);

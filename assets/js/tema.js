@@ -22,18 +22,18 @@
   var hexOk = function (h) { return typeof h === 'string' && /^#[0-9a-f]{6}$/i.test(h); };
 
   /* ---------------- tema claro / noturno ---------------- */
-  function lerTema() { try { return localStorage.getItem(CHAVE); } catch (e) { return null; } }
+  function lerTema() { try { return localStorage.getItem(CHAVE) || 'noturno'; } catch (e) { return 'noturno'; } }   // escuro é a identidade principal
 
   function atual() { return raiz.getAttribute('data-tema') === 'noturno' ? 'noturno' : 'claro'; }
 
   function aplicarTema(tema) {
     // no modo pixel art só existe a versão noturna: o claro fica guardado
     // (pra voltar sozinho quando o pixel art for desligado), mas não é aplicado.
-    var efetivo = pixel() ? 'noturno' : tema;
+    var efetivo = tema === 'claro' ? 'claro' : 'noturno';
     if (efetivo === 'noturno') raiz.setAttribute('data-tema', 'noturno');
     else raiz.removeAttribute('data-tema');
     var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute('content', efetivo === 'noturno' ? '#0F1014' : '#FBFAF7');
+    if (m) m.setAttribute('content', efetivo === 'noturno' ? '#171329' : '#F2EFE9');
     aplicarCores();
   }
 
@@ -86,7 +86,7 @@
     var c = cores(), st = raiz.style;
     // no modo pixel art as cores personalizadas ficam desativadas (a escolha
     // continua guardada, só não é aplicada enquanto o pixel art estiver ligado)
-    if (c.modo !== 'custom' || pixel()) {
+    if (true) {   // paleta única da identidade: cores personalizadas desativadas
       PROPS.forEach(function (p) { st.removeProperty(p); });   // volta ao padrão definido no CSS
       return;
     }
@@ -111,7 +111,7 @@
     '<rect x="7" y="8" width="2" height="6"/><rect x="11" y="8" width="2" height="6"/></g></svg>');
   var faviconOriginal = null;
 
-  function lerPixel() { try { return localStorage.getItem(CHAVE_PIXEL) === '1'; } catch (e) { return false; } }
+  function lerPixel() { return true; }   // visual único: o pixel art faz parte da identidade (só claro/escuro alternam)
   function pixel() { return raiz.hasAttribute('data-pixel'); }
 
   function aplicarPixel(ligado) {
@@ -129,7 +129,7 @@
     var ic = document.querySelector('link[rel~="icon"]');
     if (ic) {
       if (faviconOriginal === null) faviconOriginal = ic.getAttribute('href');
-      ic.setAttribute('href', ligado ? FAVICON_PIXEL : faviconOriginal);
+      ic.setAttribute('href', faviconOriginal);
       ic.setAttribute('type', 'image/svg+xml');
     }
     // reaplica o tema: liga o pixel art força o modo claro; desliga volta pro tema salvo
@@ -158,7 +158,7 @@
   }
 
   function alternarPixel() {
-    var novo = !pixel();
+    var novo = true;
     try { localStorage.setItem(CHAVE_PIXEL, novo ? '1' : '0'); } catch (e) { /* segue sem salvar */ }
     aplicarPixel(novo);
     avisar();
@@ -176,4 +176,19 @@
   });
 
   window.BriifTema = { pixel: pixel, alternarPixel: alternarPixel, atual: atual, alternar: alternar, cores: cores, definirCores: definirCores, PADRAO: PADRAO };
+
+  /* fundo animado (fórmulas flutuantes): carregado depois da página para não atrasar o 1º desenho */
+  function carregarFundo() {
+    if (document.getElementById('briif-fundo-js')) return;
+    var s = document.createElement('script'); s.id = 'briif-fundo-js'; s.defer = true;
+    s.src = 'assets/js/fundo.js';
+    (document.head || raiz).appendChild(s);
+    try {   // painel do modo desenvolvedor: só carrega se a sessão atual é "dev" (dev.js confere de novo se o ambiente permite)
+      var ses = JSON.parse(localStorage.getItem('briif:session'));
+      if (ses && ses.modo === 'dev') { var d = document.createElement('script'); d.defer = true; d.src = 'assets/js/dev.js'; (document.head || raiz).appendChild(d); }
+    } catch (e) { /* segue */ }
+    var m = document.createElement('script'); m.defer = true; m.src = 'assets/js/menu.js';   // menu lateral com ícones
+    (document.head || raiz).appendChild(m);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', carregarFundo); else carregarFundo();
 })();

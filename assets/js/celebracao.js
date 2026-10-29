@@ -16,8 +16,8 @@
 
   function chamaSvg() {
     // a arte nova da chama: uma cópia borrada por trás (brilho) e a imagem tremendo por cima
-    return '<img class="cel-fogo-brilho" src="assets/img/fogo.svg" alt="" aria-hidden="true">' +
-      '<img class="cel-fogo" src="assets/img/fogo.svg" alt="" aria-hidden="true">';
+    return '<span class=\"cel-fogo-brilho ic-img ic-fogo\" aria-hidden=\"true\"></span>' +
+      '<span class=\"cel-fogo ic-img ic-fogo\" aria-hidden=\"true\"></span>';
   }
 
   function faiscas(n) {
@@ -48,7 +48,7 @@
       var feito = !!set[iso];
       h += '<div class="cel-dia ' + (feito ? 'feito ' : '') + (eh ? 'hoje' : '') + '">' +
         '<span>' + SEMANA[i] + '</span>' +
-        '<b>' + (feito ? '<img src="assets/img/fogo.svg" alt="" aria-hidden="true">' : '') + '</b></div>';
+        '<b>' + (feito ? '<span class=\"ic-img ic-fogo\" aria-hidden=\"true\"></span>' : '') + '</b></div>';
     }
     return h;
   }
@@ -132,8 +132,8 @@
     for (var i = 0; i < 7; i++) {
       var d = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate() + i);
       var k = iso(d), eh = k === iso(hoje);
-      var icone = prot[k] ? '<img src="assets/img/bloqueio.svg" alt="" aria-hidden="true">'
-        : (feitos[k] ? '<img src="assets/img/fogo.svg" alt="" aria-hidden="true">' : '');
+      var icone = prot[k] ? '<span class=\"ic-img ic-carvao\" aria-hidden=\"true\"></span>'
+        : (feitos[k] ? '<span class=\"ic-img ic-fogo\" aria-hidden=\"true\"></span>' : '');
       h += '<div class="cel-dia ' + (feitos[k] ? 'feito ' : '') + (prot[k] ? 'protegido ' : '') + (eh ? 'hoje' : '') + '">' +
         '<span>' + SEMANA[i] + '</span><b>' + icone + '</b></div>';
     }
@@ -168,7 +168,7 @@
   }
 
   /* ------------------------------------------------------------------
-     BLOQUEIO USADO: a pessoa não estudou num dia e um bloqueio de ofensiva
+     BLOQUEIO USADO: a pessoa não estudou num dia e um combustível
      salvou a sequência. A chama esfria, o cadeado cai sobre ela, onda de
      choque azul e a chama volta a brilhar.
      Uso: BriifCelebracao.bloqueio({ usados, streak, restantes, dias, protegidos, aoFechar })
@@ -180,23 +180,23 @@
     el.className = 'cel cel-bloq';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-modal', 'true');
-    el.setAttribute('aria-label', 'Seu bloqueio de ofensiva foi usado');
+    el.setAttribute('aria-label', 'Seu combustível foi usado');
     var texto = streak > 0
-      ? 'Você ficou ' + usados + ' ' + plural(usados, 'dia', 'dias') + ' sem estudar, mas ' + plural(usados, 'o bloqueio protegeu', 'os bloqueios protegeram') + ' sua ofensiva de ' + streak + ' ' + plural(streak, 'dia', 'dias') + '.'
-      : 'Você ficou ' + usados + ' ' + plural(usados, 'dia', 'dias') + ' sem estudar e um bloqueio foi usado.';
+      ? 'Você ficou ' + usados + ' ' + plural(usados, 'dia', 'dias') + ' sem estudar, mas ' + plural(usados, 'o combustível protegeu', 'o combustível protegeu') + ' sua ofensiva de ' + streak + ' ' + plural(streak, 'dia', 'dias') + '.'
+      : 'Você ficou ' + usados + ' ' + plural(usados, 'dia', 'dias') + ' sem estudar e o combustível foi usado.';
     var restamTxt = restam > 0
-      ? 'Ainda ' + plural(restam, 'resta', 'restam') + ' <b>' + restam + '</b> ' + plural(restam, 'bloqueio', 'bloqueios') + '.'
-      : 'Esse era seu <b>último bloqueio</b>. Estude hoje para manter a chama!';
+      ? 'Ainda ' + plural(restam, 'resta', 'restam') + ' <b>' + restam + '</b> ' + 'de combustível.'
+      : 'Esse era seu <b>último combustível</b>. Estude hoje para manter a chama!';
     el.innerHTML =
       '<div class="cel-brilho"></div>' +
       '<div class="cel-faiscas" aria-hidden="true">' + faiscasAzuis(22) + '</div>' +
       '<div class="cel-conteudo">' +
         '<div class="bq-cena" aria-hidden="true">' +
           '<span class="bq-onda"></span><span class="bq-onda dois"></span>' +
-          '<div class="bq-chama"><img class="cel-fogo-brilho" src="assets/img/fogo.svg" alt=""><img class="cel-fogo" src="assets/img/fogo.svg" alt=""></div>' +
-          '<img class="bq-cadeado" src="assets/img/bloqueio.svg" alt="">' +
+          '<div class="bq-chama"><span class=\"cel-fogo-brilho ic-img ic-fogo\" aria-hidden=\"true\"></span><span class=\"cel-fogo ic-img ic-fogo\" aria-hidden=\"true\"></span></div>' +
+          '<span class=\"bq-cadeado ic-img ic-carvao\" aria-hidden=\"true\"></span>' +
         '</div>' +
-        '<h2 class="bq-titulo">Bloqueio de ofensiva usado!</h2>' +
+        '<h2 class="bq-titulo">Combustível usado!</h2>' +
         '<p class="cel-sub bq-sub">' + texto + '</p>' +
         '<p class="bq-restam">' + restamTxt + '</p>' +
         '<div class="cel-semana bq-semana" aria-label="Dias desta semana">' + semanaComBloqueio(opt.dias, opt.protegidos) + '</div>' +
@@ -218,7 +218,7 @@
      ou tecla fecha antes.
      Uso: BriifCelebracao.boasVindas({ nome, streak, feitaHoje, bloqueios, moedas, aoFechar })
      ------------------------------------------------------------------ */
-  var MARCA = '<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bvg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7A68F0"/><stop offset="1" stop-color="#4635BC"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#bvg)"/><path d="M10 14.500h20M16 15v11.500c0 2.800-.9 4.300-2.900 5.200M25 15v11c0 3 1.300 4.700 3.800 4.700" fill="none" stroke="#fff" stroke-width="3.600" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="8.500" r="3" fill="#FFC857"/></svg>';
+  var MARCA = '<i class="pi-logo"></i>';
   function boasVindas(opt) {
     var h = new Date().getHours();
     var saudacao = h < 5 ? 'Boa madrugada' : h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
@@ -240,8 +240,8 @@
         '<p class="cel-sub bv-sub">' + sub + '</p>' +
         '<div class="bv-chips">' +
           '<span class="bv-chip fogo">' + (I.flame || '') + '<b>' + streak + '</b><small>ofensiva</small></span>' +
-          '<span class="bv-chip lock">' + (I.bloqueio || '') + '<b>' + (opt.bloqueios || 0) + '</b><small>' + plural(opt.bloqueios || 0, 'bloqueio', 'bloqueios') + '</small></span>' +
-          '<span class="bv-chip moeda">' + (I.coin || '') + '<b>' + (opt.moedas || 0) + '</b><small>MathCoins</small></span>' +
+          '<span class="bv-chip lock">' + (I.bloqueio || '') + '<b>' + (opt.bloqueios || 0) + '</b><small>' + 'combustível' + '</small></span>' +
+          '<span class="bv-chip moeda">' + (I.coin || '') + '<b>' + (opt.moedas || 0) + '</b><small>Moedas</small></span>' +
         '</div>' +
         '<div class="bv-barra" aria-hidden="true"><i></i></div>' +
         '<p class="bv-dica">Toque para continuar</p>' +

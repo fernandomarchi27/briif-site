@@ -1,0 +1,50 @@
+/* Batalha final: arena em canvas, vídeo de abertura e sprites (carregado depois de style.css) */
+.bs-arena .bs-stage, .rasc-bossbar .bs-stage {
+  display: block; position: relative; padding: 0; margin: 0 auto 16px; max-width: 760px; overflow: hidden;
+  background: #000; border: 3px solid var(--line-strong); border-radius: 0; color: #fff;
+}
+.bs-stage::before { content: none; }
+.rasc-bossbar .bs-stage { max-width: 300px; margin: 0 auto 6px; border-width: 2px; }
+@media (max-width: 560px) { .bs-arena .bs-stage { position: static; padding: 0; } }
+.bs-cv { display: block; width: 100%; height: auto; aspect-ratio: 840 / 728; image-rendering: pixelated; }
+.bs-arena.machuca .bs-stage { animation: none; }
+
+.bs-sprite { display: block; width: 100%; aspect-ratio: 1; background: url(../boss/chefe.png) 0 0 / 1200% 100% no-repeat; image-rendering: pixelated; }
+.bs-intro-art, .bs-fim-art { width: min(220px, 62vw); margin: 6px auto 8px; }
+.bs-letra { color: var(--faint); margin-right: 10px; }
+
+.bs-video { position: relative; width: min(460px, 100%); margin: 0 auto; background: #000; border: 3px solid var(--line-strong); }
+.bs-video video { display: block; width: 100%; max-height: 80vh; aspect-ratio: 9 / 16; object-fit: contain; background: #000; }
+.bs-skip { position: absolute; right: 10px; bottom: 10px; }
+@media (prefers-reduced-motion: reduce) { .bs-intro-art, .bs-fim-art { animation: none; } }
+
+.bs-arena .bs-stage { scroll-margin-top: 76px; }
+
+/* introdução: silhueta preta do chefe (arquivo próprio; o chefe real da arena continua colorido e animado) */
+.bs-sprite.silhueta { background-image: url(../boss/chefe-silhueta.png); animation: bs-respira 1.6s steps(12, jump-none) infinite; filter: drop-shadow(0 0 10px rgba(197, 184, 255, .28)); }
+@keyframes bs-respira { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) { .bs-sprite.silhueta { animation: none; } }
+.bs-fim-art .mago-px { width: 100%; }
+
+/* ==========================================================================
+   Telas largas: a luta (esquerda) e as questões de múltipla escolha (direita) lado a lado, tudo visível de uma vez.
+   O rascunho e o resto ficam embaixo, ocupando a largura toda.
+   ========================================================================== */
+@media (min-width: 900px) {
+  .bs-arena { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; }
+  .bs-arena .bs-stage { grid-column: 1; grid-row: 1; margin: 0; max-width: none; position: sticky; top: calc(var(--hdr, 68px) + 12px); }
+  .bs-arena .bs-qwrap { grid-column: 2; grid-row: 1; min-width: 0; max-height: calc(100vh - var(--hdr, 68px) - 28px); overflow-y: auto; padding-right: 4px; }
+  .bs-arena #rasc-host { grid-column: 1 / -1; grid-row: 2; }
+  .bs-arena .bs-timer { margin: 0 0 10px; }
+  .bs-qwrap .q-card { padding: 16px 18px; }
+  .bs-qwrap .q-card h2 { font-size: 1.12rem; line-height: 1.35; margin: 6px 0 12px; }
+  .bs-qwrap .q-options { gap: 8px; }
+  .bs-qwrap .opt { padding: 10px 14px; font-size: .95rem; }
+  .bs-qwrap .feedback { margin-top: 12px; padding: 10px 14px; }
+  .bs-qwrap .feedback p { margin: 4px 0 0; font-size: .9rem; }
+  .bs-qwrap .q-actions { margin-top: 10px; }
+}
+@media (min-width: 900px) {
+  .boss-root { max-width: 1240px; }     /* a página da batalha usa mais largura (era 760 px) para a luta caber ao lado das questões */
+  .boss-root > .bs-intro, .boss-root > .bs-fim, .boss-root > .bs-video, .boss-root > .result { max-width: 760px; margin-inline: auto; }
+}

@@ -40,6 +40,7 @@
 
   const meuId = sessao && sessao.modo === 'firebase' ? sessao.uid : null;
   const convidado = !!(sessao && sessao.tipo === 'anonimo');
+  const emDev = !!(sessao && sessao.modo === 'dev');   // modo desenvolvedor: fora do ranking
 
   function ordenar(c) {
     const C = CATEGORIAS[c];
@@ -96,6 +97,7 @@
   function corpo() {
     if (carregando) return `<div class="block rk-msg"><p>Carregando o ranking…</p></div>`;
     if (erro === 'desativado') return `<div class="block rk-msg"><h2>Ranking indisponível neste modo</h2><p>O ranking compara contas de verdade e precisa do banco de dados online (Firebase). Quando ele estiver configurado, todas as contas do Briiff aparecem aqui.</p></div>`;
+    if (emDev) return `<div class="block rk-msg"><h2>Modo desenvolvedor</h2><p>Este modo é só para testes locais: não aparece no ranking e não consulta o banco. Para ver o ranking de verdade, entre com uma conta.</p><a class="btn btn-indigo btn-sm" href="login.html">Ir para o login</a></div>`;
     if (erro === 'sem-login') return `<div class="block rk-msg"><h2>Entre para ver o ranking</h2><p>Faça login (ou entre como convidado) para ver quem está no topo e a sua posição.</p><a class="btn btn-coral btn-sm" href="login.html">Entrar</a></div>`;
     if (erro) return `<div class="block rk-msg"><h2>Não deu para carregar o ranking</h2><p>Verifique sua conexão e as regras do Firestore (arquivo <code>firestore.rules</code> publicado). Tente de novo em instantes.</p><button class="btn btn-ink btn-sm" id="rk-tentar" type="button">Tentar de novo</button></div>`;
 
@@ -115,7 +117,7 @@
   }
 
   function privacidade() {
-    if (!sessao) return '';
+    if (!sessao || emDev) return '';
     if (convidado) return `<p class="rk-priv">Convidados não aparecem no ranking. <a href="login.html">Crie uma conta</a> para competir.</p>`;
     if (!meuId) return '';
     const oculto = B.ranking.oculto(meuId);

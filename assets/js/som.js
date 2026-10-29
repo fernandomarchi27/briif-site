@@ -153,7 +153,7 @@
       [N.C6, N.E6, N.G6].forEach(function (f) { nota(f, 1.32, 1.0, 'triangle', 0.18); });
       for (var i = 0; i < 6; i++) nota(N.C7 * (0.8 + i * 0.1), 1.4 + i * 0.08, 0.1, 'sine', 0.05);
     },
-    // bloqueio de ofensiva usado: vento frio, o cadeado cai e trava ("clank"), brilho metálico
+    // combustível usado: vento frio, o cadeado cai e trava ("clank"), brilho metálico
     bloqueio: function () {
       sopro(0, 0.8, 1800, 300, 0.22, 0.8);
       nota(660, 0.88, 0.05, 'square', 0.1);                      // estalo do cadeado

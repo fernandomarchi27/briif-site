@@ -105,4 +105,17 @@
     try { const novo = await B.auth.convidado(); concluir(novo); }
     catch (e) { mostrarErro(B.auth.erroAmigavel(e)); ocupado(btnGuest, false, rotulos.guest); }
   });
+
+  // modo desenvolvedor: o botão só existe quando o ambiente permite (localhost ou flag em ambiente.js)
+  if (B.dev && B.dev.permitido()) {
+    const btnDev = document.createElement('button');   // criado só quando permitido: em produção nem existe no HTML
+    btnDev.type = 'button'; btnDev.id = 'dev-entrar'; btnDev.className = 'dev-link'; btnDev.textContent = 'Entrar como desenvolvedor';
+    btnGuest.insertAdjacentElement('afterend', btnDev);
+    btnDev.addEventListener('click', async () => {
+      mostrarErro('');
+      btnDev.disabled = true;
+      try { await B.auth.desenvolvedor(); location.href = 'index.html'; }
+      catch (e) { btnDev.disabled = false; mostrarErro('O modo desenvolvedor não está disponível neste ambiente.'); }
+    });
+  }
 })();

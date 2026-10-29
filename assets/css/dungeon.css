@@ -1,0 +1,392 @@
+/* ==========================================================================
+   Briiff — identidade única de jogo medieval/fantasia (carregado depois de suave.css)
+   Um só visual (pixel art discreto) + alternância claro/escuro. Escuro = principal.
+   ========================================================================== */
+:root[data-pixel] {
+  /* modo claro: pergaminho acinzentado discreto, texto escuro, detalhes roxos */
+  --paper: #F2EFE9; --white: #FBFAF6; --elev: #FFFFFF;
+  --ink: #1F1A38; --muted: #5E5877; --faint: #7F7996;
+  --indigo: #4C3CAD; --on-indigo: #FFFFFF; --coral: #4C3CAD; --on-coral: #FFFFFF;
+  --line: #D9D3E6; --line-strong: #3B2F7A; --grid: transparent;
+  --danger: #C7372F; --green: #0F6E56; --gold: #9A6B00;
+  --header-bg: rgba(242, 239, 233, .93); --tab-bg: #E8E3EF;
+  --lilas: #4C3CAD; --glow: rgba(76, 60, 173, .13); --pi-img: url(../img/pi-roxo.png);
+  --tijolos: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48' shape-rendering='crispEdges'%3E%3Cg fill=%27rgba(76,60,173,.018)%27%3E%3Crect x='2' y='2' width='46' height='22'/%3E%3Crect x='26' y='26' width='46' height='22' fill-opacity='.5'/%3E%3Crect x='74' y='26' width='22' height='22'/%3E%3Crect x='0' y='26' width='24' height='22' fill-opacity='.7'/%3E%3C/g%3E%3Cpath d='M0 1h96M0 25h96M1 1v24M49 1v24M25 25v24M73 25v24' fill='none' stroke='rgba(76,60,173,.05)' stroke-width='2'/%3E%3C/svg%3E");
+  --px: "Briiff Numeros", "Pixelify Sans", "Press Start 2P", ui-monospace, monospace;   /* números: fonte quadrada própria; letras: Pixelify */
+  --pixel: var(--sans-normal);
+}
+:root[data-pixel][data-tema="noturno"] {
+  /* modo escuro: masmorra arcana, roxo bem escuro (nada de roxo vibrante em áreas grandes) */
+  color-scheme: dark;
+  --paper: #171329; --white: #211B38; --elev: #2B2347;
+  --ink: #F5F1FF; --muted: #C4BDD8; --faint: #9A92B5;
+  --indigo: #C5B8FF; --on-indigo: #171329; --coral: #4C3CAD; --on-coral: #F5F1FF;
+  --line: #352B58; --line-strong: #5B4BA8; --grid: transparent;
+  --danger: #FF8A70; --green: #3FC79E; --gold: #E0B84A;
+  --header-bg: rgba(23, 19, 41, .93); --tab-bg: #2B2347;
+  --lilas: #C5B8FF; --glow: rgba(76, 60, 173, .30); --pi-img: url(../img/pi.png);
+  --tijolos: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48' shape-rendering='crispEdges'%3E%3Cg fill='rgba(197,184,255,.022)'%3E%3Crect x='2' y='2' width='46' height='22'/%3E%3Crect x='26' y='26' width='46' height='22' fill-opacity='.5'/%3E%3Crect x='74' y='26' width='22' height='22'/%3E%3Crect x='0' y='26' width='24' height='22' fill-opacity='.7'/%3E%3C/g%3E%3Cpath d='M0 1h96M0 25h96M1 1v24M49 1v24M25 25v24M73 25v24' fill='none' stroke='rgba(197,184,255,.075)' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* números em pixel art: fonte própria (assets/fonts/briiff-numeros.woff, build/fonte/make_fonte.py) só para dígitos e símbolos
+   de conta; as letras continuam na fonte pixel normal. Quadrada, sem cantos arredondados. */
+@font-face { font-family: "Briiff Numeros"; src: url(../fonts/briiff-numeros.woff) format("woff"); font-display: swap;
+  unicode-range: U+0020, U+0025, U+002B-002F, U+0030-003A, U+003D, U+00D7, U+00F7, U+2212; }
+
+/* ---- fundo de masmorra: tijolos em CSS (sem imagem pesada) + brilho arcano no topo ---- */
+html { background: var(--paper); }
+:root[data-pixel] body { background: transparent !important; background-image: none !important; }
+html::before {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-image: radial-gradient(ellipse 90% 55% at 50% -8%, var(--glow), transparent 70%), var(--tijolos);
+  background-size: auto, 96px 48px;
+}
+
+/* ---- fórmulas flutuantes ---- */
+#fundo-formulas { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+#fundo-formulas span {
+  position: absolute; white-space: nowrap; font-family: var(--px); color: var(--lilas); opacity: var(--o, .1);
+  animation: fundo-flutua 70s ease-in-out infinite alternate; will-change: transform; user-select: none;
+}
+@keyframes fundo-flutua { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(var(--dx, 40px), var(--dy, -60px), 0); } }
+#fundo-formulas.pausa span { animation-play-state: paused; }
+#fundo-formulas.parado span { animation: none; }
+@media (prefers-reduced-motion: reduce) { #fundo-formulas span { animation: none; } }
+
+/* ---- só alternância claro/escuro: botão de tema visível, sem botão de cores/pixel ---- */
+:root[data-pixel] #theme-btn { display: inline-grid !important; place-items: center; }
+:root[data-pixel] .cores-menu, :root[data-pixel] #pixel-btn { display: none !important; }
+
+/* ---- logo π: transparente, sem quadrado de fundo (cabeçalho, rodapé, hero e login) ---- */
+.pi-logo { display: block; width: 100%; height: 100%; background: var(--pi-img) center / contain no-repeat; image-rendering: pixelated; }
+:root[data-pixel] .wordmark.lg .pxintro { background: transparent; border: 0; clip-path: none; padding: 0; color: var(--lilas); }
+:root[data-pixel] .pxlogo .pxicon { color: var(--lilas); width: 31px; height: 28px; }
+
+/* ---- tipografia: texto corrido na fonte normal; pixel só em detalhes e números ---- */
+:root[data-pixel] :is(h1, h2, h3, h4, .diff, .crumbs, .field label, .q-card, .q-card *, .opt, .opt *, .example *, .ex-answer *, .feedback *, .lesson-body *) { text-transform: none !important; }
+:root[data-pixel] :is(.chip, .badge, .reward b, .lvl, .count, .stats div b, .pill, .tag) { font-family: var(--px); letter-spacing: .01em; }
+
+/* ---- superfícies: painéis escuros, bordas discretas ---- */
+:root[data-pixel] :focus-visible { outline: 3px solid var(--lilas); outline-offset: 2px; }
+
+/* ---- ícones de jogo: moeda (sem letra), combustível (carvão) e fogo aceso/apagado ---- */
+:root[data-pixel] .ic-p.px-moeda { color: #F5B700; }
+:root[data-pixel] .ic-p.px-bloqueio { color: #2F2850; }
+:root[data-pixel][data-tema="noturno"] .ic-p.px-bloqueio { color: #7A71A6; }
+:root[data-pixel] .chip.lock { color: var(--ink); }
+.ic-p.px-fogo .fo { display: none; }
+.chip.fire:not(.on) .ic-p.px-fogo .fa { display: none; }
+.chip.fire:not(.on) .ic-p.px-fogo .fo { display: contents; }
+:root[data-pixel] .chip.fire:not(.on) .ic-p.px-fogo { color: var(--faint); }
+.chip.fire.on .ic-p.px-fogo { filter: drop-shadow(0 0 4px rgba(255, 122, 26, .55)); }
+.ico-img { image-rendering: pixelated; }
+
+/* ==========================================================================
+   Menu lateral (ícones pixelados). O nome é uma etiqueta flutuante: nada se desloca.
+   ========================================================================== */
+body.has-rail { padding-left: 64px; }
+body.has-rail .site-header .nav, body.has-rail .site-header .menu-toggle { display: none; }
+.rail { position: fixed; left: 0; top: var(--hdr, 68px); bottom: 0; width: 64px; z-index: 45; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 0;
+  background: var(--header-bg); border-right: 4px solid var(--line-strong); }
+.rail > * { position: relative; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; color: var(--ink); background: none; border: 0; cursor: pointer; font: inherit; text-decoration: none; }
+.rail-ic { position: relative; display: block; width: 28px; height: 28px; }
+.rail-ic svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rail-ic .f { opacity: 0; }
+.rail > *:hover .f, .rail > *:focus-visible .f, .rail > [aria-current] .f { opacity: 1; }
+.rail > *:hover .o, .rail > *:focus-visible .o, .rail > [aria-current] .o { opacity: 0; }
+.rail > [aria-current]::before { content: ""; position: absolute; left: -8px; top: 8px; bottom: 8px; width: 4px; background: var(--lilas); }
+.rail > *:focus-visible { outline: 3px solid var(--lilas); outline-offset: -3px; }
+.rail-nome { position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 10px; z-index: 70;
+  background: var(--elev); color: var(--ink); border: 3px solid var(--line-strong); font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; }
+.rail > *:hover .rail-nome, .rail > *:focus-visible .rail-nome { opacity: 1; }
+@media (max-width: 860px) {
+  body.has-rail { padding-left: 0; padding-bottom: 66px; }
+  .rail { top: auto; right: 0; bottom: 0; width: auto; height: 62px; flex-direction: row; justify-content: space-around; gap: 0; padding: 0; border-right: 0; border-top: 4px solid var(--line-strong); }
+  .rail > * { flex: 1; width: auto; height: 100%; gap: 2px; align-content: center; }
+  .rail > [aria-current]::before { left: 12px; right: 12px; top: -4px; bottom: auto; width: auto; height: 4px; }
+  .rail-ic { width: 24px; height: 24px; }
+  .rail-nome { position: static; transform: none; opacity: 1; border: 0; background: none; padding: 0; font-size: 10px; }
+}
+
+/* ==========================================================================
+   Grimório: livro antigo aberto por cima do site
+   ========================================================================== */
+html.gm-aberto { overflow: hidden; }
+.gm-ov { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(10, 7, 20, .8); }
+.gm-ov.aberto { display: flex; animation: gm-fundo .3s ease both; }
+.gm-ov.fechando { animation: gm-fundo-sai .26s ease both; }
+@keyframes gm-fundo { from { opacity: 0; } }
+@keyframes gm-fundo-sai { to { opacity: 0; } }
+.gm-livro { position: relative; width: min(1040px, 100%); height: min(780px, 92vh); display: flex; flex-direction: column; overflow: hidden; perspective: 1400px;
+  background: #EEE3C8; color: #2A2118; border: 8px solid #2B2347; outline: 4px solid #D9B46A; outline-offset: -4px; box-shadow: 0 0 0 4px #14101F, 0 30px 80px rgba(0, 0, 0, .6);
+  animation: gm-abre .5s cubic-bezier(.2, .8, .2, 1) both; }
+.gm-ov.fechando .gm-livro { animation: gm-fecha .26s ease both; }
+@keyframes gm-abre { from { transform: scale(.92) translateY(18px); opacity: 0; } }
+@keyframes gm-fecha { to { transform: scale(.94) translateY(10px); opacity: 0; } }
+.gm-capa { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; pointer-events: none;
+  background: #2B2347; color: #F2D27A; transform-origin: left center; animation: gm-capa .95s .25s cubic-bezier(.6, 0, .3, 1) forwards; }
+.gm-capa .pi-logo { width: 120px; height: 108px; --pi-img: url(../img/pi.png); filter: drop-shadow(4px 4px 0 #14101F); }
+.gm-capa b { font-family: var(--px); font-size: 34px; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes gm-capa { to { transform: rotateY(-100deg); opacity: 0; visibility: hidden; } }
+.gm-topo { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #2B2347; color: #F5F1FF; }
+.gm-titulo { font-family: var(--px); font-size: 22px; color: #F2D27A; margin-right: auto; }
+.gm-toggle { display: none; }
+.gm-fechar, .gm-toggle { font: inherit; font-size: 14px; font-weight: 700; color: #F5F1FF; background: #4C3CAD; border: 3px solid #14101F; padding: 6px 12px; cursor: pointer; }
+.gm-fechar:hover, .gm-toggle:hover { background: #5B4BC4; }
+.gm-corpo { flex: 1; min-height: 0; display: grid; grid-template-columns: 290px 1fr; }
+.gm-indice { overflow-y: auto; padding: 16px 14px; background: #E3D5B3; border-right: 4px double #B79A5E; }
+.gm-trilhas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.gm-tab { font: inherit; font-size: 13px; font-weight: 700; color: #2A2118; background: #F4EBD3; border: 2px solid #8A6F3A; padding: 4px 9px; cursor: pointer; }
+.gm-tab[aria-pressed="true"] { background: #4C3CAD; color: #fff; border-color: #14101F; }
+.gm-sumario h3 { margin: 0 0 8px; font-size: 14px; text-transform: none; letter-spacing: 0; }
+.gm-sumario ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.gm-cap { width: 100%; display: flex; gap: 8px; text-align: left; font: inherit; font-size: 14px; color: #2A2118; background: transparent; border: 2px solid transparent; padding: 7px 8px; cursor: pointer; }
+.gm-cap:hover { background: #F4EBD3; }
+.gm-cap[aria-current="true"] { background: #4C3CAD; color: #fff; border-color: #14101F; font-weight: 700; }
+.gm-n { font-family: var(--px); min-width: 1.4em; opacity: .85; }
+.gm-pagina { overflow-y: auto; padding: 26px clamp(18px, 4vw, 44px) 34px; line-height: 1.65; font-size: 16.5px; }
+.gm-pagina:focus-visible { outline: 3px solid #4C3CAD; outline-offset: -6px; }
+.gm-h { margin: 0 0 2px; font-size: clamp(22px, 3.4vw, 30px); text-transform: none; letter-spacing: 0; color: #2A2118; }
+.gm-trilha { margin: 0 0 14px; color: #6b5a38; font-weight: 700; font-size: 14px; }
+.gm-pagina h3 { margin: 24px 0 8px; font-size: 17px; text-transform: none; letter-spacing: 0; color: #2A2118; border-bottom: 3px double #B79A5E; padding-bottom: 4px; }
+.gm-pagina p { margin: 0 0 10px; }
+.gm-pagina ol, .gm-pagina ul { margin: 6px 0 10px; padding-left: 1.4em; }
+.gm-pix { font-family: var(--px); color: #4C3CAD; letter-spacing: .02em; }
+.gm-ex { margin: 12px 0; padding: 12px 14px; background: #F6EEDA; border: 2px solid #B79A5E; }
+.gm-q { margin: 6px 0 8px; font-size: 19px; font-weight: 700; }
+.gm-q.gm-pix { font-size: 22px; }
+.gm-r { margin-top: 6px; font-weight: 700; } .gm-r .gm-pix { font-size: 18px; }
+.gm-nota { margin: 14px 0; padding: 10px 14px; background: #E9E2F7; border-left: 6px solid #4C3CAD; }
+.gm-nota.erro { background: #F7E3DC; border-left-color: #B3402B; }
+.gm-nota b { display: block; margin-bottom: 2px; }
+.gm-praticar { margin-top: 22px; }
+@media (max-width: 760px) {
+  .gm-ov { padding: 0; }
+  .gm-livro { height: 100%; border-width: 4px; }
+  .gm-toggle { display: inline-block; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gm-titulo { display: none; }
+  .gm-corpo { grid-template-columns: 1fr; position: relative; }
+  .gm-indice { display: none; position: absolute; inset: 0; z-index: 3; border-right: 0; }
+  .gm-ov.indice .gm-indice { display: block; }
+}
+@media (prefers-reduced-motion: reduce) { .gm-livro, .gm-ov.aberto, .gm-ov.fechando { animation: none; } .gm-capa { display: none; } }
+.gm-pagina :is(h2, h3), .gm-sumario h3, .gm-livro h3 { text-transform: none !important; }
+
+/* telas de abertura (fundo sempre escuro): π branco transparente, sem quadrado nem aro */
+.bv-marca .pi-logo { --pi-img: url(../img/pi.png); }
+.bv-marca { aspect-ratio: 10 / 9; }
+.bv-aro { display: none; }
+
+
+/* ==========================================================================
+   Correções v28
+   ========================================================================== */
+/* botões de ícone (tema, som, ⋮): ícone centrado e sem se mover ao clicar */
+:root[data-pixel] .theme-btn { display: inline-grid; place-items: center; padding: 0; }
+:root[data-pixel] .theme-btn svg { display: block; margin: 0; width: 24px; height: 24px; }
+:root[data-pixel] .theme-btn:hover, :root[data-pixel] .theme-btn:active { transform: none !important; }
+@media (max-width: 760px) {
+  :root[data-pixel] .header-right .theme-btn svg { width: 22px; height: 22px; }
+  /* menu ⋮: o próprio painel tem o canto quebrado e as opções ficam por dentro (sem quadrado vazando) */
+  :root[data-pixel] .tools-pop { border: var(--pxb) solid var(--line-strong); border-radius: 0; clip-path: var(--notch); box-shadow: none; background: var(--white); overflow: hidden; }
+  :root[data-pixel] .tools-pop #theme-btn.theme-btn { display: flex !important; }
+  :root[data-pixel] .tools-pop .theme-btn.theme-btn { display: flex; align-items: center; justify-content: flex-start; clip-path: none; border: 0 !important; border-radius: 0; height: 48px; width: 100%; padding: 0 14px; gap: 12px; }
+}
+/* login/cadastro: o palco usa o fundo de masmorra do site e o rodapé encosta nele (sem faixa de fundo entre os dois) */
+:root[data-pixel] .auth { background: transparent; }
+body:has(> main.auth) { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+body:has(> main.auth) > main.auth { flex: 1; }
+main.auth + .site-footer { margin-top: 0; }
+
+/* ---- trilha personalizada: botões de matéria legíveis nos dois temas (sem cor fixa) ---- */
+:root[data-pixel] .pers-op { background: var(--white); color: var(--ink); border-color: var(--line-strong); cursor: pointer; }
+:root[data-pixel] .pers-op:hover { border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--white)); }
+:root[data-pixel] .pers-op:has(input:focus-visible) { outline: 3px solid var(--lilas); outline-offset: 2px; }
+:root[data-pixel] .pers-op:has(input:checked) { background: color-mix(in srgb, var(--c) 28%, var(--white)); color: var(--ink); border-color: var(--c); font-weight: 700; }
+:root[data-pixel] .pers-op:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+:root[data-pixel] .pers-aviso { color: var(--danger); font-weight: 700; }
+
+/* ---- mago em pixel art (sprites da batalha): sem fundo, proporção fixa, nítido ---- */
+.mago-px { display: block; width: min(220px, 56vw); aspect-ratio: 1; margin-inline: auto; image-rendering: pixelated; background-repeat: no-repeat; }
+.mago-vitoria { background-image: url(../img/mago-vitoria.png); background-size: 200% 100%; background-position: 0 0; animation: mago-vit 1.6s steps(1) infinite; }
+@keyframes mago-vit { 0%, 49.99% { background-position: 0 0; transform: translateY(0); } 50%, 100% { background-position: 100% 0; transform: translateY(-4px); } }
+.mago-derrota { background-image: url(../img/mago-derrota.png); background-size: 300% 100%; background-position: 100% 0; animation: mago-der 1.35s steps(1) 1 both; }
+@keyframes mago-der { 0%, 33.32% { background-position: 0 0; } 33.33%, 66.65% { background-position: 50% 0; } 66.66%, 100% { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) { .mago-vitoria { animation: none; background-position: 100% 0; } .mago-derrota { animation: none; } }
+
+/* ==========================================================================
+   Tela de fim de fase — identidade Briiff (masmorra arcana, sem cores saturadas)
+   ========================================================================== */
+:root[data-pixel] .rs { padding-top: 18px; }
+:root[data-pixel] .rs h1 { color: var(--ink); font-size: clamp(1.6rem, 5vw, 2.2rem); margin: 6px 0 8px; }
+:root[data-pixel] .rs h1::after { content: ""; display: block; width: 72px; height: 6px; margin: 12px auto 0; background: repeating-linear-gradient(90deg, var(--lilas) 0 12px, transparent 12px 18px); }
+:root[data-pixel] .rs .sub { color: var(--muted); font-weight: 500; }
+:root[data-pixel] .rs-mago { width: min(230px, 62vw); margin: 4px auto 6px; }
+:root[data-pixel] .rs-mago::before { inset: -6% -10% -2%; border-radius: 0; background: radial-gradient(closest-side, color-mix(in srgb, var(--lilas) 20%, transparent), transparent); animation: none; }
+:root[data-pixel] .rs-mago .mago-px { position: relative; width: 100%; filter: none; }
+:root[data-pixel] .rs-confete { top: 150px; }
+:root[data-pixel] .rs-confete i { border-radius: 0 !important; height: var(--w) !important; background: var(--cc); opacity: 0; }
+/* três "lajes de pedra": todas iguais, só o lilás destaca o número */
+:root[data-pixel] .rs-card { background: var(--white); border: 3px solid var(--line-strong); border-radius: 0; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .18), inset 0 3px 0 rgba(255, 255, 255, .06); clip-path: var(--notch); overflow: visible; }
+:root[data-pixel] .rs-card small { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .1em; padding: 10px 4px 2px; }
+:root[data-pixel] .rs-card .rs-v { margin: 0; background: transparent; border-radius: 0; color: var(--lilas); padding: 8px 4px 16px; font-family: var(--px); font-weight: 700; font-size: clamp(1.3rem, 5vw, 1.9rem); }
+:root[data-pixel][data-tema="noturno"] .rs-card .rs-v, :root[data-pixel][data-tema="claro"] .rs-card .rs-v { color: var(--lilas); }
+:root[data-pixel] .rs-card .rs-v svg { width: .95em; height: .95em; color: var(--muted); }
+:root[data-pixel] .rs-pilula { border-radius: 0; border: 3px solid var(--line-strong); background: var(--white); clip-path: var(--notch); font-family: var(--px); font-weight: 700; font-size: 14px; }
+:root[data-pixel] .rs-pilula svg { width: 20px; height: 20px; flex: none; }
+:root[data-pixel] .rs-pilula.nivel { color: var(--lilas); }
+:root[data-pixel] .rs-apagado { display: inline-flex; opacity: .8; }
+:root[data-pixel] .rs-apagado svg { width: 18px; height: 18px; vertical-align: -3px; margin-right: 6px; }
+@media (prefers-reduced-motion: reduce) { .rs-confete { display: none; } }
+:root[data-pixel] .rs:not(.rs-pre) .rs-card { animation: rs-sobe .5s ease both; animation-delay: calc(.5s + var(--i) * .12s); }
+:root[data-pixel] .rs-falha h1 { color: var(--ink); }
+
+/* ---- celebrações em tela cheia (ofensiva, combustível, boas-vindas): masmorra arcana, sem laranja/azul saturados ---- */
+:root[data-pixel] .cel, :root[data-pixel] .cel.cel-bloq, :root[data-pixel] .cel.cel-bv { background: radial-gradient(ellipse at 50% 60%, #2B2347 0%, #171329 56%, #0D0A1A 100%); }
+:root[data-pixel] .cel-brilho, :root[data-pixel] .cel-bloq .cel-brilho { background: radial-gradient(circle, rgba(197, 184, 255, .22) 0%, rgba(76, 60, 173, .12) 34%, transparent 62%); }
+:root[data-pixel] .cel-num { font-family: var(--px); font-weight: 700; color: #F2D27A; text-shadow: 0 5px 0 #14101F; }
+:root[data-pixel] .cel-titulo { color: #C5B8FF; }
+:root[data-pixel] .cel-btn { background: #4C3CAD; color: #F5F1FF; border: 3px solid #14101F; border-radius: 0; clip-path: var(--notch); box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .25), inset 0 3px 0 rgba(255, 255, 255, .18); }
+:root[data-pixel] .cel-btn:hover { background: #5B4BC4; }
+:root[data-pixel] .cel-btn:focus-visible { outline: 3px solid #F2D27A; }
+:root[data-pixel] .cel-dia b { border-radius: 0; }
+:root[data-pixel] .cel-dia.feito b { background: rgba(197, 184, 255, .18); border-color: #C5B8FF; }
+:root[data-pixel] .cel-dia.hoje, :root[data-pixel] .cel-dia.hoje:not(.feito) b { color: #C5B8FF; border-color: #C5B8FF; }
+
+/* ---- chefe no mapa da trilha: silhueta do chefe (mesmo asset da introdução da batalha) ---- */
+.node-btn.boss-node { background: var(--elev); }
+.boss-node .boss-face { display: block; width: 100%; height: 100%; border-radius: inherit; background: url(../boss/chefe-silhueta.png) 0 0 / 1200% 100% no-repeat; background-origin: content-box; padding: 8px; image-rendering: pixelated; }
+.node-btn.boss-node.locked .boss-face { opacity: .55; }
+
+/* ==========================================================================
+   v29 — junção dos menus, botão fantasma e ícones de jogo
+   ========================================================================== */
+/* buraco no canto superior esquerdo: o corpo ganha 64px de margem para o menu lateral e o cabeçalho (com fundo e borda)
+   ficava só no miolo; agora ele se estende por baixo da margem e o menu lateral começa logo abaixo dele */
+@media (min-width: 861px) {
+  body.has-rail .site-header { margin-left: -64px; padding-left: 64px; }
+}
+/* botão fantasma: o "⋮" (.more-btn) só existe no celular; minha regra de .theme-btn tinha reativado ele no desktop */
+:root[data-pixel] .theme-btn.more-btn { display: none; }
+@media (max-width: 760px) { :root[data-pixel] .theme-btn.more-btn { display: inline-grid; } }
+
+/* ícones de jogo (PNGs em assets/img/ico/; gerados por build/icons/make_icons.py) */
+.ic-img { display: inline-block; flex: none; width: var(--ic, 1.25em); height: var(--ic, 1.25em); vertical-align: -.28em; background: center / contain no-repeat; image-rendering: pixelated; }
+.ic-moeda { background-image: url(../img/ico/moeda.png); }
+.ic-carvao { background-image: url(../img/ico/carvao.png); }
+:root[data-tema="noturno"] .ic-carvao { filter: drop-shadow(0 0 1px rgba(197, 184, 255, .9)) drop-shadow(0 0 1px rgba(197, 184, 255, .5)); }
+.ic-fogo { background-image: url(../img/ico/fogo.png); background-size: 300% 100%; background-position: 0 0; animation: ic-fogo .66s steps(1) infinite; }
+@keyframes ic-fogo { 0% { background-position: 0 0; } 33.34% { background-position: 50% 0; } 66.67% { background-position: 100% 0; } }
+/* ofensiva inativa: o mesmo desenho apagado (cinza, parado e sem brilho) */
+.chip.fire:not(.on) .ic-fogo, .rk-st:not(.quente) .ic-fogo, .rs-apagado .ic-fogo, .ic-fogo.apagado { background-image: url(../img/ico/fogo-apagado.png); background-size: contain; animation: none; filter: none; }
+.chip.fire.on .ic-fogo { filter: drop-shadow(0 0 3px rgba(255, 140, 40, .55)); }
+/* sol e lua: as imagens enviadas, com as cores dos próprios arquivos (sol lilás, lua preta). Imagem comum, não máscara:
+   máscara CSS é bloqueada pelo navegador quando o site é aberto direto do disco (file://) e o ícone sumia. */
+.ic-mask { display: inline-block; flex: none; width: var(--ic, 26px); height: var(--ic, 26px); background: center / contain no-repeat; image-rendering: pixelated; }
+.ic-sol { background-image: url(../img/ico/sol.png); }
+.ic-lua { background-image: url(../img/ico/lua.png); }
+:root[data-pixel] .theme-btn .ic-mask { --ic: 26px; }
+@media (max-width: 760px) { :root[data-pixel] .header-right .theme-btn .ic-mask { --ic: 24px; } }
+@media (prefers-reduced-motion: reduce) { .ic-fogo { animation: none; } }
+/* tamanhos por contexto */
+.chip .ic-img { --ic: 1.4em; }
+.wallet-item .ic-img { --ic: 38px; }
+.shop-art-img .ic-img { --ic: 96px; }
+.shop-preco .ic-img { --ic: 1.1em; }
+.cal-cell .ic-img { --ic: 18px; }
+.rk-chama .ic-img { --ic: 18px; }
+.onb-ic .ic-img, .onb-ic .ic-mask { --ic: 56px; }
+
+/* animação do logo na tela inicial (canvas): proporção fixa 760:400, pixel art nítida */
+.intro-px { display: block; width: min(100%, 520px); height: auto; aspect-ratio: 760 / 400; image-rendering: pixelated; }
+:root[data-pixel] .wordmark.lg .pxintro { max-width: 100%; }
+
+/* ---- fotos de perfil (loja, perfil, ranking, cabeçalho): imagem nítida, preenche o quadro, sem texto ---- */
+.foto-perfil { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.shop-art.avatar-fundo .avatar-preview { display: block; width: 150px; height: 150px; max-width: 80%; max-height: none; aspect-ratio: 1; overflow: hidden; flex: none; border: 3px solid var(--line-strong); background: var(--elev); }
+.shop-card .shop-card-corpo { padding-top: 10px; }
+
+/* ---- login: "Entrar como desenvolvedor" discreto (só aparece em ambiente de teste) ---- */
+.dev-link { display: block; margin: 12px auto 0; padding: 4px 6px; font: inherit; font-size: 12px; color: var(--faint); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.dev-link:hover, .dev-link:focus-visible { color: var(--ink); }
+.dev-link[hidden] { display: none; }
+.dev-link:disabled { opacity: .5; cursor: default; }
+
+/* ---- painel do modo desenvolvedor ---- */
+#dev-painel { position: fixed; right: 12px; bottom: 16px; z-index: 150; font-size: 13px; }
+@media (max-width: 860px) { #dev-painel { bottom: 76px; } }
+.dev-fab { padding: 8px 12px; font: 800 12px var(--px); letter-spacing: .08em; color: #14101F; background: var(--gold); border: 3px solid #14101F; cursor: pointer; clip-path: var(--notch); }
+.dev-corpo { position: absolute; right: 0; bottom: calc(100% + 8px); width: min(340px, calc(100vw - 24px)); max-height: 70vh; overflow-y: auto; padding: 12px; color: var(--ink); background: var(--white); border: 3px solid var(--line-strong); }
+.dev-corpo[hidden] { display: none; }
+.dev-corpo h3 { margin: 12px 0 6px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.dev-aviso { margin: 0; line-height: 1.45; color: var(--muted); }
+.dev-g { display: flex; flex-wrap: wrap; gap: 6px; }
+.dev-b, .dev-corpo select { min-height: 34px; padding: 4px 10px; font: inherit; font-weight: 700; color: var(--ink); background: var(--elev); border: 2px solid var(--line-strong); cursor: pointer; }
+.dev-b:hover { border-color: var(--lilas); }
+.dev-b:focus-visible, .dev-fab:focus-visible, .dev-corpo select:focus-visible { outline: 3px solid var(--lilas); outline-offset: 2px; }
+.dev-fim { margin-top: 12px; padding-top: 10px; border-top: 2px dashed var(--line); }
+.dev-sair { color: var(--danger); }
+
+/* ---- celebrações em tela cheia: o fogo/carvão (agora spans com imagem) mantêm o tamanho de antes ---- */
+.cel-fogo.ic-img, .cel-fogo-brilho.ic-img { position: absolute; inset: 0; width: 100%; height: 100%; vertical-align: baseline; }
+.cel-fogo-brilho.ic-img { image-rendering: auto; }
+.cel-dia b .ic-img { --ic: 22px; vertical-align: middle; }
+.bq-cadeado.ic-img { width: 54%; height: auto; aspect-ratio: 1; vertical-align: baseline; }
+:root[data-tema="noturno"] .cel-dia b .ic-carvao, :root[data-tema="noturno"] .bq-cadeado.ic-carvao { filter: drop-shadow(0 0 2px rgba(197, 184, 255, .9)); }
+/* animação do logo: ocupa só a largura disponível (no celular não estoura) */
+:root[data-pixel] .wordmark.lg .pxintro { display: block; width: min(100%, 520px); }
+.intro-px { width: 100%; }
+
+/* ==========================================================================
+   Tamanhos em múltiplos da grade de cada ícone, para a pixel art ficar sem distorção
+   moeda 14×14 · fogo 12×12 (por quadro) · carvão 16×16 · sol 20×20 · lua 18×18
+   ========================================================================== */
+.ic-moeda { --ic: 21px; }
+.chip .ic-moeda, .rs-pilula .ic-moeda, .shop-preco .ic-moeda, .pxe-saldo .ic-moeda { --ic: 21px; }
+.wallet-item .ic-moeda { --ic: 42px; }
+.shop-art-img .ic-moeda { --ic: 98px; }
+.chip .ic-fogo { --ic: 24px; }
+.chip .ic-carvao { --ic: 24px; }
+.wallet-item .ic-carvao { --ic: 48px; }
+.shop-art-img .ic-carvao { --ic: 96px; }
+/* sol e lua: a mesma escala (1,5 px de tela por pixel de arte) nos dois botões */
+:root[data-pixel] .theme-btn .ic-sol { --ic: 30px; }
+:root[data-pixel] .theme-btn .ic-lua { --ic: 27px; }
+@media (max-width: 760px) { :root[data-pixel] .header-right .theme-btn .ic-sol { --ic: 30px; } :root[data-pixel] .header-right .theme-btn .ic-lua { --ic: 27px; } }
+/* boas-vindas: o ícone do slide (lua, moeda, fogo…) com tamanho em múltiplo da arte */
+.onb-icon .ic-lua { --ic: 54px; }
+.onb-icon .ic-sol { --ic: 60px; }
+.onb-icon .ic-moeda { --ic: 56px; }
+.onb-icon .ic-fogo, .onb-icon .ic-carvao { --ic: 60px; }
+
+/* nome BRIIFF do cabeçalho: mesma proporção do desenho da animação (104:30) */
+:root[data-pixel] .pxlogo .pxword { width: 69px; height: 20px; }
+
+/* ==========================================================================
+   Perfil (pessoal e público): avatar de corpo inteiro ao lado do nome e das informações
+   ========================================================================== */
+.pf-hero { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); gap: 30px; align-items: center; margin: 22px 0 30px; padding: 24px; background: var(--white); border: 3px solid var(--line-strong); clip-path: var(--notch); }
+.pf-corpo-wrap { display: grid; gap: 10px; justify-items: stretch; }
+.av-corpo { display: block; width: 100%; aspect-ratio: 32 / 50; overflow: hidden; background: var(--elev); border: 3px solid var(--line-strong); }
+.av-corpo svg { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.av-corpo.vazio svg { filter: brightness(0) opacity(.28); }
+.pf-editar { text-align: center; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--lilas); text-decoration: none; padding: 6px; border: 2px dashed var(--line-strong); }
+.pf-editar:hover, .pf-editar:focus-visible { background: var(--elev); }
+.pf-dados { min-width: 0; display: grid; gap: 16px; }
+.pf-id { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.pf-id .avatar { width: 64px; height: 64px; flex: none; font-size: 26px; }
+.pf-id > div { min-width: 0; }
+.pf-id h1 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.1rem); overflow-wrap: anywhere; }
+.pf-id p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.pf-hero .profile-acoes { margin: 0; }
+.pf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+.pf-stat { padding: 10px 12px; background: var(--paper); border: 3px solid var(--line); }
+.pf-stat span { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pf-stat b { display: block; margin-top: 6px; font-family: var(--px); font-size: 1.55rem; font-weight: 400; color: var(--lilas); line-height: 1.1; }
+.pf-stat.quente b { color: var(--gold); }
+.pf-xp .bar-label { margin-bottom: 6px; }
+@media (max-width: 720px) {
+  .pf-hero { grid-template-columns: 1fr; justify-items: center; padding: 18px; gap: 18px; }
+  .pf-corpo-wrap { width: min(190px, 58%); }
+  .pf-dados { width: 100%; }
+}

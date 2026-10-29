@@ -40,32 +40,39 @@
     }).join('');
 
     host.innerHTML = `
-      <div class="profile-head">
-        ${B.avatarHtml(sessao || { nome })}
-        <div class="info">
-          <h1>${esc(nome)}</h1>
+      <section class="pf-hero" aria-label="Seu perfil">
+        <div class="pf-corpo-wrap">
+          ${B.corpoHtml(p.avatarCfg || B.avatarPadrao())}
+          <a class="pf-editar" href="avatar.html">Editar avatar</a>
+        </div>
+        <div class="pf-dados">
+          <div class="pf-id">
+            ${B.avatarHtml(sessao || { nome })}
+            <div>
+              <h1>${esc(nome)}</h1>
+              <p>${esc(sessao ? (sessao.email || (sessao.tipo === 'anonimo' ? 'Conta de convidado' : (sessao.modo === 'dev' ? 'Modo desenvolvedor (só neste navegador)' : ''))) : 'Progresso salvo apenas neste navegador')}</p>
+            </div>
+          </div>
           <div class="profile-acoes">
-            <a class="btn btn-ink btn-sm" href="avatar.html">Editar meu avatar</a>
+            <a class="btn btn-ink btn-sm" href="avatar.html">Editar avatar e foto</a>
             <a class="btn btn-ink btn-sm" href="desempenho.html">Meu desempenho</a>
             ${sessao ? `<button class="btn btn-ink btn-sm" id="logout-btn" type="button">Sair</button>` : ''}
           </div>
-          <p>${esc(sessao ? (sessao.email || (sessao.tipo === 'anonimo' ? 'Conta de convidado' : '')) : 'Progresso salvo apenas neste navegador')}</p>
+          <div class="pf-stats">
+            <div class="pf-stat"><span>Nível</span><b>${p.nivel}</b></div>
+            <div class="pf-stat"><span>${ICONS.coin}Moedas</span><b>${p.moedas}</b></div>
+            <div class="pf-stat"><span>${ICONS.flame}Ofensiva</span><b>${p.streak}</b></div>
+            <div class="pf-stat"><span>Recorde</span><b>${p.recorde}</b></div>
+            <div class="pf-stat"><span>${ICONS.bloqueio}Combustível</span><b>${p.bloqueios || 0}</b></div>
+          </div>
+          <div class="pf-xp">
+            <div class="bar-label"><span>Nível ${p.nivel}</span><span>${p.xp} de ${p.xpProx} XP para o nível ${p.nivel + 1}</span></div>
+            <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+          </div>
         </div>
-        <div class="profile-stats">
-          <div class="pstat"><b>${p.nivel}</b><span>Nível</span></div>
-          <div class="pstat"><b>${p.moedas}</b><span>MathCoins</span></div>
-          <div class="pstat"><b>${p.streak}</b><span>Ofensiva</span></div>
-          <div class="pstat"><b>${p.recorde}</b><span>Recorde</span></div>
-          <div class="pstat"><b>${p.bloqueios || 0}</b><span>Bloqueios</span></div>
-        </div>
-      </div>
+      </section>
 
       ${!sessao ? `<div class="notice" style="margin-bottom:24px">Você está vendo o progresso deste navegador sem conta. <a href="login.html">Entre</a> para não perder o progresso.</div>` : ''}
-
-      <div class="block" style="margin-bottom:28px">
-        <div class="bar-label"><span>Nível ${p.nivel}</span><span>${p.xp} de ${p.xpProx} XP para o nível ${p.nivel + 1}</span></div>
-        <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
-      </div>
 
       <h2 style="font-size:1.4rem;margin-bottom:14px">Seu desempenho por trilha</h2>
       <div class="subj-grid">${subjHtml || '<p style="color:var(--muted)">Você ainda não começou nenhuma trilha. <a href="trilhas.html">Comece agora</a>.</p>'}</div>
@@ -122,17 +129,28 @@
     const pct = total ? Math.round(((d.acertos || 0) / total) * 100) : null;
     host.innerHTML = `
       <a class="pub-voltar" href="ranking.html">← Voltar ao ranking</a>
-      <div class="pub-head">
-        ${B.ranking.avatar(d)}
-        <div><h1>${esc(d.nome)}</h1><p>Nível ${d.nivel || 1} · aluno do Briiff</p></div>
-      </div>
-      <div class="pub-grid">
-        <div class="pub-card"><span>Nível</span><b>${d.nivel || 1}</b></div>
-        <div class="pub-card"><span>XP total</span><b>${num(d.xpTotal)}</b></div>
-        <div class="pub-card"><span>Acertos</span><b>${pct === null ? '—' : pct + '%'}</b><small>${total ? `${num(d.acertos)} de ${num(total)} questões` : 'ainda sem questões'}</small></div>
-        <div class="pub-card ${d.streak ? 'quente' : ''}"><span>Ofensiva atual</span><b>${dias(d.streak)}</b></div>
-        <div class="pub-card"><span>Recorde de ofensiva</span><b>${dias(d.recorde)}</b></div>
-      </div>
+      <section class="pf-hero pf-pub" aria-label="Perfil de ${esc(d.nome)}">
+        <div class="pf-corpo-wrap">
+          ${d.avatarCfg ? B.corpoHtml(d.avatarCfg) : B.corpoHtml(B.avatarPadrao(), 'vazio')}
+        </div>
+        <div class="pf-dados">
+          <div class="pf-id">
+            ${B.ranking.avatar(d)}
+            <div><h1>${esc(d.nome)}</h1><p>Nível ${d.nivel || 1} · aluno do Briiff</p></div>
+          </div>
+          <div class="pf-stats">
+            <div class="pf-stat"><span>Nível</span><b>${d.nivel || 1}</b></div>
+            <div class="pf-stat"><span>XP total</span><b>${num(d.xpTotal)}</b></div>
+            <div class="pf-stat"><span>Acertos</span><b>${pct === null ? '—' : pct + '%'}</b></div>
+            <div class="pf-stat ${d.streak ? 'quente' : ''}"><span>${ICONS.flame}Ofensiva</span><b>${dias(d.streak)}</b></div>
+            <div class="pf-stat"><span>Recorde</span><b>${dias(d.recorde)}</b></div>
+          </div>
+          <div class="pf-xp">
+            <div class="bar-label"><span>Taxa de acerto</span><span>${total ? `${num(d.acertos)} de ${num(total)} questões` : 'ainda sem questões'}</span></div>
+            <div class="bar" role="progressbar" aria-valuenow="${pct || 0}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct || 0}%"></i></div>
+          </div>
+        </div>
+      </section>
       <p style="color:var(--muted);font-size:13.5px">Só aparecem informações públicas do ranking. E-mail, foto e progresso detalhado não são compartilhados.</p>`;
   }
   async function carregarPublico() {

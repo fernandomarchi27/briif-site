@@ -25,13 +25,13 @@
     },
     {
       icone: ICONS.flame,
-      titulo: 'Ofensiva e MathCoins',
-      texto: 'Complete pelo menos uma fase por dia pra manter sua ofensiva 🔥 acesa, e ganhe MathCoins a cada fase concluída.'
+      titulo: 'Ofensiva e Moedas',
+      texto: 'Complete pelo menos uma fase por dia pra manter sua ofensiva acesa, e ganhe Moedas a cada fase concluída.'
     },
     {
       icone: ICONS.bloqueio,
-      titulo: 'Loja e bloqueios de ofensiva',
-      texto: 'Troque MathCoins na Loja por bloqueios de ofensiva: se um dia passar em branco, um bloqueio é usado sozinho e sua ofensiva não zera. Você já ganhou 2 de presente!'
+      titulo: 'Loja e combustível',
+      texto: 'Troque Moedas na Loja por combustível: se um dia passar em branco, o combustível é usado sozinho e sua ofensiva não zera. Você já ganhou 2 de presente!'
     },
     {
       icone: ICONS.mix,
@@ -41,17 +41,7 @@
     {
       icone: ICONS.moon,
       titulo: 'Modo noturno',
-      texto: 'Prefere uma tela mais escura? O botão da lua no topo do site alterna entre o modo claro e o modo noturno a qualquer momento.'
-    },
-    {
-      icone: ICONS.gamepad,
-      titulo: 'Modo game',
-      texto: 'O botão do controle liga o modo game: um visual estilo pixel art, com bordas "quebradinhas" e tudo mais.'
-    },
-    {
-      icone: ICONS.paleta,
-      titulo: 'Cores personalizadas',
-      texto: 'Quer deixar com a sua cara? No botão da paleta você escolhe suas próprias cores pro site, no lugar das cores padrão do Briiff.'
+      texto: 'Prefere uma tela mais escura? O botão de lua e sol no topo do site alterna entre o modo claro e o modo noturno a qualquer momento.'
     }
   ];
 
