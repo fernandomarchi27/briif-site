@@ -397,3 +397,6 @@ main.auth + .site-footer { margin-top: 0; }
 .rk-row { position: relative; }
 .dev-tirar { position: absolute; top: 4px; right: 4px; z-index: 3; width: 22px; height: 22px; padding: 0; display: grid; place-items: center; font: inherit; font-size: 15px; line-height: 1; color: var(--faint); background: transparent; border: 1px solid var(--line); cursor: pointer; opacity: .6; }
 .dev-tirar:hover, .dev-tirar:focus-visible { opacity: 1; color: var(--danger); border-color: var(--danger); }
+
+.poderes-sair { position: fixed; left: 8px; bottom: 74px; z-index: 60; padding: 6px 10px; font: 800 10px var(--px); letter-spacing: .06em; color: #14101F; background: var(--gold); border: 3px solid #14101F; cursor: pointer; opacity: .9; }
+.poderes-sair:hover { opacity: 1; }

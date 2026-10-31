@@ -318,6 +318,16 @@
   const escondidos = () => { try { return JSON.parse(localStorage.getItem(CHAVE_ESCONDIDOS)) || []; } catch (e) { return []; } };
   const esconder = (uid) => { const l = escondidos(); if (l.indexOf(uid) === -1) l.push(uid); try { localStorage.setItem(CHAVE_ESCONDIDOS, JSON.stringify(l)); } catch (e) { /* segue */ } };
   const mostrarTodos = () => { try { localStorage.removeItem(CHAVE_ESCONDIDOS); } catch (e) { /* segue */ } };
+  // Botão fixo para sair do modo desenvolvedor (poderes), visível em qualquer página enquanto estiver ativo.
+  const botaoPoderes = () => {
+    if (!poderes() || document.getElementById('poderes-sair')) return;
+    const b = document.createElement('button');
+    b.id = 'poderes-sair'; b.type = 'button'; b.className = 'poderes-sair';
+    b.textContent = 'MODO DEV · voltar ao normal';
+    b.addEventListener('click', () => { ativarPoderes(false); location.reload(); });
+    document.body.appendChild(b);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', botaoPoderes); else botaoPoderes();
   function salvarSessao(s) {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) { /* ignora */ }
   }
@@ -1590,7 +1600,7 @@
     TRILHAS, AULAS, ICONS, $, $$, esc, fmt, rich, mago,
     auth, wordmark, iniciar, atualizarHeader, aguardarSync, avatarHtml, simbolos, trilhaIcon,
     dev: { permitido: devPermitido, ativo: emDev, semear: semearDev, uid: DEV_UID },
-    poderes: { ativo: poderes, ativar: ativarPoderes, pularFase, pularBoss, removerDoRanking, escondidos, mostrarTodos, uid: () => { const s = lerSessao(); return s && s.modo === 'firebase' ? s.uid : ''; } },
+    poderes: { ativo: poderes, ativar: (v) => { ativarPoderes(v); if (v) botaoPoderes(); },  pularFase, pularBoss, removerDoRanking, escondidos, mostrarTodos, uid: () => { const s = lerSessao(); return s && s.modo === 'firebase' ? s.uid : ''; } },
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
     progresso: { mesclar, ler: lerProgresso, completarFase, registrarRespostas, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
     loja: { custoBloqueio: LOJA.custoBloqueio, maxBloqueios: LOJA.maxBloqueios, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },
