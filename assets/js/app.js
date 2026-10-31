@@ -309,6 +309,15 @@
     return s;
   }
   const emDev = () => { const s = lerSessao(); return !!(s && s.modo === 'dev'); };
+
+  /* ---- Poderes de desenvolvedor (secretos): ligam ao digitar o código na Loja. Valem na conta real, só neste navegador:
+     dica da resposta certa, pular fases e chefes, esconder/remover pessoas do ranking. Não aparecem para mais ninguém. ---- */
+  const CHAVE_PODERES = 'briif:poderes', CHAVE_ESCONDIDOS = 'briif:poderes-escondidos';
+  const poderes = () => { try { return localStorage.getItem(CHAVE_PODERES) === '1'; } catch (e) { return false; } };
+  const ativarPoderes = (v) => { try { if (v) localStorage.setItem(CHAVE_PODERES, '1'); else localStorage.removeItem(CHAVE_PODERES); } catch (e) { /* segue */ } };
+  const escondidos = () => { try { return JSON.parse(localStorage.getItem(CHAVE_ESCONDIDOS)) || []; } catch (e) { return []; } };
+  const esconder = (uid) => { const l = escondidos(); if (l.indexOf(uid) === -1) l.push(uid); try { localStorage.setItem(CHAVE_ESCONDIDOS, JSON.stringify(l)); } catch (e) { /* segue */ } };
+  const mostrarTodos = () => { try { localStorage.removeItem(CHAVE_ESCONDIDOS); } catch (e) { /* segue */ } };
   function salvarSessao(s) {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) { /* ignora */ }
   }
@@ -822,11 +831,36 @@
     return resumo;
   }
 
+  /** Poderes: marca a fase como concluída SEM XP, moedas, ofensiva nem estatística (só destrava o caminho). */
+  function pularFase(faseId) {
+    if (!poderes()) return false;
+    const p = lerProgresso();
+    if (!faseCompleta(p, faseId)) { p.fases.push(faseId); salvarProgresso(p); agendarEnvio(); }
+    return true;
+  }
+  function pularBoss(trilhaId) {
+    if (!poderes()) return false;
+    const p = lerProgresso();
+    if ((p.bosses || []).indexOf(trilhaId) === -1) { p.bosses = (p.bosses || []).concat(trilhaId); salvarProgresso(p); agendarEnvio(); }
+    return true;
+  }
+  /** Poderes: tira a pessoa do ranking. Tenta apagar na nuvem (só funciona para contas listadas em admin() nas regras);
+      de qualquer forma ela fica escondida neste navegador. */
+  async function removerDoRanking(uid) {
+    if (!poderes()) return { ok: false, nuvem: false };
+    esconder(uid);
+    try {
+      const fb = await carregarFirebase();
+      await fb.firestore().collection('ranking').doc(String(uid)).delete();
+      return { ok: true, nuvem: true };
+    } catch (e) { return { ok: true, nuvem: false }; }
+  }
+
   /* ---------------------------- Boss (batalha final da trilha) ---------------------------- */
   const bossDerrotado = (p, trilhaId) => (p.bosses || []).indexOf(trilhaId) !== -1;
   /** O boss libera quando todas as fases da trilha estão concluídas (a Personalizada precisa estar montada). */
   function bossDisponivel(p, t) {
-    if (emDev()) return !!t && t.fases.length > 0;   // modo desenvolvedor: batalha liberada para teste
+    if (emDev() || poderes()) return !!t && t.fases.length > 0;   // modo desenvolvedor: batalha liberada para teste
     return !!t && t.fases.length > 0 && t.fases.every((f) => faseCompleta(p, f.id));
   }
   function embaralhar(arr) {
@@ -1169,7 +1203,7 @@
     return null;
   }
   function faseDisponivel(p, t, fi) {
-    if (emDev()) return true;                    // modo desenvolvedor: tudo liberado (sem concluir as fases)
+    if (emDev() || poderes()) return true;       // modo desenvolvedor: tudo liberado (sem concluir as fases)
     if (fi < 0) return bossDerrotado(p, t.id);   // extras difíceis: só depois de vencer o boss
     return fi === 0 || faseCompleta(p, t.fases[fi - 1].id);
   }
@@ -1556,6 +1590,7 @@
     TRILHAS, AULAS, ICONS, $, $$, esc, fmt, rich, mago,
     auth, wordmark, iniciar, atualizarHeader, aguardarSync, avatarHtml, simbolos, trilhaIcon,
     dev: { permitido: devPermitido, ativo: emDev, semear: semearDev, uid: DEV_UID },
+    poderes: { ativo: poderes, ativar: ativarPoderes, pularFase, pularBoss, removerDoRanking, escondidos, mostrarTodos, uid: () => { const s = lerSessao(); return s && s.modo === 'firebase' ? s.uid : ''; } },
     boss: { config: BOSS, disponivel: bossDisponivel, derrotado: bossDerrotado, perguntas: montarPerguntasBoss, completar: completarBoss },
     progresso: { mesclar, ler: lerProgresso, completarFase, registrarRespostas, faseCompleta, faseDisponivel, proximaAtividade, ofensivaFeitaHoje },
     loja: { custoBloqueio: LOJA.custoBloqueio, maxBloqueios: LOJA.maxBloqueios, comprarBloqueio, limiteCodigoMoedas: LOJA.limiteCodigoMoedas, validarCodigoMoedas, resgatarCodigoMoedas },

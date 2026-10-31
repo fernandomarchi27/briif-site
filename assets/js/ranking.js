@@ -44,7 +44,8 @@
 
   function ordenar(c) {
     const C = CATEGORIAS[c];
-    return (dados || []).filter((d) => !d.oculto && C.ok(d)).sort((a, b) =>
+    const fora = B.poderes.ativo() ? B.poderes.escondidos() : [];
+    return (dados || []).filter((d) => !d.oculto && !fora.includes(d.uid) && C.ok(d)).sort((a, b) =>
       (C.valor(b) - C.valor(a)) || (C.desempate(b) - C.desempate(a)) || String(a.nome).localeCompare(String(b.nome), 'pt-BR'));
   }
   const posicao = (lista, uid) => { const i = lista.findIndex((d) => d.uid === uid); return i < 0 ? null : i + 1; };
@@ -62,6 +63,7 @@
     return `
       <li class="rk-row ${eu ? 'eu' : ''}">
         <a class="rk-link" href="perfil.html${eu ? '' : '?u=' + encodeURIComponent(d.uid)}" aria-label="Ver o perfil de ${esc(d.nome)}"></a>
+        ${B.poderes.ativo() ? `<button type="button" class="dev-tirar" data-tirar="${esc(d.uid)}" title="Tirar do ranking" aria-label="Tirar ${esc(d.nome)} do ranking">×</button>` : ''}
         <span class="rk-pos ${pos <= 3 ? 'top' + pos : ''}">${pos}</span>
         ${B.ranking.avatar(d)}
         <div class="rk-nome"><b>${esc(d.nome)}${eu ? ' <em>você</em>' : ''}</b><span>Nível ${d.nivel || 1}</span></div>
@@ -142,6 +144,13 @@
       if (cat === b.dataset.cat) return;
       cat = b.dataset.cat;
       if (window.BriifSom) window.BriifSom.tocar('toque');
+      render();
+    }));
+    $$('[data-tirar]', host).forEach((b) => b.addEventListener('click', async () => {
+      const uid = b.dataset.tirar;
+      if (!confirm('Tirar esta pessoa do ranking?')) return;
+      b.disabled = true;
+      await B.poderes.removerDoRanking(uid);
       render();
     }));
     const t = $('#rk-tentar'); if (t) t.addEventListener('click', carregar);

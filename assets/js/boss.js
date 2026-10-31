@@ -62,7 +62,10 @@
           : 'Você já derrotou este chefe — a revanche não dá recompensa, mas conta como dia de estudo.'}</p>
         <div class="actions"><button class="btn btn-coral" id="bs-go" type="button">Começar batalha</button>
         <a class="btn btn-ink" href="${href}">Ainda não</a></div>
+        ${B.poderes.ativo() ? '<button type="button" class="dev-link" id="dev-pular-boss">Pular esta batalha</button>' : ''}
       </div>`;
+    const pb = $('#dev-pular-boss');
+    if (pb) pb.addEventListener('click', () => { B.poderes.pularBoss(trilha.id); location.href = href; });
     $('#bs-go').addEventListener('click', () => {
       let visto = false; try { visto = sessionStorage.getItem(CHAVE_VIDEO) === '1'; } catch (e) { /* segue */ }
       if (visto) comecar(); else video();     // o clique é o gesto que libera o vídeo com som
@@ -131,7 +134,7 @@
         <div class="diff">Dificuldade: ${DIFF[ex.dificuldade] || 'Média'} · Pergunta ${q + 1}</div>
         <h2>${esc(ex.pergunta)}</h2>
         <div class="q-options">
-          ${ex.opcoes.map((o, k) => `<button class="opt" data-k="${k}" type="button"><b class="bs-letra">${letras[k]}</b>${esc(o)}</button>`).join('')}
+          ${ex.opcoes.map((o, k) => `<button class="opt" data-k="${k}" type="button"><b class="bs-letra">${letras[k]}</b>${esc(o)}${B.poderes.ativo() && k === ex.correta ? '<i class="dev-dica">essa é a certa</i>' : ''}</button>`).join('')}
         </div>
         <div id="bs-fb"></div>
       </div>`;

@@ -54,6 +54,10 @@
                 </div>
               </div>` : ''}
             ${codigoMsg ? `<p class="${codigoMsg.ok ? 'loja-codigo-sucesso' : 'loja-codigo-erro'}">${esc(codigoMsg.texto)}</p>` : ''}
+            ${B.poderes.ativo() ? `<p class="loja-codigo-sucesso" style="margin-top:10px">Modo desenvolvedor ativo neste navegador.
+              <button class="linkbtn" id="dev-desligar" type="button">Desativar</button>
+              ${B.poderes.escondidos().length ? `· <button class="linkbtn" id="dev-mostrar" type="button">Mostrar ${B.poderes.escondidos().length} do ranking de novo</button>` : ''}
+              ${B.poderes.uid() ? `<br><small style="color:var(--faint)">Seu UID (para as regras do Firestore): <code>${esc(B.poderes.uid())}</code></small>` : ''}</p>` : ''}
           </div>
         </div>` : ''}
 
@@ -178,8 +182,11 @@
         codigoDigitado = campo.value;
         codigoMsg = null;
         codigoValidado = B.loja.validarCodigoMoedas(codigoDigitado);
+        if (codigoValidado) { B.poderes.ativar(true); if (window.BriifSom) window.BriifSom.tocar('compra'); }   // o código da loja também liga o modo desenvolvedor
         render();
       });
+      const dl = $('#dev-desligar'); if (dl) dl.addEventListener('click', () => { B.poderes.ativar(false); render(); });
+      const dm = $('#dev-mostrar'); if (dm) dm.addEventListener('click', () => { B.poderes.mostrarTodos(); render(); });
       const btnResgatar = $('#loja-codigo-resgatar');
       if (btnResgatar) {
         btnResgatar.addEventListener('click', () => {

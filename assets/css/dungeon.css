@@ -390,3 +390,10 @@ main.auth + .site-footer { margin-top: 0; }
   .pf-corpo-wrap { width: min(190px, 58%); }
   .pf-dados { width: 100%; }
 }
+
+/* ---- poderes de desenvolvedor (liga com o código da Loja): tudo discreto ---- */
+.opt { position: relative; }
+.dev-dica { position: absolute; right: 6px; bottom: 2px; font-style: normal; font-size: 10px; line-height: 1; color: var(--faint); opacity: .55; pointer-events: none; letter-spacing: .02em; }
+.rk-row { position: relative; }
+.dev-tirar { position: absolute; top: 4px; right: 4px; z-index: 3; width: 22px; height: 22px; padding: 0; display: grid; place-items: center; font: inherit; font-size: 15px; line-height: 1; color: var(--faint); background: transparent; border: 1px solid var(--line); cursor: pointer; opacity: .6; }
+.dev-tirar:hover, .dev-tirar:focus-visible { opacity: 1; color: var(--danger); border-color: var(--danger); }

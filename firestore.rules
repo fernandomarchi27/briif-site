@@ -4,6 +4,9 @@ service cloud.firestore {
 
     function logado() { return request.auth != null; }
     function dono(uid) { return logado() && request.auth.uid == uid; }
+    // Administradores (modo desenvolvedor): podem apagar qualquer documento do ranking.
+    // Troque COLE_AQUI_SEU_UID pelo UID da sua conta (a Loja mostra o UID depois de digitar o código) e publique as regras.
+    function admin() { return logado() && request.auth.uid in ['COLE_AQUI_SEU_UID']; }
 
     // Dados privados: cada pessoa lê e grava somente o próprio documento.
     // (v25) limites de tamanho/forma para evitar lixo ou abuso de armazenamento.
@@ -31,7 +34,7 @@ service cloud.firestore {
         && request.resource.data.recorde is number && request.resource.data.recorde >= 0 && request.resource.data.recorde <= 100000
         && request.resource.data.streak is number && request.resource.data.streak >= 0 && request.resource.data.streak <= 100000
         && request.resource.data.atualizadoEm == request.time;
-      allow delete: if dono(uid);
+      allow delete: if dono(uid) || admin();
     }
 
     match /{document=**} {

@@ -38,6 +38,14 @@
   root.style.setProperty('--c', trilha.cor);
   root.style.setProperty('--on-c', trilha.on);
 
+  // poderes de desenvolvedor (liga com o código da Loja): pular a fase sem XP nem moedas
+  root.addEventListener('click', (e) => {
+    if (!e.target.closest('#dev-pular') || !B.poderes.ativo()) return;
+    B.poderes.pularFase(fase.id);
+    const prox = B.proximaFase(ti, fi);
+    location.href = prox ? 'licao.html?f=' + encodeURIComponent(prox.fase.id) : 'trilhas.html?t=' + encodeURIComponent(trilha.id);
+  });
+
   let view = ehExtra ? 'praticar' : 'aprender';     // aprender | praticar | resultado
   let q = 0, acertos = 0, respondida = null, resumo = null, finalizada = false;
   // combo = maior sequência de acertos seguidos; tempo = do início da prática até o fim
@@ -58,6 +66,7 @@
       <div class="crumbs"><a href="trilhas.html?t=${encodeURIComponent(trilha.id)}">${esc(trilha.nome)}</a> / ${ehExtra ? 'Extra difícil' : 'Fase ' + fase.numero}</div>
       <span class="badge" style="--c:${trilha.cor}">${esc(trilha.nome)} · ${ehExtra ? 'Extra difícil' : 'Fase ' + fase.numero}</span>
       <h1>${esc(fase.titulo)}</h1>
+      ${B.poderes.ativo() ? '<button type="button" class="dev-link" id="dev-pular">Pular esta fase</button>' : ''}
       <div class="steps-nav" role="tablist">
         <button role="tab" data-v="aprender" aria-selected="${view === 'aprender'}">1. Aprender</button>
         <button role="tab" data-v="praticar" aria-selected="${view === 'praticar'}">2. Praticar</button>
@@ -172,7 +181,7 @@
           ${ex.opcoes.map((o, k) => {
             let cls = '';
             if (respondida !== null) { if (k === ex.correta) cls = 'right'; else if (k === respondida) cls = 'wrong'; }
-            return `<button class="opt ${cls}" data-k="${k}" type="button" ${respondida !== null ? 'disabled' : ''}><b style="color:var(--faint);margin-right:10px">${letras[k]}</b>${esc(o)}</button>`;
+            return `<button class="opt ${cls}" data-k="${k}" type="button" ${respondida !== null ? 'disabled' : ''}><b style="color:var(--faint);margin-right:10px">${letras[k]}</b>${esc(o)}${B.poderes.ativo() && k === ex.correta && respondida === null ? '<i class="dev-dica">essa é a certa</i>' : ''}</button>`;
           }).join('')}
         </div>
         ${fb}
@@ -419,7 +428,7 @@
           ${ex.opcoes.map((o, k) => {
             let cls = '';
             if (rev.resp !== null) { if (k === ex.correta) cls = 'right'; else if (k === rev.resp) cls = 'wrong'; }
-            return `<button class="opt ${cls}" data-k="${k}" type="button" ${rev.resp !== null ? 'disabled' : ''}><b style="color:var(--faint);margin-right:10px">${letras[k]}</b>${esc(o)}</button>`;
+            return `<button class="opt ${cls}" data-k="${k}" type="button" ${rev.resp !== null ? 'disabled' : ''}><b style="color:var(--faint);margin-right:10px">${letras[k]}</b>${esc(o)}${B.poderes.ativo() && k === ex.correta && rev.resp === null ? '<i class="dev-dica">essa é a certa</i>' : ''}</button>`;
           }).join('')}
         </div>
         ${fb}
