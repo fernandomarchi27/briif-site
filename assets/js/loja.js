@@ -41,7 +41,8 @@
           <div class="loja-codigo">
             <label for="loja-codigo-campo">Tem um código? Digite aqui.</label>
             <div class="loja-codigo-linha">
-              <input id="loja-codigo-campo" type="text" placeholder="#000000" maxlength="7" value="${esc(codigoDigitado)}" autocomplete="off" spellcheck="false">
+              <span class="loja-codigo-hash" aria-hidden="true" style="font:800 20px var(--px,monospace);align-self:center;padding:0 2px 0 4px">#</span>
+              <input id="loja-codigo-campo" type="text" placeholder="000000" maxlength="6" value="${esc(codigoDigitado)}" autocomplete="off" spellcheck="false" aria-label="Código promocional (o # já está incluído)">
               <button class="btn btn-ink btn-sm" id="loja-codigo-validar" type="button">Validar</button>
             </div>
             ${codigoValidado === false ? `<p class="loja-codigo-erro">Código inválido. Confira e tente de novo.</p>` : ''}
@@ -176,12 +177,12 @@
 
     if (configAberta) {
       const campo = $('#loja-codigo-campo');
-      campo.addEventListener('input', () => { codigoDigitado = campo.value; });
+      campo.addEventListener('input', () => { const v = campo.value.replace(/#/g, ''); if (v !== campo.value) campo.value = v; codigoDigitado = v; });
       campo.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#loja-codigo-validar').click(); } });
       $('#loja-codigo-validar').addEventListener('click', () => {
-        codigoDigitado = campo.value;
+        codigoDigitado = campo.value.replace(/#/g, '');
         codigoMsg = null;
-        codigoValidado = B.loja.validarCodigoMoedas(codigoDigitado);
+        codigoValidado = B.loja.validarCodigoMoedas('#' + codigoDigitado);
         if (codigoValidado) { B.poderes.ativar(true); if (window.BriifSom) window.BriifSom.tocar('compra'); }   // o código da loja também liga o modo desenvolvedor
         render();
       });
@@ -191,7 +192,7 @@
       if (btnResgatar) {
         btnResgatar.addEventListener('click', () => {
           const qtd = Number($('#loja-codigo-qtd').value);
-          const r = B.loja.resgatarCodigoMoedas(codigoDigitado, qtd);
+          const r = B.loja.resgatarCodigoMoedas('#' + codigoDigitado, qtd);
           if (window.BriifSom) window.BriifSom.tocar(r.ok ? 'moeda' : 'negado');
           if (r.ok) {
             codigoMsg = { ok: true, texto: `Resgatado! +${r.quantidade.toLocaleString('pt-BR')} Moedas.` };

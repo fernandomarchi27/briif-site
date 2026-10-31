@@ -568,7 +568,7 @@
     custoBloqueio: 100, bloqueiosPorNivel: 1, bloqueiosBoasVindas: 2,
     maxBloqueios: 5,   // limite por conta: o saldo de bloqueios nunca passa disso
     // código promocional de moedas grátis (configurações da loja) — por enquanto sem limite de usos
-    codigoMoedasHash: '2fdb858b68237d4f4e7b2f81e80fdd546751a38a1a81c88616102f588286c3da', limiteCodigoMoedas: 10000
+    codigoMoedasHash: '4804f00dc646a2eae59c7f09e9c93d60bf6a731ce2be66a275f79c07cb443e72', limiteCodigoMoedas: 10000
   };
 
   /* Aviso "seu combustível foi usado": fica guardado (por conta) até a animação ser mostrada.
