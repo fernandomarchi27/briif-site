@@ -568,7 +568,7 @@
     custoBloqueio: 100, bloqueiosPorNivel: 1, bloqueiosBoasVindas: 2,
     maxBloqueios: 5,   // limite por conta: o saldo de bloqueios nunca passa disso
     // código promocional de moedas grátis (configurações da loja) — por enquanto sem limite de usos
-    codigoMoedas: '#fefe10', limiteCodigoMoedas: 10000
+    codigoMoedasHash: '2fdb858b68237d4f4e7b2f81e80fdd546751a38a1a81c88616102f588286c3da', limiteCodigoMoedas: 10000
   };
 
   /* Aviso "seu combustível foi usado": fica guardado (por conta) até a animação ser mostrada.
@@ -725,7 +725,44 @@
 
   /** Confere se o código promocional de moedas digitado é válido. */
   function validarCodigoMoedas(codigo) {
-    return String(codigo || '').trim().toLowerCase() === LOJA.codigoMoedas.toLowerCase();
+    return sha256('briif|' + String(codigo || '').trim().toLowerCase()) === LOJA.codigoMoedasHash;
+  }
+
+  /** SHA-256 síncrono (o código fica guardado só como hash, não em texto). */
+  function sha256(msg) {
+    const K = [];
+    for (let n = 2, c = 0; c < 64; n++) {
+      let p = true; for (let d = 2; d * d <= n; d++) if (n % d === 0) { p = false; break; }
+      if (p) { K[c++] = (Math.pow(n, 1 / 3) % 1) * 4294967296 | 0; }
+    }
+    const H = [];
+    for (let n = 2, c = 0; c < 8; n++) {
+      let p = true; for (let d = 2; d * d <= n; d++) if (n % d === 0) { p = false; break; }
+      if (p) { H[c++] = (Math.pow(n, 1 / 2) % 1) * 4294967296 | 0; }
+    }
+    const bytes = unescape(encodeURIComponent(msg)).split('').map((ch) => ch.charCodeAt(0));
+    const bits = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    for (let i = 7; i >= 0; i--) bytes.push(i > 3 ? 0 : (bits >>> (i * 8)) & 255);
+    const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let o = 0; o < bytes.length; o += 64) {
+      const w = [];
+      for (let i = 0; i < 16; i++) w[i] = (bytes[o + i * 4] << 24) | (bytes[o + i * 4 + 1] << 16) | (bytes[o + i * 4 + 2] << 8) | bytes[o + i * 4 + 3];
+      for (let i = 16; i < 64; i++) {
+        const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let i = 0; i < 64; i++) {
+        const t1 = (h + (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+        const t2 = ((rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      [a, b, c, d, e, f, g, h].forEach((v, i) => { H[i] = (H[i] + v) | 0; });
+    }
+    return H.map((v) => ('00000000' + (v >>> 0).toString(16)).slice(-8)).join('');
   }
 
   /** Resgata o código e credita a quantidade escolhida de Moedas (até o limite). */
