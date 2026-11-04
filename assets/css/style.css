@@ -1754,7 +1754,9 @@ body.cel-aberta { overflow: hidden; }
   .tools-pop .theme-btn:hover, .tools-pop .theme-btn[aria-pressed="true"] { background: var(--indigo-soft); border-color: transparent; }
   .tools-pop .theme-btn:active { transform: none; }
   .nav-perfil { display: block; }
-  .user-btn { display: none; }
+  .header-right { margin-left: auto; }
+  .user-btn { display: flex; order: 9; padding: 2px; flex: 0 0 auto; }
+  .user-btn .nm { display: none; }
 
   /* ofensiva e MathCoins em destaque */
   .header-right .btn { order: 4; }
