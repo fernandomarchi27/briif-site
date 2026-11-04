@@ -1224,7 +1224,7 @@ body.rasc-lock { overflow: hidden; }
 
 /* rascunho */
 :root[data-pixel] .rasc-stage { background-size: 16px 16px; }
-:root[data-pixel] .rasc-anel { border-radius: 0; }
+:root[data-pixel] .rasc-anel { border-radius: 50%; }
 :root[data-pixel] .rasc-sw { border-width: 2px !important; }
 :root[data-pixel] .rasc-texto { font-weight: 500; }
 

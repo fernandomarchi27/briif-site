@@ -80,6 +80,21 @@
     var timers = [];
     var apos = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
     var n = el.querySelector('#cel-n');
+    // centraliza pela tinta do número (a fonte pixel deixa um vão à direita e o "1" fica torto)
+    function centrarNumero() {
+      try {
+        var cs = getComputedStyle(n);
+        var c = document.createElement('canvas').getContext('2d');
+        c.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+        var m = c.measureText(n.textContent);
+        var tinta = (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;   // centro da tinta (a partir da origem)
+        var desloc = m.width / 2 - tinta;
+        n.style.display = 'inline-block';
+        n.style.transform = Math.abs(desloc) < 40 ? 'translateX(' + desloc.toFixed(1) + 'px)' : '';
+      } catch (e) { /* segue sem ajuste */ }
+    }
+    centrarNumero();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(centrarNumero);
     var ok = el.querySelector('#cel-ok');
     var fechado = false;
 
@@ -88,6 +103,7 @@
     // o número "bate" quando a chama termina de crescer, em sincronia com o som
     apos(inicio ? 900 : 1000, function () {
       n.textContent = String(streak);
+      centrarNumero();
       n.parentNode.classList.add('bate');
       el.classList.add('flash');
     });

@@ -101,9 +101,8 @@
 
     /* ---------- desenho ---------- */
     function estilo(t) {
-      const px = document.documentElement.hasAttribute('data-pixel');
-      ctx.lineCap = px ? 'square' : 'round';
-      ctx.lineJoin = px ? 'miter' : 'round';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.lineWidth = t.tam;
       if (t.ferr === 'borracha') {
         ctx.globalCompositeOperation = 'destination-out';
@@ -114,9 +113,9 @@
         ctx.strokeStyle = c; ctx.fillStyle = c;
       }
     }
-    // modo pixel art: o traço vira blocos alinhados a uma grade de 4px
+    // (mantido só por compatibilidade: o pincel não usa mais blocos)
     const G = 4;
-    const modoPixel = () => document.documentElement.hasAttribute('data-pixel');
+    const modoPixel = () => false;   // o pincel é sempre liso e arredondado (nada de blocos), mesmo no visual pixel art
     function carimbar(t, x, y) {
       const S = Math.max(G, Math.round(t.tam / G) * G);
       ctx.fillRect(Math.round((x - S / 2) / G) * G, Math.round((y - S / 2) / G) * G, S, S);
