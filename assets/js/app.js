@@ -1125,13 +1125,25 @@
       await ref.set(pub);
     }
   }
+  /** Ofensiva que vale hoje: se a pessoa não aparece desde antes de ontem, a sequência já quebrou (mesmo sem ela voltar ao site). */
+  function ofensivaVigente(d) {
+    const n = (d && d.streak) || 0;
+    if (!n) return 0;
+    const t = d.atualizadoEm;
+    const ms = t && typeof t.toMillis === 'function' ? t.toMillis() : (t && t.seconds ? t.seconds * 1000 : null);
+    if (ms === null) return n;
+    const dia = (x) => { const a = new Date(x); return Date.UTC(a.getFullYear(), a.getMonth(), a.getDate()); };
+    const dias = Math.round((dia(Date.now()) - dia(ms)) / 86400000);
+    return dias > 1 ? 0 : n;
+  }
+  function comOfensivaVigente(d) { return d ? Object.assign({}, d, { streak: ofensivaVigente(d) }) : d; }
   /** Perfil público de outra pessoa (só o que está no ranking). Devolve null se ela não está no ranking. */
   async function buscarPerfilPublico(uid) {
     const fb = await carregarFirebase();
     const user = await new Promise((res) => { const off = fb.auth().onAuthStateChanged((u) => { off(); res(u); }); });
     if (!user) throw new Error('sem-login');
     const snap = await fb.firestore().collection('ranking').doc(String(uid)).get();
-    return snap.exists ? Object.assign({ uid: snap.id }, snap.data()) : null;
+    return snap.exists ? comOfensivaVigente(Object.assign({ uid: snap.id }, snap.data())) : null;
   }
   /** Busca o ranking inteiro (até 500 contas); a ordenação por categoria é feita na tela. */
   async function buscarRanking() {
@@ -1141,7 +1153,7 @@
     const user = await new Promise((res) => { const off = fb.auth().onAuthStateChanged((u) => { off(); res(u); }); });
     if (!user) throw new Error('sem-login');
     const snap = await fb.firestore().collection('ranking').limit(500).get();
-    return snap.docs.map((d) => Object.assign({ uid: d.id }, d.data()));
+    return snap.docs.map((d) => comOfensivaVigente(Object.assign({ uid: d.id }, d.data())));
   }
   /** Personagem de corpo inteiro (perfil pessoal e público). cfg vazio → null (quem chama decide o que mostrar). */
   function avatarCorpoHtml(cfg, extra = '') {
