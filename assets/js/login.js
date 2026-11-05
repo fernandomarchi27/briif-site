@@ -16,7 +16,13 @@
   // Já está logado? Vai direto para as trilhas.
   const next = new URLSearchParams(location.search).get('next');
   const destino = next && /^[a-z0-9_\-]+\.html(\?.*)?$/i.test(next) ? next : 'trilhas.html';
-  if (B.auth.sessao()) { location.replace(destino); return; }
+  const existente = B.auth.sessao();
+  if (existente && existente.modo !== 'firebase') { location.replace(destino); return; }
+  if (existente && B.auth.firebaseAtivo) {
+    B.auth.usuario().then(u => {
+      if (u && !B.auth.exigirVerificacao(u, destino)) location.replace(destino);
+    }).catch(() => {});
+  }
 
   const real = B.auth.firebaseAtivo;
   let modo = 'entrar'; // entrar | criar
@@ -60,10 +66,24 @@
     d.innerHTML = '<b>Modo demonstração.</b> O login funciona só neste navegador. Para ligar o login real (Google e e-mail com senha), preencha o arquivo <code>assets/js/firebase-config.js</code>.';
   }
   aplicarModo();
+  $('#recuperar').hidden = !real;
+  $('#recuperar').addEventListener('click', async () => {
+    const email = $('#email').value.trim();
+    if (!email) return mostrarErro('Digite seu e-mail para receber a recuperação de senha.');
+    try {
+      await B.auth.recuperarSenha(email);
+      mostrarErro('Se houver uma conta habilitada, você receberá um e-mail de recuperação.');
+    } catch (e) { mostrarErro(B.auth.erroAmigavel(e)); }
+  });
 
   // Conta nova? Mostra o tutorial + quiz de boas-vindas antes do destino de sempre.
-  function concluir(contaNova) {
-    location.href = contaNova ? ('onboarding.html?next=' + encodeURIComponent(destino)) : destino;
+  async function concluir(contaNova) {
+    const proxima = contaNova ? ('onboarding.html?next=' + encodeURIComponent(destino)) : destino;
+    if (real) {
+      const user = await B.auth.usuario();
+      if (B.auth.exigirVerificacao(user, proxima)) return;
+    }
+    location.href = proxima;
   }
 
   $('#form').addEventListener('submit', async (ev) => {
@@ -76,7 +96,7 @@
     if (!real) {
       if (!nome) { mostrarErro('Digite seu nome para continuar.'); return; }
       const novo = B.auth.demo(nome, email);
-      concluir(novo);
+      await concluir(novo);
       return;
     }
     if (!email || !senha) { mostrarErro('Preencha e-mail e senha.'); return; }
@@ -84,7 +104,7 @@
     ocupado(btnSubmit, true);
     try {
       const novo = modo === 'criar' ? await B.auth.criarConta(nome, email, senha) : await B.auth.entrarEmail(email, senha);
-      concluir(novo);
+      await concluir(novo);
     } catch (e) {
       mostrarErro(B.auth.erroAmigavel(e));
       ocupado(btnSubmit, false, modo === 'criar' ? 'Criar conta' : 'Entrar');
@@ -95,14 +115,14 @@
     mostrarErro('');
     if (!real) { mostrarErro('O login com Google será ativado quando o Firebase for configurado. Por enquanto, use o formulário ou entre como convidado.'); return; }
     ocupado(btnGoogle, true);
-    try { const novo = await B.auth.google(); concluir(novo); }
+    try { const novo = await B.auth.google(); await concluir(novo); }
     catch (e) { mostrarErro(B.auth.erroAmigavel(e)); ocupado(btnGoogle, false, rotulos.google); }
   });
 
   btnGuest.addEventListener('click', async () => {
     mostrarErro('');
     ocupado(btnGuest, true);
-    try { const novo = await B.auth.convidado(); concluir(novo); }
+    try { const novo = await B.auth.convidado(); await concluir(novo); }
     catch (e) { mostrarErro(B.auth.erroAmigavel(e)); ocupado(btnGuest, false, rotulos.guest); }
   });
 

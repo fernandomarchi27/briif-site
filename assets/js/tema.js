@@ -189,6 +189,8 @@
     } catch (e) { /* segue */ }
     var m = document.createElement('script'); m.defer = true; m.src = 'assets/js/menu.js';   // menu lateral com ícones
     (document.head || raiz).appendChild(m);
+    var chat = document.createElement('script'); chat.defer = true; chat.src = 'assets/js/ai-launcher.js';
+    (document.head || raiz).appendChild(chat);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', carregarFundo); else carregarFundo();
 })();

@@ -1,0 +1,12 @@
+{
+  "firebase": {
+    "apiKey": "CONFIGURACAO_PUBLICA_DO_FIREBASE_DE_TESTES",
+    "authDomain": "briiff-ai-test.firebaseapp.com",
+    "projectId": "briiff-ai-test",
+    "appId": "APP_ID_WEB_DO_PROJETO_DE_TESTES"
+  },
+  "credentialFile": "/home/fernandom/briiff-ai-local/.local/firebase-admin.json",
+  "geminiKeyFile": "/home/fernandom/briiff-ai-local/.local/gemini.key",
+  "geminiModel": "ESCOLHA_MODELO_COM_COTA_GRATUITA_NO_AI_STUDIO",
+  "limits": {"rpd": 1, "rpm": 1, "tpm": 16000, "tpd": 16000}
+}

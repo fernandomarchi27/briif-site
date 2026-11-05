@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var pagina = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  if (pagina === 'login.html' || pagina === 'onboarding.html') return;
+  if (pagina === 'login.html' || pagina === 'onboarding.html' || pagina === 'verificar-email.html') return;
   if (document.getElementById('rail')) return;
 
   /* ícones 12x12: '#' = pixel cheio. O vazado é calculado: só o contorno de cada forma. */
@@ -44,6 +44,7 @@
   var ITENS = [
     ['index.html', 'Início', 'inicio', ['index.html']],
     ['trilhas.html', 'Trilhas', 'trilhas', ['trilhas.html', 'licao.html', 'boss.html']],
+    ['ai.html', 'BRIIFF AI', 'grimorio', ['ai.html']],
     ['laboratorio.html', 'Laboratório', 'lab', ['laboratorio.html']],
     ['ranking.html', 'Ranking', 'ranking', ['ranking.html']],
     ['loja.html', 'Loja', 'loja', ['loja.html', 'avatar.html']],

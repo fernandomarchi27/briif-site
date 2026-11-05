@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confirme seu e-mail — BRIIFF</title>
+  <meta name="theme-color" content="#FBFAF7">
+  <script src="assets/js/tema.js"></script>
+  <script src="assets/js/som.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/inter-400.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-700.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/suave.css">
+  <link rel="stylesheet" href="assets/css/dungeon.css">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+  <main class="auth" id="auth">
+    <div class="auth-card">
+      <a class="wordmark lg" href="index.html" aria-label="Briiff, página inicial"><span class="root" aria-hidden="true"><i class="pi-logo"></i></span><span class="name">Briiff</span></a>
+      <h1 style="font-size:1.7rem;margin:24px 0 12px">Confirme seu e-mail</h1>
+      <p>Para continuar com sua conta, abra o link de confirmação no e-mail abaixo.</p>
+      <p id="verify-address" style="font-weight:700;overflow-wrap:anywhere"></p>
+      <p class="hint">Confira também a pasta de spam. Depois volte aqui e clique em “Já confirmei meu e-mail”.</p>
+      <p id="verify-status" class="demo-box" role="status">Conferindo sua conta…</p>
+      <button class="btn btn-indigo" id="verify-check" type="button">Já confirmei meu e-mail</button>
+      <button class="btn" id="verify-resend" type="button">Reenviar e-mail de confirmação</button>
+      <button class="btn btn-sm" id="verify-exit" type="button">Sair e usar outra conta</button>
+    </div>
+  </main>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/ambiente.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/avatar.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/verificar-email.js"></script>
+</body>
+</html>

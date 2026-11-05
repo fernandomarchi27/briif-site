@@ -347,9 +347,9 @@
     if (!firebaseAtivo) return Promise.reject(new Error('firebase-desativado'));
     if (!fbPromise) {
       const v = '10.14.1';
-      fbPromise = carregarScript(`https://www.gstatic.com/firebasejs/${v}/firebase-app-compat.js`)
-        .then(() => carregarScript(`https://www.gstatic.com/firebasejs/${v}/firebase-auth-compat.js`))
-        .then(() => carregarScript(`https://www.gstatic.com/firebasejs/${v}/firebase-firestore-compat.js`))
+      fbPromise = carregarScript('assets/vendor/firebase/firebase-app-compat.js')
+        .then(() => carregarScript('assets/vendor/firebase/firebase-auth-compat.js'))
+        .then(() => carregarScript('assets/vendor/firebase/firebase-firestore-compat.js'))
         .then(() => {
           if (!window.firebase.apps.length) window.firebase.initializeApp(cfg);
           return window.firebase;
@@ -390,6 +390,34 @@
 
   const auth = {
     firebaseAtivo,
+    firebase: carregarFirebase,
+    async usuario() {
+      const fb = await carregarFirebase();
+      return new Promise((resolve, reject) => {
+        const stop = fb.auth().onAuthStateChanged(u => { stop(); resolve(u); }, reject);
+      });
+    },
+    exigirVerificacao(user, next = 'trilhas.html') {
+      if (!user || user.isAnonymous || user.emailVerified) return false;
+      const destino = /^[a-z0-9_-]+\.html(\?.*)?$/i.test(next) && !next.startsWith('verificar-email.html') ? next : 'trilhas.html';
+      location.replace('verificar-email.html?next=' + encodeURIComponent(destino));
+      return true;
+    },
+    async recuperarSenha(email) {
+      const fb = await carregarFirebase();
+      await fb.auth().sendPasswordResetEmail(email);
+    },
+    async verificarEmail() {
+      const fb = await carregarFirebase();
+      if (fb.auth().currentUser) await fb.auth().currentUser.sendEmailVerification();
+    },
+    async vincularGoogle() {
+      const fb = await carregarFirebase();
+      const user = fb.auth().currentUser;
+      if (!user) throw new Error('sem-sessao');
+      // linkWithPopup requires the current authenticated session; never merge by email.
+      return user.linkWithPopup(new fb.auth.GoogleAuthProvider());
+    },
     sessao: lerSessao,
 
     /** Cada método devolve se a conta é NOVA (serve pra decidir se mostra o onboarding). */
@@ -428,16 +456,18 @@
       const fb = await carregarFirebase();
       const r = await fb.auth().signInWithEmailAndPassword(email, senha);
       salvarSessao(sessaoDe(r.user));
-      await sincronizar().catch(avisoSync);
+      if (r.user.emailVerified) await sincronizar().catch(avisoSync);
       return false;
     },
     async criarConta(nome, email, senha) {
       const fb = await carregarFirebase();
       const r = await fb.auth().createUserWithEmailAndPassword(email, senha);
       if (nome) { await r.user.updateProfile({ displayName: nome }); }
+      // A tela obrigatória permite reenviar se o serviço de e-mail falhar.
+      await r.user.sendEmailVerification().catch(() => {});
       salvarSessao(sessaoDe(r.user, { nome }));
       const novo = concederBoasVindas();
-      await sincronizar().catch(avisoSync);
+      if (r.user.emailVerified) await sincronizar().catch(avisoSync);
       return novo;
     },
     demo(nome, email) {
@@ -1559,6 +1589,9 @@
     carregarFirebase().then((fb) => {
       fb.auth().onAuthStateChanged((u) => {
         if (!u && lerSessao()) { limparSessao(); location.reload(); }
+        if (u && !/(login|verificar-email)\.html$/.test(location.pathname)) {
+          auth.exigirVerificacao(u, (location.pathname.split('/').pop() || 'index.html') + location.search);
+        }
       });
     }).catch(() => { /* offline: mantém sessão local */ });
   }
@@ -1571,7 +1604,7 @@
   /* ---------------------------- Abertura do app ----------------------------
      1ª abertura do dia: animação de boas-vindas. Se um combustível foi usado
      (a pessoa faltou), mostra a animação do bloqueio no lugar da saudação. */
-  const PAGINAS_SEM_ABERTURA = /(login|onboarding)\.html$/;
+  const PAGINAS_SEM_ABERTURA = /(login|onboarding|verificar-email)\.html$/;
   function carregarCelebracao() {
     if (window.BriifCelebracao) return Promise.resolve();
     return carregarScript('assets/js/celebracao.js');
@@ -1625,7 +1658,7 @@
     abrirAnimacoes();
     const s = lerSessao();
     if (firebaseAtivo && s && s.modo === 'firebase') {
-      syncInicial = sincronizar({ leve: true }).then((mudou) => {
+      syncInicial = auth.usuario().then(u => u && (u.isAnonymous || u.emailVerified) ? sincronizar({ leve: true }) : false).then((mudou) => {
         if (mudou) {
           atualizarHeader();
           window.dispatchEvent(new CustomEvent('briif:progresso'));

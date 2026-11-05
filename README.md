@@ -1,3 +1,8 @@
+> **BRIIFF AI:** implementação web com backend seguro local, Firebase de testes,
+> Gemini, histórico e cotas compartilhadas. Veja [configuração e testes](docs/BRIIFF_AI.md).
+> A IA exige backend; apenas publicar estes arquivos em hospedagem estática não
+> disponibiliza o chatbot. Credenciais e chaves não estão neste repositório.
+
 # Briiff (site)
 
 Site estático (HTML, CSS e JavaScript puro). Será a referência de telas e regras para o futuro app em Flutter.
