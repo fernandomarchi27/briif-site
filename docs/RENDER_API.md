@@ -31,6 +31,9 @@ Google sem faturamento e cotas gratuitas verificadas. É independente do projeto
 Firebase que autentica alunos.
 
 Ambos devem ser configurados diretamente no ambiente protegido do Web Service.
+Alternativamente, Render Secret Files monta `firebase-admin.json` e `gemini.key`
+em `/etc/secrets`; use `FIREBASE_ADMIN_JSON_FILE` e `GEMINI_API_KEY_FILE` para
+referenciar esses arquivos sem incluir segredos nos argumentos do terminal.
 Não colocar em arquivos públicos, commits, variáveis do Static Site, screenshots
 ou logs. Configurações não secretas estão em `docs/render-api.env.example`.
 

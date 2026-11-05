@@ -1,5 +1,6 @@
 """Explicit production configuration. Local server keeps its strict test-only guard."""
 import json
+from pathlib import Path
 from urllib.parse import urlsplit
 
 
@@ -10,10 +11,13 @@ def runtime_config(env):
     if project != 'briif-site':
         raise ValueError('O backend principal deve usar o Firebase briif-site.')
     raw = env.get('FIREBASE_ADMIN_JSON', '')
+    if not raw and env.get('FIREBASE_ADMIN_JSON_FILE'):
+        raw = Path(env['FIREBASE_ADMIN_JSON_FILE']).read_text()
     credential = json.loads(raw)
     if credential.get('type') != 'service_account' or credential.get('project_id') != project:
         raise ValueError('A credencial deve pertencer ao projeto principal.')
-    if not env.get('GEMINI_API_KEY'):
+    keyfile = env.get('GEMINI_API_KEY_FILE')
+    if not env.get('GEMINI_API_KEY') and not (keyfile and Path(keyfile).read_text().strip()):
         raise ValueError('Falta a chave Gemini na configuração protegida do servidor.')
     origins = [o.strip().rstrip('/') for o in env.get('BRIIFF_ALLOWED_ORIGINS', '').split(',') if o.strip()]
     if not origins:
@@ -34,6 +38,6 @@ def runtime_config(env):
             raise ValueError('Orçamento inválido: ' + name)
         limits[name] = value
     return {'environment':'production', 'firebase':{'projectId':project, 'authDomain':project+'.firebaseapp.com'},
-            'adminCredential':credential, 'allowedOrigins':origins, 'limits':limits,
+            'adminCredential':credential, 'geminiKeyFile':keyfile, 'allowedOrigins':origins, 'limits':limits,
             'geminiModel':model, 'geminiThinkingLevel':'minimal',
             'appCheckSiteKey':env.get('FIREBASE_APP_CHECK_SITE_KEY') or None}

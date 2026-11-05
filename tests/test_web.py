@@ -1,4 +1,5 @@
-import unittest,json
+import unittest,json,tempfile
+from pathlib import Path
 from unittest.mock import Mock
 from backend.core import APIError
 from backend.web import create_app
@@ -13,6 +14,13 @@ class RuntimeConfigTests(unittest.TestCase):
  def test_explicit_project_credential_and_limits(self):
   cfg=runtime_config(self.env());self.assertEqual(cfg['firebase']['projectId'],'briif-site')
   self.assertNotIn('useFirebaseCliCredentials',cfg);self.assertEqual(cfg['limits']['rpd'],400)
+ def test_secret_file_configuration(self):
+  with tempfile.TemporaryDirectory() as folder:
+   credential=Path(folder)/'admin.json';credential.write_text(self.env()['FIREBASE_ADMIN_JSON'])
+   key=Path(folder)/'gemini.key';key.write_text('test-placeholder')
+   cfg=self.env();cfg.pop('FIREBASE_ADMIN_JSON');cfg.pop('GEMINI_API_KEY')
+   cfg.update(FIREBASE_ADMIN_JSON_FILE=str(credential),GEMINI_API_KEY_FILE=str(key))
+   result=runtime_config(cfg);self.assertEqual(result['geminiKeyFile'],str(key))
  def test_reject_bad_config(self):
   for change in [{'BRIIFF_ENV':'local'},{'FIREBASE_PROJECT_ID':'other'},
                  {'FIREBASE_ADMIN_JSON':'{}'},{'GEMINI_API_KEY':''},
