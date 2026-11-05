@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parent.parent
 class JavascriptTests(unittest.TestCase):
     def test_changed_scripts_syntax(self):
         ctx=quickjs.Context()
-        for name in ['app','login','menu','ai','verificar-email','ai-launcher','tema']:
+        for name in ['app','login','menu','ai','verificar-email','ai-launcher','ai-config','tema']:
             source=(ROOT/f'assets/js/{name}.js').read_text()
             import json
             ctx.eval('new Function('+json.dumps(source)+')')

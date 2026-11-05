@@ -20,7 +20,7 @@ class Store:
                 'provider': max(0,self.limits['rpd']-p.get('count',0)), 'day':keys()[0]}
 
     def list(self, uid):
-        docs = self.conversations(uid).order_by('updatedAt', direction='DESCENDING').limit(30).stream()
+        docs = self.conversations(uid).order_by('updatedAt', direction='DESCENDING').select(['title','updatedAt']).limit(30).stream()
         return [{'id':d.id,'title':d.to_dict()['title'],'updatedAt':d.to_dict()['updatedAt']} for d in docs]
 
     def get(self, uid, cid):

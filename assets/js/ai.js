@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   const B = window.Briif, $ = s => document.querySelector(s);
+  const API_BASE = (window.BRIIFF_AI_CONFIG?.apiBase || '').replace(/\/+$/, '');
   B.iniciar('ai');
   const toggleHistory = (open) => {
     $('.ai-workspace').classList.toggle('history-open', open);
@@ -24,7 +25,7 @@
       const { token: attestation } = await fb.appCheck().getToken();
       headers['X-Firebase-AppCheck'] = attestation;
     }
-    const response = await fetch(path, {...options,headers,cache:'no-store'});
+    const response = await fetch(API_BASE + path, {...options,headers,cache:'no-store'});
     const body = await response.json();
     if (!response.ok) throw Error(body.error || 'O serviço não respondeu.');
     return body;
@@ -142,11 +143,12 @@
   async function start() {
     welcome();
     try {
-      const response = await fetch('/api/status',{cache:'no-store'});
+      const response = await fetch(API_BASE + '/api/status',{cache:'no-store',signal:AbortSignal.timeout(90000)});
       if (!response.ok) throw Error('backend-unavailable');
       const status = await response.json();
+      if (status.projectId && status.projectId !== window.BRIIF_FIREBASE_CONFIG?.projectId) throw Error('firebase-project-mismatch');
       available = status.ready;
-      $('#ai-status').textContent = status.ready ? 'Ambiente de testes · suas conversas ficam na sua conta.' : status.message;
+      $('#ai-status').textContent = status.ready ? ((status.testEnvironment ? 'Ambiente de testes · ' : '') + 'Suas conversas ficam na sua conta.') : status.message;
       if (!status.firebase) {
         $('#ai-access').hidden = true;
         error('O ambiente de testes ainda não foi configurado. O login de demonstração das outras páginas não dá acesso à IA. Consulte docs/BRIIFF_AI.md na pasta do projeto.');

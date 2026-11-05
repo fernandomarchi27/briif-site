@@ -23,6 +23,7 @@ class Collection:
     def document(self,name): return Ref(self.db,self.path+'/'+name)
     def limit(self,n): self.n=n; return self
     def order_by(self,*args,**kwargs): self.desc=True; return self
+    def select(self,*args,**kwargs): return self
     def stream(self, transaction=None):
         docs=[Ref(self.db,k).get() for k in self.db.data if k.startswith(self.path+'/') and k.count('/')==self.path.count('/')+1]
         return iter(sorted(docs,key=lambda d:d.data.get('updatedAt',0),reverse=self.desc)[:self.n])

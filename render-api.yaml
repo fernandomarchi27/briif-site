@@ -1,0 +1,25 @@
+# Separate API. Keep the existing Static Site and its principal URL unchanged.
+services:
+  - type: web
+    name: briiff-ai-api
+    runtime: python
+    plan: free
+    branch: feat/briiff-ai
+    buildCommand: pip install -r requirements-production.txt
+    startCommand: gunicorn -c gunicorn.conf.py 'backend.web:create_app()'
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.10
+      - key: BRIIFF_ENV
+        value: production
+      - key: FIREBASE_PROJECT_ID
+        value: briif-site
+      - key: FIREBASE_ADMIN_JSON
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: BRIIFF_ALLOWED_ORIGINS
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite

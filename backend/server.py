@@ -31,7 +31,12 @@ class Service:
             from firebase_admin import credentials, firestore
             from .store import Store
             credential = config.get('credentialFile')
-            if config.get('useFirebaseCliCredentials'):
+            if config.get('environment') == 'production':
+                cred_data = config.get('adminCredential', {})
+                if cred_data.get('project_id') != config['firebase']['projectId']:
+                    raise ValueError('Credencial do servidor não corresponde ao projeto.')
+                admin_credential = credentials.Certificate(cred_data)
+            elif config.get('useFirebaseCliCredentials'):
                 from .local_credentials import firebase_cli_credential
                 admin_credential = firebase_cli_credential(config['firebase']['projectId'])
             elif credential:
@@ -139,7 +144,7 @@ class Handler(BaseHTTPRequestHandler):
         service = self.server.service
         if path == '/assets/js/firebase-config.js' and self.command == 'GET':
             public = service.config.get('firebase') or None
-            extra = {'appCheckSiteKey':service.config.get('appCheckSiteKey')}
+            extra = {'appCheckSiteKey':service.config.get('appCheckSiteKey'),'apiBase':''}
             return self.send(200,('window.BRIIF_FIREBASE_CONFIG='+json.dumps(public)+';window.BRIIFF_AI_CONFIG='+json.dumps(extra)+';').encode(),'text/javascript')
         if path == '/api/status' and self.command == 'GET':
             return self.send(200, {'ready':service.ready(),'firebase':bool(service.config.get('firebase')),
