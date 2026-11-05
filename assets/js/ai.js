@@ -140,12 +140,36 @@
       try { await Promise.all([history(),usage()]); } catch(e) { error(e.message); }
     }
   }
+  async function serverStatus() {
+    const deadline = Date.now() + 95000;
+    const delays = [2000, 5000, 10000, 15000, 20000, 10000];
+    let lastError;
+    for (let attempt = 0; attempt <= delays.length; attempt++) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), Math.min(30000, remaining));
+      try {
+        const response = await fetch(API_BASE + '/api/status', {cache:'no-store', signal:controller.signal});
+        if (!response.ok) {
+          const e = Error('backend-unavailable');
+          e.permanent = response.status < 500;
+          throw e;
+        }
+        return await response.json();
+      } catch (e) {
+        lastError = e;
+        if (e.permanent || attempt === delays.length) throw e;
+      } finally { clearTimeout(timer); }
+      $('#ai-status').textContent = 'Conectando ao assistente… Na primeira abertura, pode levar cerca de um minuto.';
+      await new Promise(resolve => setTimeout(resolve, Math.min(delays[attempt], Math.max(0, deadline-Date.now()))));
+    }
+    throw lastError || Error('backend-unavailable');
+  }
   async function start() {
     welcome();
     try {
-      const response = await fetch(API_BASE + '/api/status',{cache:'no-store',signal:AbortSignal.timeout(90000)});
-      if (!response.ok) throw Error('backend-unavailable');
-      const status = await response.json();
+      const status = await serverStatus();
       if (status.projectId && status.projectId !== window.BRIIF_FIREBASE_CONFIG?.projectId) throw Error('firebase-project-mismatch');
       available = status.ready;
       $('#ai-status').textContent = status.ready ? ((status.testEnvironment ? 'Ambiente de testes · ' : '') + 'Suas conversas ficam na sua conta.') : status.message;

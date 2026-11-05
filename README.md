@@ -1,7 +1,7 @@
-> **BRIIFF AI:** implementação web com backend seguro local, Firebase de testes,
-> Gemini, histórico e cotas compartilhadas. Veja [configuração e testes](docs/BRIIFF_AI.md).
-> A IA exige backend; apenas publicar estes arquivos em hospedagem estática não
-> disponibiliza o chatbot. Credenciais e chaves não estão neste repositório.
+> **BRIIFF AI:** chat educacional com Firebase, Gemini, histórico e cotas compartilhadas.
+> Site: https://briif-site.onrender.com — API: https://briiff-ai-api.onrender.com
+> Configuração, segurança e testes: [BRIIFF AI](docs/BRIIFF_AI.md) e [Render](docs/RENDER_API.md).
+> O backend usa um Web Service Free separado; segredos ficam protegidos no Render.
 
 # Briiff (site)
 

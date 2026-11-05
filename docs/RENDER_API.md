@@ -77,3 +77,32 @@ service mock e não comprovam deploy ou acesso aos segredos da hospedagem.
 A publicação só está concluída após a URL real responder health/status e o fluxo
 com uma conta autorizada confirmar autenticação, geração e histórico. A existência
 do código ou uma main atualizada não comprovam que o backend está hospedado.
+
+## Implantação validada em 05/11/2026
+
+API: **https://briiff-ai-api.onrender.com**; plano confirmado **Free**.
+Serviço `briiff-ai-api`, região Oregon, com arquivos secretos montados em
+`/etc/secrets/firebase-admin.json` e `/etc/secrets/gemini.key`. A conta de serviço
+dedicada usa Datastore User e Firebase Auth Viewer; não tem papel Owner/Editor.
+Firebase principal `briif-site` permanece sem faturamento habilitado.
+
+Testes na URL pública passaram: health/status, CORS para o site principal,
+HTTP 401 sem token, HTTP 403 para conta não verificada, resposta real Gemini,
+histórico persistido, contador reduzido, isolamento entre duas contas e exclusão
+sem zerar a cota. As duas contas fictícias de implantação e seus dados foram
+removidos; nenhum aluno existente foi alterado. Reservas de cota foram mantidas.
+
+O frontend usa o endereço público acima; a configuração Firebase Web original
+foi preservada para usar as contas já existentes. O despertar do serviço gratuito
+é tratado com tentativas limitadas apenas de status, sem repetir envios à IA.
+
+As cotas gratuitas de Gemini são compartilhadas com o ambiente de desenvolvimento.
+O backend público reserva até 400 requisições/dia, 10/min e 200.000 tokens/min;
+o ambiente local será limitado a 40/dia, 2/min e 40.000 tokens/min, para manter
+o total abaixo das cotas verificadas de 500/dia, 15/min e 250.000 tokens/min.
+Esses orçamentos não substituem os limites BRIIFF de 20 por aluno/200 globais
+no dia de Brasília. Outras chamadas externas à mesma chave podem consumir a cota.
+
+Render Free compartilha 750 horas mensais entre os Web Services do workspace.
+Nenhum outro serviço foi alterado. O serviço pode pausar por inatividade ou
+esgotamento da cota; não foi configurado upgrade automático nem serviço pago.

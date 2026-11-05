@@ -4,3 +4,7 @@ __pycache__/
 .local/
 .env
 *.log
+
+# Secret Files mounted by the hosted API; never commit them.
+firebase-admin.json
+gemini.key

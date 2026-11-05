@@ -1,3 +1,8 @@
+> **Atualização de hospedagem:** API pública implantada no Render Free em
+> https://briiff-ai-api.onrender.com, usando o Firebase principal `briif-site`.
+> Consulte [implantação e validação](RENDER_API.md). As seções de execução local
+> abaixo continuam descrevendo o ambiente de testes isolado.
+
 # BRIIFF AI — versão local
 
 ## Estado atual
