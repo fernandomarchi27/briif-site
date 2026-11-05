@@ -8,6 +8,12 @@ services:
     buildCommand: pip install -r requirements-production.txt
     startCommand: gunicorn -c gunicorn.conf.py 'backend.web:create_app()'
     healthCheckPath: /healthz
+    buildFilter:
+      paths:
+        - backend/**
+        - requirements*.txt
+        - gunicorn.conf.py
+        - render-api.yaml
     envVars:
       - key: PYTHON_VERSION
         value: 3.14.10

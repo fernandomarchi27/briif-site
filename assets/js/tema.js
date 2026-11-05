@@ -187,9 +187,9 @@
       var ses = JSON.parse(localStorage.getItem('briif:session'));
       if (ses && ses.modo === 'dev') { var d = document.createElement('script'); d.defer = true; d.src = 'assets/js/dev.js'; (document.head || raiz).appendChild(d); }
     } catch (e) { /* segue */ }
-    var m = document.createElement('script'); m.defer = true; m.src = 'assets/js/menu.js';   // menu lateral com ícones
+    var m = document.createElement('script'); m.defer = true; m.src = 'assets/js/menu.js?v=briiff-live-20261105';   // menu lateral com ícones
     (document.head || raiz).appendChild(m);
-    var chat = document.createElement('script'); chat.defer = true; chat.src = 'assets/js/ai-launcher.js';
+    var chat = document.createElement('script'); chat.defer = true; chat.src = 'assets/js/ai-launcher.js?v=briiff-live-20261105';
     (document.head || raiz).appendChild(chat);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', carregarFundo); else carregarFundo();
