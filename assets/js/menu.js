@@ -44,7 +44,6 @@
   var ITENS = [
     ['index.html', 'Início', 'inicio', ['index.html']],
     ['trilhas.html', 'Trilhas', 'trilhas', ['trilhas.html', 'licao.html', 'boss.html']],
-    ['ai.html', 'BRIIFF AI', 'grimorio', ['ai.html']],
     ['laboratorio.html', 'Laboratório', 'lab', ['laboratorio.html']],
     ['ranking.html', 'Ranking', 'ranking', ['ranking.html']],
     ['loja.html', 'Loja', 'loja', ['loja.html', 'avatar.html']],

@@ -8,6 +8,7 @@
   link.className = 'ai-launcher';
   link.href = 'ai.html';
   link.setAttribute('aria-label', 'Abrir BRIIFF AI, assistente de matemática');
-  link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8H6l-4 3v-11a9 9 0 0 1 18 0Z"/><path d="M6.5 9h9M9 9v6m4-6v6"/></svg><span>BRIIFF AI<small>Tire sua dúvida</small></span>';
+  link.title = 'BRIIFF AI';
+  link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8H6l-4 3v-11a9 9 0 0 1 18 0Z"/><path d="M6.5 9h9M9 9v6m4-6v6"/></svg>';
   document.body.append(link);
 })();
