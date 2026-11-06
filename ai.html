@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
   <title>BRIIFF AI — Aprenda matemática</title>
-  <meta name="description" content="Calculadoras do Briiff que mostram a conta passo a passo: equação do 1º grau, Bhaskara, Pitágoras e estatística.">
+  <meta name="description" content="Tire dúvidas de matemática com o BRIIFF AI e acompanhe suas conversas.">
   <meta name="theme-color" content="#FBFAF7">
   <script src="assets/js/tema.js?v=briiff-live-20261105"></script>
   <script src="assets/js/som.js"></script>
@@ -15,12 +15,12 @@
   <link rel="stylesheet" href="assets/css/suave.css">
   <link rel="stylesheet" href="assets/css/dungeon.css">
 <link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
-<link rel="stylesheet" href="assets/css/ai.css?v=briiff-live-20261105">
+<link rel="stylesheet" href="assets/css/ai.css?v=briiff-ai-clean-20261106">
 </head>
 <body class="ai-screen">
   <header class="site-header" id="site-header"></header>
   <main class="ai-page wrap">
-  <div class="ai-heading"><img src="assets/img/pi-roxo.png" alt="Assistente virtual" width="60" height="60"><div><p class="ai-kicker">SEU ESPAÇO PARA ENTENDER</p><h1>BRIIFF AI</h1><p>Uma dica, um passo e uma descoberta de cada vez.</p></div><button id="history-toggle" class="btn btn-sm" type="button" aria-expanded="false" aria-controls="chat-history">Conversas</button></div>
+  <div class="ai-heading"><img src="assets/img/pi-roxo.png" alt="" width="44" height="44"><h1>BRIIFF AI</h1><button id="history-toggle" class="btn btn-sm" type="button" aria-expanded="false" aria-controls="chat-history">Conversas</button></div>
   <p id="ai-status" class="ai-notice" role="status">Conectando ao BRIIFF AI…</p>
   <section id="ai-access" class="ai-notice" hidden>
     <p>Entre com e-mail e senha ou Google. Contas por senha precisam confirmar o e-mail.</p>
@@ -34,23 +34,20 @@
       <h2>Suas conversas</h2><div id="chats"></div>
       <button id="delete-all" class="btn btn-sm" type="button">Excluir todo o histórico</button>
       <button id="link-google" class="btn btn-sm" type="button" hidden>Vincular minha conta Google</button>
-      <p class="ai-small">Histórico privado da sua conta. Os limites são compartilhados entre dispositivos.</p>
     </aside>
     <section class="ai-chat" aria-label="Chat de matemática">
-      <header class="ai-chat-header"><span>Vamos raciocinar juntos</span><span id="quota">20 por aluno · 200 para a turma / dia</span></header>
+      <header class="ai-chat-header"><span id="quota" aria-live="polite">Consultando suas mensagens…</span></header>
       <div id="messages" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div>
       <div id="suggestions" class="ai-suggestions">
-        <button type="button">Me dê uma dica para resolver x² − 5x + 6 = 0</button>
-        <button type="button">Como estudar porcentagem para o ENEM?</button>
-        <button type="button">Por que minha conta com frações deu errado?</button>
+        <button type="button" data-question="Me dê uma dica para resolver x² − 5x + 6 = 0">Equações</button>
+        <button type="button" data-question="Como estudar porcentagem para o ENEM?">Porcentagem</button>
+        <button type="button" data-question="Por que minha conta com frações deu errado?">Revisar minha conta</button>
       </div>
       <p id="ai-error" class="ai-notice" role="alert" hidden></p>
       <form id="chat-form">
-        <div class="ai-compose-options"><label for="level">Quero explicações de nível</label><select id="level"><option>iniciante</option><option>intermediário</option><option>avançado</option></select></div>
         <label class="sr-only" for="question">Sua dúvida de matemática</label>
         <div class="ai-compose"><textarea id="question" maxlength="2000" rows="2" placeholder="Qual é a sua dúvida de matemática?" required></textarea><button id="send" class="btn btn-indigo" type="submit" disabled>Enviar ↑</button></div>
-        <div class="ai-compose-options"><span id="characters">0 / 2.000</span><span>Renovação à meia-noite de Brasília</span></div>
-        <p class="ai-small">A IA pode errar. Confira os passos. Não envie dados pessoais. No plano gratuito, o Google pode usar as interações para melhorar seus produtos.</p>
+        <div class="ai-compose-options"><details class="ai-details"><summary>Opções e privacidade</summary><label for="level">Nível da explicação</label> <select id="level"><option>iniciante</option><option>intermediário</option><option>avançado</option></select><p class="ai-small">Suas mensagens renovam à meia-noite de Brasília. A IA pode errar: confira os passos e não envie dados pessoais. No plano gratuito, o Google pode usar as interações para melhorar seus produtos.</p></details><span id="characters" hidden>0 / 2.000</span></div>
       </form>
     </section>
   </div>
@@ -65,6 +62,6 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/avatar.js"></script>
   <script src="assets/js/app.js?v=briiff-live-20261105"></script>
-  <script src="assets/js/ai.js?v=briiff-live-20261105"></script>
+  <script src="assets/js/ai.js?v=briiff-ai-clean-20261106"></script>
 </body>
 </html>

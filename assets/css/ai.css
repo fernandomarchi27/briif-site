@@ -49,3 +49,24 @@ body.ai-screen > .site-footer { display: none; }
   .ai-screen #ai-status, .ai-screen #suggestions, .ai-screen #chat-form .ai-small { display: none; }
   .ai-screen .ai-heading .ai-kicker, .ai-screen .ai-heading p { display: none; }
 }
+
+/* Conversa com foco na leitura; detalhes ficam recolhidos. */
+.ai-screen .ai-workspace { border-radius: 10px; box-shadow: none; }
+.ai-screen .ai-chat-header { justify-content: flex-end; padding: 10px 20px; border-bottom: 0; font-weight: 400; }
+.ai-screen #messages { gap: 24px; overflow-anchor: none; scroll-behavior: auto; }
+.ai-screen .ai-message.model { background: transparent; border: 0; border-radius: 0; padding: 0; max-width: 100%; line-height: 1.65; }
+.ai-screen .ai-message.user { padding: 12px 16px; border-color: var(--line); border-radius: 8px; max-width: 85%; }
+.ai-screen .ai-message strong { font-size: .75rem; margin-bottom: 8px; }
+.ai-screen #suggestions button { flex: 0 0 auto; max-width: 250px; padding: 8px 12px; border-color: var(--line); border-radius: 8px; }
+.ai-screen .ai-compose textarea { border-radius: 8px; }
+.ai-details { min-width: 0; }
+.ai-details summary { cursor: pointer; padding-block: 4px; }
+.ai-details[open] { max-width: 550px; }
+.ai-details[open] label { display: inline-block; margin-top: 8px; }
+.ai-screen #characters { white-space: nowrap; }
+@media(max-width:860px) {
+  .ai-screen .ai-chat-header { padding: 8px 16px; }
+  .ai-screen #messages { padding: 16px; }
+  .ai-screen #chat-form { padding: 10px; }
+}
+.ai-screen #chat-form .ai-details[open] .ai-small { display: block; }

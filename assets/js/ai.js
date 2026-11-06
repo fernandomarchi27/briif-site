@@ -30,7 +30,11 @@
     if (!response.ok) throw Error(body.error || 'O serviço não respondeu.');
     return body;
   }
-  function append(role, text) {
+  function showStart(item) {
+    const messages = $('#messages');
+    messages.scrollTop += item.getBoundingClientRect().top - messages.getBoundingClientRect().top - parseFloat(getComputedStyle(messages).paddingTop);
+  }
+  function append(role, text, scroll = true) {
     const item = document.createElement('article'); item.className = 'ai-message '+role;
     const label = document.createElement('strong'); label.textContent = role === 'user' ? 'Você' : 'BRIIFF AI';
     const content = document.createElement('div'); content.textContent = text;
@@ -38,17 +42,22 @@
     if (role !== 'user' && window.renderMathInElement) {
       renderMathInElement(content, {delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false},{left:'$',right:'$',display:false}],throwOnError:false,trust:false,strict:'ignore',maxExpand:500,maxSize:20});
     }
-    $('#messages').scrollTop = $('#messages').scrollHeight;
+    if (scroll) {
+      if (role === 'user') $('#messages').scrollTop = $('#messages').scrollHeight;
+      else showStart(item);
+    }
+    return item;
   }
   function welcome() {
     $('#messages').replaceChildren();
-    append('model','Olá! Sou o BRIIFF AI. Conte onde você travou ou mostre a sua tentativa. Vamos encontrar o próximo passo juntos.');
+    append('model','Onde você travou? Peça uma dica ou mostre sua tentativa.');
     $('#suggestions').hidden = false;
   }
   async function usage() {
     quota = await api('/api/usage');
-    $('#quota').textContent = `${quota.individual} suas · ${quota.global} da turma · ${quota.provider} do provedor restantes`;
-    if (Math.min(quota.individual,quota.global,quota.provider) <= 0) error('Um dos limites diários foi atingido. Aguarde a renovação da cota correspondente.');
+    $('#quota').textContent = quota.individual === 1 ? '1 mensagem disponível hoje' : `${quota.individual} mensagens disponíveis hoje`;
+    if (quota.individual <= 0) error('Suas mensagens de hoje acabaram. Elas renovam à meia-noite de Brasília.');
+    else if (Math.min(quota.global,quota.provider) <= 0) error('O assistente está indisponível no momento. Tente mais tarde.');
     controls();
   }
   async function history() {
@@ -65,7 +74,9 @@
         try {
           const conversation = await api('/api/conversations/'+chat.id);
           chatId = chat.id; $('#messages').replaceChildren();
-          conversation.messages.forEach(m => append(m.role,m.text));
+          conversation.messages.forEach(m => append(m.role,m.text,false));
+          const lastAnswer = $('#messages').querySelector('.ai-message.model:last-of-type');
+          if (lastAnswer) showStart(lastAnswer);
           $('#suggestions').hidden = true; toggleHistory(false); error(''); await history();
         } catch (e) { error(e.message); }
       };
@@ -82,10 +93,10 @@
     }
     controls();
   }
-  function newChat() { toggleHistory(false); chatId = crypto.randomUUID(); welcome(); error(''); $('#question').value = ''; $('#characters').textContent='0 / 2.000'; }
+  function newChat() { toggleHistory(false); chatId = crypto.randomUUID(); welcome(); error(''); $('#question').value = ''; $('#characters').textContent='0 / 2.000'; $('#characters').hidden = true; }
   $('#new-chat').onclick = () => { if (!sending) {newChat(); if (user && user.emailVerified) history().catch(e=>error(e.message));} };
-  $('#question').oninput = () => { $('#characters').textContent = $('#question').value.length+' / 2.000'; };
-  $('#suggestions').querySelectorAll('button').forEach(b=> { b.onclick = () => { $('#question').value=b.textContent; $('#question').dispatchEvent(new Event('input')); $('#question').focus(); }; });
+  $('#question').oninput = () => { $('#characters').textContent = $('#question').value.length+' / 2.000'; $('#characters').hidden = $('#question').value.length < 1800; };
+  $('#suggestions').querySelectorAll('button').forEach(b=> { b.onclick = () => { $('#question').value=b.dataset.question || b.textContent; $('#question').dispatchEvent(new Event('input')); $('#question').focus(); }; });
   $('#delete-all').onclick = async () => {
     if (sending || !user || !confirm('Excluir todo o seu histórico do BRIIFF AI? Os limites diários serão mantidos.')) return;
     try {
@@ -115,7 +126,7 @@
     append('user',text); $('#messages').append(pending);
     try {
       const response = await api('/api/messages',{method:'POST',body:JSON.stringify({text,conversationId:chatId,requestId:crypto.randomUUID(),level:$('#level').value})});
-      append('model',response.answer); $('#question').value=''; $('#characters').textContent='0 / 2.000';
+      pending.remove(); append('model',response.answer); $('#question').value=''; $('#characters').textContent='0 / 2.000'; $('#characters').hidden = true;
       quota = response.usage; await history();
     } catch(e) {
       error(e.message+' Envios já reservados podem consumir a cota mesmo sem resposta.');
@@ -172,7 +183,8 @@
       const status = await serverStatus();
       if (status.projectId && status.projectId !== window.BRIIF_FIREBASE_CONFIG?.projectId) throw Error('firebase-project-mismatch');
       available = status.ready;
-      $('#ai-status').textContent = status.ready ? ((status.testEnvironment ? 'Ambiente de testes · ' : '') + 'Suas conversas ficam na sua conta.') : status.message;
+      $('#ai-status').textContent = status.ready ? '' : status.message;
+      $('#ai-status').hidden = !!status.ready;
       if (!status.firebase) {
         $('#ai-access').hidden = true;
         error('O ambiente de testes ainda não foi configurado. O login de demonstração das outras páginas não dá acesso à IA. Consulte docs/BRIIFF_AI.md na pasta do projeto.');
